@@ -202,7 +202,7 @@ function InputsDemo() {
             </p>
             <p>
               <code>requiredIndicatorPosition</code> changes the required accent
-              edge while preserving the required label marker.
+              edge.
             </p>
           </ImplementationDetails>
         </section>

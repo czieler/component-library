@@ -52,13 +52,6 @@ export function createTextarea({
   labelElement.htmlFor = id;
   labelElement.append(document.createTextNode(label));
 
-  if (required) {
-    const marker = document.createElement("span");
-    marker.setAttribute("aria-hidden", "true");
-    marker.textContent = " *";
-    labelElement.append(marker);
-  }
-
   control.append(textarea, labelElement);
   wrapper.append(control);
 

@@ -208,7 +208,7 @@ const inputsDemo = () => {
       ],
       [
         { code: "requiredIndicatorPosition" },
-        " changes the required accent edge while preserving the required label marker.",
+        " changes the required accent edge.",
       ],
     ),
   );

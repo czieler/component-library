@@ -51,13 +51,6 @@ export function createTextInput({
   labelElement.htmlFor = id;
   labelElement.append(document.createTextNode(label));
 
-  if (required) {
-    const marker = document.createElement("span");
-    marker.setAttribute("aria-hidden", "true");
-    marker.textContent = " *";
-    labelElement.append(marker);
-  }
-
   control.append(input, labelElement);
 
   if (clearable && value && !disabled) {

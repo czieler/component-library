@@ -53,10 +53,7 @@ export function TextInput({
           aria-describedby={describedBy}
         />
 
-        <label htmlFor={inputId}>
-          {label}
-          {inputProps.required && <span aria-hidden="true"> *</span>}
-        </label>
+        <label htmlFor={inputId}>{label}</label>
 
         {clearable && inputProps.value && !inputProps.disabled && (
           <button

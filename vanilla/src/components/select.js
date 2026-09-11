@@ -64,13 +64,6 @@ export function createSelect({
   labelElement.htmlFor = id;
   labelElement.append(document.createTextNode(label));
 
-  if (required) {
-    const marker = document.createElement("span");
-    marker.setAttribute("aria-hidden", "true");
-    marker.textContent = " *";
-    labelElement.append(marker);
-  }
-
   const icon = document.createElement("span");
   icon.className = "field__select-icon";
   icon.setAttribute("aria-hidden", "true");

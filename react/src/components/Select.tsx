@@ -72,10 +72,7 @@ export function Select({
           {children}
         </select>
 
-        <label htmlFor={selectId}>
-          {label}
-          {selectProps.required && <span aria-hidden="true"> *</span>}
-        </label>
+        <label htmlFor={selectId}>{label}</label>
 
         {dropdownIcon && (
           <span className="field__select-icon" aria-hidden="true">

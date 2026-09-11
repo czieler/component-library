@@ -38,10 +38,7 @@ export function Textarea({
           aria-invalid={error ? true : ariaInvalid}
           aria-describedby={describedBy}
         />
-        <label htmlFor={textareaId}>
-          {label}
-          {textareaProps.required && <span aria-hidden="true"> *</span>}
-        </label>
+        <label htmlFor={textareaId}>{label}</label>
       </div>
       {(error || helperText) && (
         <small id={messageId} className="field__message">
