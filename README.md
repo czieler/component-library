@@ -1,6 +1,6 @@
 # Reusable Components
 
-A small, growing component library built from Reusable Components discovered through real product development.
+A small, framework-conscious component library built by extracting useful UI patterns from real product work and turning them into application-independent components.
 
 ![Reusable Components library](./readme.png)
 
@@ -8,151 +8,143 @@ The same design language is implemented in **React + TypeScript** and **Vanilla 
 
 ## Why This Exists
 
-Useful Reusable Components often begin inside applications.
+Useful reusable components often begin inside applications. This project demonstrates the process of identifying those patterns, removing application-specific dependencies, and turning them into portable components with clear APIs.
 
-This project demonstrates the process of identifying those patterns, removing application-specific dependencies, and turning them into reusable components that can be carried into future products.
+The goal is not to replace full-scale component libraries or data-grid frameworks. The focus is on lightweight, practical components with intentionally small APIs, responsive behavior, and accessibility built into the component contract.
 
-The goal isn't to replace full-scale component libraries or data-grid frameworks. Instead, the project focuses on lightweight, practical components with intentionally small APIs.
+## Component Support
 
-## Implementations
-
-### React + TypeScript
-
-Reusable React components with typed, consumer-controlled APIs.
-
-Current components include:
-
-- TextInput
-- Select
-- Textarea
-- DataTable
-- Responsive desktop sidebar
-- Mobile navigation
-
-### Vanilla JavaScript
-
-Framework-free implementations of the same Reusable Components using native DOM APIs and ES modules.
-
-The Vanilla version is intentionally maintained alongside React to demonstrate that the underlying interaction and accessibility patterns are not dependent on a framework.
+| Component | React + TypeScript | Vanilla JavaScript | Responsive behavior |
+| --- | :---: | :---: | --- |
+| TextInput | ✓ | ✓ | Form-safe at narrow widths |
+| Select | ✓ | ✓ | Native select behavior |
+| Textarea | ✓ | ✓ | Fluid width |
+| DataTable | ✓ | ✓ | Converts to labeled cards on mobile |
+| AppSidebar | ✓ | ✓ | Expanded/collapsed desktop modes |
+| MobileNavigation | ✓ | ✓ | Touch-friendly drawer navigation |
+| WorkflowProgress | ✓ | ✓ | Full desktop flow, focused tablet/mobile views |
 
 ## Current Patterns
 
-### Form Controls
+### Form controls
 
-Text input, select, and textarea components support:
+Text input, select, and textarea components support floating labels, required states, configurable required-field accent placement, error and helper messaging, disabled states, native HTML attributes, accessible label/message relationships, and consumer-controlled values and events.
 
-- Floating labels
-- Required states
-- Configurable required-field accent placement
-- Error and helper messaging
-- Disabled states
-- Native HTML attributes
-- Accessible label and message relationships
-- Consumer-controlled values and events
+### Responsive navigation
 
-### Responsive Navigation
-
-A shared hierarchical navigation model supports:
-
-- Expanded desktop sidebar
-- Collapsed desktop sidebar
-- Nested navigation
-- Collapsed-sidebar submenu flyouts
-- Mobile navigation drawer
-- Consumer-provided icons
-- Active-state management
-- Keyboard and focus behavior
+A shared hierarchical navigation model supports expanded and collapsed desktop sidebars, nested navigation, collapsed-sidebar submenu flyouts, a mobile navigation drawer, consumer-provided icons, active-state management, keyboard behavior, and focus handling.
 
 ### DataTable
 
-A lightweight semantic table component supporting:
+`DataTable` is a lightweight semantic table component with consumer-defined columns, expandable rows, optional section headers, collapsible sections, optional footer content, configurable divider styles, consumer-provided expand/collapse icons, empty states, accessible captions, and responsive mobile rendering.
 
-- Consumer-defined columns
-- Expandable rows
-- Optional section header
-- Collapsible table sections
-- Column-header-only layouts
-- Optional footer
-- Full cell dividers or horizontal row dividers
-- Consumer-provided expand/collapse icons
-- Empty states
-- Accessible captions
+Below 700px, the same column definitions are rendered as stacked labeled cards. Consumers do not need to build or maintain a second mobile-only table. The component intentionally stops short of becoming a full data-grid framework; sorting, filtering, virtualization, inline editing, and server pagination are better delegated to purpose-built grid libraries when an application requires them.
 
-The DataTable intentionally stops short of becoming a full data-grid framework. Features such as sorting, filtering, virtualization, editing, and pagination are better served by established table libraries when an application requires them.
+### WorkflowProgress
+
+`WorkflowProgress` accepts a consumer-defined `primaryColor`, `highlightColor`, array of `steps`, and 1-based `currentStep`. Completed steps use the primary color, the current step uses the highlight color, and directional connectors make progression explicit.
+
+Desktop displays the full workflow. Tablet uses a focused five-step viewport. Mobile uses a focused three-step viewport. Both smaller layouts include previous/next controls plus compact “Step X of Y” context.
+
+**React**
+
+```tsx
+<WorkflowProgress
+  steps={["Inventory", "Add Tools", "Review", "Complete"]}
+  currentStep={2}
+  primaryColor="#555b62"
+  highlightColor="#a61f1f"
+/>
+```
+
+**Vanilla JavaScript**
+
+```js
+createWorkflowProgress({
+  steps: ["Inventory", "Add Tools", "Review", "Complete"],
+  currentStep: 2,
+  primaryColor: "#555b62",
+  highlightColor: "#a61f1f",
+});
+```
+
+## Design Decisions
+
+**Two implementations, one behavior model.** Maintaining React and Vanilla versions makes the framework boundary visible. The DOM, accessibility, responsive behavior, and interaction model remain conceptually consistent while the implementation style changes.
+
+**Application-independent APIs.** Components do not know about product routing, authentication, APIs, business data, or application state. Consumers provide data, state, icons, callbacks, and content.
+
+**Responsive behavior belongs in the component when it is intrinsic.** `DataTable` owns its table-to-card transformation and `WorkflowProgress` owns its compact step-window behavior. Consumers should not need duplicate markup for common responsive states.
+
+**Native browser behavior first.** Native HTML elements and browser semantics are preserved wherever practical instead of being recreated unnecessarily.
+
+**Accessibility is part of the API.** Labels, ARIA relationships, semantic HTML, keyboard interaction, and focus behavior are considered during component design rather than added afterward.
+
+**Small APIs over endless configuration.** Components expose enough control to be reusable without attempting to solve every possible product requirement.
 
 ## Shared Design System
 
-Both implementations consume the same CSS custom-property design tokens for values such as:
-
-- Colors
-- Borders
-- Spacing
-- Border radii
-- Shadows
-- Disabled states
-- Required and error states
-
-This keeps the visual language consistent while allowing the component implementations themselves to remain independent.
-
-## Design Principles
-
-**Application-independent**
-
-Components do not know about application-specific routing, authentication, APIs, data models, or business logic.
-
-**Consumer-controlled**
-
-Applications provide data, state, icons, callbacks, and content rather than having those decisions embedded in the components.
-
-**Native behavior first**
-
-Native HTML elements and browser behavior are preserved wherever practical instead of recreating them unnecessarily.
-
-**Accessibility considered from the API level**
-
-Labels, ARIA relationships, keyboard interaction, focus behavior, and semantic HTML are treated as part of component design rather than added as an afterthought.
-
-**Small, intentional APIs**
-
-Components expose the options needed to make them reusable without attempting to solve every possible use case.
+Both implementations consume the same CSS custom-property design tokens for colors, borders, spacing, border radii, shadows, disabled states, required states, and error states. This keeps the visual language aligned while allowing each implementation to remain independent.
 
 ## Project Structure
 
-    component-library/
-    ├── shared/
-    │   └── design-tokens.css
-    ├── react/
-    │   └── src/
-    │       ├── components/
-    │       └── styles/
-    ├── vanilla/
-    │   └── src/
-    │       ├── components/
-    │       └── styles/
-    └── README.md
+```text
+component-library/
+├── shared/
+│   └── design-tokens.css
+├── react/
+│   └── src/
+│       ├── components/
+│       └── styles/
+├── vanilla/
+│   └── src/
+│       ├── components/
+│       └── styles/
+├── docs/
+│   ├── design-decisions.md
+│   ├── quality-checklist.md
+│   └── roadmap.md
+└── README.md
+```
 
 ## Running Locally
 
 ### React
 
-    cd react
-    npm install
-    npm run dev
+```bash
+cd react
+npm install
+npm run dev
+```
 
 ### Vanilla JavaScript
 
-    cd vanilla
-    npm install
-    npm run dev
+```bash
+cd vanilla
+npm install
+npm run dev
+```
 
-Follow the local Vite URL shown in the terminal.
+Each demo includes navigation to the available components and live examples that can be resized to inspect responsive behavior.
+
+## Quality Checks
+
+The React package includes a TypeScript build check and the Vanilla package includes JavaScript syntax checks.
+
+```bash
+cd react
+npm run check
+
+cd ../vanilla
+npm run check
+```
+
+A manual QA checklist for responsive behavior and accessibility is available in [`docs/quality-checklist.md`](./docs/quality-checklist.md).
 
 ## Background
 
-These components were extracted and generalized from patterns originally developed while building a larger React + TypeScript application.
-
-That process is part of the purpose of this repository: demonstrating how application-specific UI can evolve into reusable, maintainable components with cleaner boundaries and APIs.
+These components were extracted and generalized from patterns originally developed while building a larger React + TypeScript application. That extraction process is intentionally visible in this repository: application-specific UI evolves into reusable components with cleaner boundaries, clearer APIs, and shared responsive behavior.
 
 ## Status
 
-This is an evolving portfolio and learning project. Components may continue to be refined or added as reusable patterns emerge from future application work.
+This is an evolving portfolio project. New components are added when a pattern has demonstrated real reuse value rather than simply to increase the component count.

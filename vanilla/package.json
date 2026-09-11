@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "check": "node scripts/check-js.mjs",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "vite": "latest"
+    "vite": "8.2.2"
   }
 }

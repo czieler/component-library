@@ -12,6 +12,7 @@ type DataTableProps<T> = {
   columns: DataTableColumn<T>[];
   rows: T[];
   getRowId: (row: T) => string;
+  className?: string;
 
   headerMode?: "columns" | "section";
   sectionHeader?: ReactNode;
@@ -36,6 +37,7 @@ export function DataTable<T>({
   columns,
   rows,
   getRowId,
+  className = "",
   headerMode = "columns",
   sectionHeader,
   collapsible = false,
@@ -64,52 +66,30 @@ export function DataTable<T>({
   const toggleRow = (rowId: string) => {
     setExpandedIds((current) => {
       const next = new Set(current);
-
-      if (next.has(rowId)) {
-        next.delete(rowId);
-      } else {
-        next.add(rowId);
-      }
-
+      if (next.has(rowId)) next.delete(rowId);
+      else next.add(rowId);
       return next;
     });
   };
 
-  const className = [
+  const rootClassName = [
     "data-table",
+    className,
     footer ? "data-table--with-footer" : "data-table--without-footer",
     isCollapsed ? "data-table--collapsed" : "",
-    hasSectionHeader
-      ? "data-table--with-section-header"
-      : "data-table--no-section-header",
-    showColumnHeaders && !hasSectionHeader
-      ? "data-table--standalone-columns"
-      : "",
-    cellDividers === "rows"
-      ? "data-table--row-dividers"
-      : "data-table--cell-dividers",
-  ]
-    .filter(Boolean)
-    .join(" ");
+    hasSectionHeader ? "data-table--with-section-header" : "data-table--no-section-header",
+    showColumnHeaders && !hasSectionHeader ? "data-table--standalone-columns" : "",
+    cellDividers === "rows" ? "data-table--row-dividers" : "data-table--cell-dividers",
+  ].filter(Boolean).join(" ");
 
   return (
-    <div className={className}>
+    <div className={rootClassName}>
       {hasSectionHeader && (
         <div className="data-table__header">
           {collapsible ? (
-            <button
-              type="button"
-              className="data-table__header-toggle"
-              onClick={() => setIsCollapsed((value) => !value)}
-              aria-expanded={!isCollapsed}
-            >
-              <span className="data-table__header-content">
-                {sectionHeader}
-              </span>
-
-              <span className="data-table__header-icon" aria-hidden="true">
-                {isCollapsed ? headerExpandIcon : headerCollapseIcon}
-              </span>
+            <button type="button" className="data-table__header-toggle" onClick={() => setIsCollapsed((value) => !value)} aria-expanded={!isCollapsed}>
+              <span className="data-table__header-content">{sectionHeader}</span>
+              <span className="data-table__header-icon" aria-hidden="true">{isCollapsed ? headerExpandIcon : headerCollapseIcon}</span>
             </button>
           ) : (
             <div className="data-table__header-static">{sectionHeader}</div>
@@ -118,111 +98,80 @@ export function DataTable<T>({
       )}
 
       {!isCollapsed && (
-        <div className="data-table__scroll">
-          <table>
-            {caption && <caption className="sr-only">{caption}</caption>}
-
-            {showColumnHeaders && (
-              <thead>
-                <tr>
-                  {rowsExpandable && (
-                    <th
-                      className="data-table__expand-heading"
-                      aria-label="Expand row"
-                    />
-                  )}
-
-                  {columns.map((column) => (
-                    <th
-                      key={column.id}
-                      scope="col"
-                      style={{ width: column.width }}
-                      className={`data-table__cell--${column.align ?? "left"}`}
-                    >
-                      {column.label}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-            )}
-
-            <tbody>
-              {rows.length === 0 ? (
-                <tr>
-                  <td className="data-table__empty" colSpan={totalColumns}>
-                    {emptyMessage}
-                  </td>
-                </tr>
-              ) : (
-                rows.map((row) => {
+        <>
+          <div className="data-table__scroll">
+            <table>
+              {caption && <caption className="sr-only">{caption}</caption>}
+              {showColumnHeaders && (
+                <thead>
+                  <tr>
+                    {rowsExpandable && <th className="data-table__expand-heading" aria-label="Expand row" />}
+                    {columns.map((column) => (
+                      <th key={column.id} scope="col" style={{ width: column.width }} className={`data-table__cell--${column.align ?? "left"}`}>
+                        {column.label}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+              )}
+              <tbody>
+                {rows.length === 0 ? (
+                  <tr><td className="data-table__empty" colSpan={totalColumns}>{emptyMessage}</td></tr>
+                ) : rows.map((row) => {
                   const rowId = getRowId(row);
                   const isExpanded = expandedIds.has(rowId);
-
                   return (
                     <Fragment key={rowId}>
-                      <tr
-                        className={`data-table__row ${
-                          isExpanded ? "data-table__row--expanded" : ""
-                        }`}
-                      >
+                      <tr className={`data-table__row ${isExpanded ? "data-table__row--expanded" : ""}`}>
                         {rowsExpandable && (
                           <td className="data-table__expand-cell">
-                            <button
-                              type="button"
-                              className="data-table__expand-button"
-                              onClick={() => toggleRow(rowId)}
-                              aria-expanded={isExpanded}
-                              aria-label={
-                                isExpanded
-                                  ? `Collapse row ${rowId}`
-                                  : `Expand row ${rowId}`
-                              }
-                            >
-                              <span aria-hidden="true">
-                                {isExpanded ? collapseIcon : expandIcon}
-                              </span>
+                            <button type="button" className="data-table__expand-button" onClick={() => toggleRow(rowId)} aria-expanded={isExpanded} aria-label={isExpanded ? `Collapse row ${rowId}` : `Expand row ${rowId}`}>
+                              <span aria-hidden="true">{isExpanded ? collapseIcon : expandIcon}</span>
                             </button>
                           </td>
                         )}
-
-                        {columns.map((column) => (
-                          <td
-                            key={column.id}
-                            className={`data-table__cell--${
-                              column.align ?? "left"
-                            }`}
-                          >
-                            {column.render(row)}
-                          </td>
-                        ))}
+                        {columns.map((column) => <td key={column.id} className={`data-table__cell--${column.align ?? "left"}`}>{column.render(row)}</td>)}
                       </tr>
-
                       {rowsExpandable && isExpanded && (
-                        <tr className="data-table__expanded-row">
-                          <td colSpan={totalColumns}>
-                            <div className="data-table__expanded-content">
-                              {renderExpandedRow?.(row)}
-                            </div>
-                          </td>
-                        </tr>
+                        <tr className="data-table__expanded-row"><td colSpan={totalColumns}><div className="data-table__expanded-content">{renderExpandedRow?.(row)}</div></td></tr>
                       )}
                     </Fragment>
                   );
-                })
-              )}
-            </tbody>
+                })}
+              </tbody>
+              {footer && <tfoot><tr><td className="data-table__footer" colSpan={totalColumns}>{footer}</td></tr></tfoot>}
+            </table>
+          </div>
 
-            {footer && (
-              <tfoot>
-                <tr>
-                  <td className="data-table__footer" colSpan={totalColumns}>
-                    {footer}
-                  </td>
-                </tr>
-              </tfoot>
-            )}
-          </table>
-        </div>
+          <div className="data-table__mobile" role="list" aria-label={caption ?? "Table rows"}>
+            {rows.length === 0 ? (
+              <div className="data-table__mobile-empty">{emptyMessage}</div>
+            ) : rows.map((row) => {
+              const rowId = getRowId(row);
+              const isExpanded = expandedIds.has(rowId);
+              return (
+                <article className="data-table__mobile-card" role="listitem" key={`mobile-${rowId}`}>
+                  {columns.map((column) => (
+                    <div className="data-table__mobile-field" key={column.id}>
+                      <span className="data-table__mobile-label">{column.label}</span>
+                      <div className={`data-table__mobile-value data-table__cell--${column.align ?? "left"}`}>{column.render(row)}</div>
+                    </div>
+                  ))}
+                  {rowsExpandable && (
+                    <div className="data-table__mobile-expand">
+                      <button type="button" className="data-table__expand-button" onClick={() => toggleRow(rowId)} aria-expanded={isExpanded}>
+                        <span aria-hidden="true">{isExpanded ? collapseIcon : expandIcon}</span>
+                        <span>{isExpanded ? "Hide details" : "Show details"}</span>
+                      </button>
+                    </div>
+                  )}
+                  {rowsExpandable && isExpanded && <div className="data-table__mobile-expanded">{renderExpandedRow?.(row)}</div>}
+                </article>
+              );
+            })}
+            {footer && <div className="data-table__mobile-footer">{footer}</div>}
+          </div>
+        </>
       )}
     </div>
   );

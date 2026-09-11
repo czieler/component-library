@@ -1,17 +1,17 @@
 # Roadmap
 
-The repository keeps each framework as a sibling project so future implementations can be added without reshaping the current demos.
+This repository grows when a reusable pattern emerges from real application work and is worth maintaining in both implementations.
 
-## Next frameworks
+## Near-term
 
-### Svelte
+- Add interaction-focused automated tests for the highest-value responsive components.
+- Add more accessibility regression coverage as interactive patterns grow.
+- Continue documenting cross-framework API differences when they are meaningful.
 
-Recreate the same form-control and navigation contracts with Svelte components, keeping the shared token file as the styling source of truth.
+## Possible future exploration
 
-### Modern Angular
+- Evaluate whether a lightweight package build would improve reuse across projects.
+- Evaluate an additional framework implementation only if a real project creates a reason to maintain it.
+- Add CI when the automated test surface is large enough to provide useful signal.
 
-Add a standalone Angular implementation with typed inputs, outputs, and accessible overlay behavior. Keep it independent from React and Vanilla build configuration.
-
-## Later exploration
-
-Document cross-framework API comparisons, add interaction-focused tests, and decide whether a lightweight package build is useful. Publishing, CI/CD, and monorepo orchestration remain intentionally deferred.
+Publishing and monorepo orchestration remain intentionally deferred until they solve a concrete reuse problem.

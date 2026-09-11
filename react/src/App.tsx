@@ -7,6 +7,7 @@ import {
   FormInput,
   LayoutDashboard,
   Menu,
+  Milestone,
   Navigation,
   Table2,
   X,
@@ -17,6 +18,7 @@ import { MobileNavigation } from "./components/MobileNavigation";
 import { Select } from "./components/Select";
 import { Textarea } from "./components/Textarea";
 import { TextInput } from "./components/TextInput";
+import { WorkflowProgress } from "./components/WorkflowProgress";
 import "./styles/globals.scss";
 
 const navItems: NavItem[] = [
@@ -44,6 +46,11 @@ const navItems: NavItem[] = [
         id: "navigation",
         label: "Navigation",
         icon: <Navigation size={16} />,
+      },
+      {
+        id: "workflow",
+        label: "Workflow Progress",
+        icon: <Milestone size={16} />,
       },
     ],
   },
@@ -331,7 +338,8 @@ function TablesDemo() {
         <p className="lede">
           A semantic table pattern with configurable column headers or a single
           section header, optional expandable rows, and an optional matching
-          footer.
+          footer. Below 700px the same rows automatically render as labeled
+          mobile cards.
         </p>
       </div>
 
@@ -635,6 +643,27 @@ function TablesDemo() {
   );
 }
 
+
+function WorkflowDemo() {
+  const steps = ["Tool Inventory", "Add Tools", "Discovery Map", "Capability Overlap", "Findings", "Executive Overview"];
+  return (
+    <>
+      <div className="section-heading">
+        <p className="eyebrow">Workflow pattern</p>
+        <h2>Progress that keeps the application in control.</h2>
+        <p className="lede">Supply colors, step labels, and the current 1-based step. Completed steps use the primary color; the current step uses the highlight color. Resize the demo to see the five-step tablet and three-step mobile focus windows.</p>
+      </div>
+      <section className="demo-section">
+        <WorkflowProgress steps={steps} currentStep={3} primaryColor="#555b62" highlightColor="#a61f1f" />
+        <ImplementationDetails>
+          <p><code>{`<WorkflowProgress steps={steps} currentStep={3} primaryColor="#555b62" highlightColor="#a61f1f" />`}</code></p>
+          <p>The component is display-only and application-independent. It clamps out-of-range current-step values, exposes the active step with <code>aria-current="step"</code>, and scrolls horizontally when space is limited.</p>
+        </ImplementationDetails>
+      </section>
+    </>
+  );
+}
+
 function NavigationDemo() {
   return (
     <>
@@ -801,6 +830,8 @@ export function App() {
           <TablesDemo />
         ) : activeId === "navigation" ? (
           <NavigationDemo />
+        ) : activeId === "workflow" ? (
+          <WorkflowDemo />
         ) : (
           <Overview />
         )}
