@@ -23,10 +23,14 @@ export function createDataTable({
   defaultExpandedIds = [],
   emptyMessage = "No rows to display.",
   caption,
+  sortState: controlledSortState,
+  onSortChange,
+  sortMode = "client",
 }) {
   const root = document.createElement("div");
   const expandedIds = new Set(defaultExpandedIds);
   let isCollapsed = defaultCollapsed;
+  let internalSortState = null;
 
   const rowsExpandable = typeof renderExpandedRow === "function";
   const hasSectionHeader = sectionHeader !== undefined && sectionHeader !== null;
@@ -48,6 +52,40 @@ export function createDataTable({
   const toggleRow = (rowId) => {
     if (expandedIds.has(rowId)) expandedIds.delete(rowId);
     else expandedIds.add(rowId);
+    renderTable();
+  };
+
+  const getSortState = () => controlledSortState !== undefined ? controlledSortState : internalSortState;
+
+  const getDisplayRows = () => {
+    const sortState = getSortState();
+    if (sortMode === "external" || !sortState) return rows;
+    const column = columns.find((candidate) => candidate.id === sortState.columnId);
+    if (!column?.sortable) return rows;
+    const valueFor = column.sortValue ?? ((row) => {
+      const rendered = column.render(row);
+      return typeof rendered === "string" || typeof rendered === "number" ? rendered : "";
+    });
+    return [...rows].sort((left, right) => {
+      const leftValue = valueFor(left);
+      const rightValue = valueFor(right);
+      if (leftValue == null && rightValue == null) return 0;
+      if (leftValue == null) return 1;
+      if (rightValue == null) return -1;
+      const comparison = typeof leftValue === "number" && typeof rightValue === "number"
+        ? leftValue - rightValue
+        : String(leftValue).localeCompare(String(rightValue), undefined, { numeric: true, sensitivity: "base" });
+      return sortState.direction === "asc" ? comparison : -comparison;
+    });
+  };
+
+  const toggleSort = (columnId) => {
+    const sortState = getSortState();
+    const next = sortState?.columnId === columnId
+      ? { columnId, direction: sortState.direction === "asc" ? "desc" : "asc" }
+      : { columnId, direction: "asc" };
+    if (typeof onSortChange === "function") onSortChange(next);
+    else internalSortState = next;
     renderTable();
   };
 
@@ -108,7 +146,31 @@ export function createDataTable({
         th.scope = "col";
         th.className = `data-table__cell--${column.align ?? "left"}`;
         if (column.width) th.style.width = column.width;
-        appendContent(th, column.label);
+        const sortState = getSortState();
+        const activeSort = sortState?.columnId === column.id ? sortState.direction : null;
+        if (column.sortable) {
+          th.setAttribute("aria-sort", activeSort === "asc" ? "ascending" : activeSort === "desc" ? "descending" : "none");
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "data-table__sort-button";
+          const label = document.createElement("span");
+          appendContent(label, column.label);
+          const icon = document.createElement("span");
+          icon.className = "data-table__sort-icon";
+          icon.setAttribute("aria-hidden", "true");
+          const arrows = activeSort === "asc" ? ["▲"] : activeSort === "desc" ? ["▼"] : ["▲", "▼"];
+          arrows.forEach((arrow) => {
+            const span = document.createElement("span");
+            span.className = "data-table__sort-arrow";
+            span.textContent = arrow;
+            icon.append(span);
+          });
+          button.append(label, icon);
+          button.addEventListener("click", () => toggleSort(column.id));
+          th.append(button);
+        } else {
+          appendContent(th, column.label);
+        }
         tr.append(th);
       });
       thead.append(tr);
@@ -125,7 +187,7 @@ export function createDataTable({
       tr.append(td);
       tbody.append(tr);
     } else {
-      rows.forEach((row) => {
+      getDisplayRows().forEach((row) => {
         const rowId = getRowId(row);
         const isExpanded = expandedIds.has(rowId);
         const tr = document.createElement("tr");
@@ -189,7 +251,7 @@ export function createDataTable({
       appendContent(empty, emptyMessage);
       mobile.append(empty);
     } else {
-      rows.forEach((row) => {
+      getDisplayRows().forEach((row) => {
         const rowId = getRowId(row);
         const isExpanded = expandedIds.has(rowId);
         const card = document.createElement("article");

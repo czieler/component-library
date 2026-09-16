@@ -6,6 +6,7 @@ import { createSelect } from "./components/select.js";
 import { createTextarea } from "./components/textarea.js";
 import { createTextInput } from "./components/text-input.js";
 import { createWorkflowProgress } from "./components/workflow-progress.js";
+import { createBusyIndicator } from "./components/busy-indicator.js";
 import "./styles/globals.css";
 
 const items = [
@@ -19,6 +20,7 @@ const items = [
       { id: "tables", label: "Data Table", icon: icons.table },
       { id: "navigation", label: "Navigation", icon: icons.navigation },
       { id: "workflow", label: "Workflow Progress", icon: icons.workflow },
+      { id: "busy", label: "Busy Indicator", icon: icons.workflow },
     ],
   },
 ];
@@ -329,10 +331,12 @@ const demoColumns = [
     id: "title",
     label: "Title",
     width: "38%",
+    sortable: true,
+    sortValue: (row) => row.title,
     render: (row) => strongValue(row.title),
   },
-  { id: "service", label: "Service", render: (row) => row.service },
-  { id: "status", label: "Status", render: (row) => row.status },
+  { id: "service", label: "Service", sortable: true, render: (row) => row.service },
+  { id: "status", label: "Status", sortable: true, render: (row) => row.status },
   { id: "progress", label: "Progress", render: (row) => row.progress },
 ];
 
@@ -452,7 +456,77 @@ const tablesDemo = () => {
     ),
   );
 
-  showcase.append(fullSection, rowsOnlySection);
+  const apiSection = document.createElement("section");
+  apiSection.className = "demo-section";
+  apiSection.append(
+    text("h3", "Server/API pagination + external sorting"),
+    text(
+      "p",
+      "This interactive example mimics a paged API: only a page of rows is supplied to DataTable, and sorting is owned by the consumer. In a real app, the sort callback resets the offset and requests page 1 from the server.",
+      "component-description",
+    ),
+  );
+
+  const apiHost = document.createElement("div");
+  const paginationControls = document.createElement("div");
+  paginationControls.className = "table-demo-pagination";
+  const loadMore = document.createElement("button");
+  loadMore.type = "button";
+  loadMore.className = "table-demo-pagination__button";
+  const pageStatus = document.createElement("span");
+  paginationControls.append(loadMore, pageStatus);
+
+  const pageSize = 2;
+  let visibleCount = pageSize;
+  let apiSortState = { columnId: "title", direction: "asc" };
+
+  const renderApiTable = () => {
+    const column = demoColumns.find((candidate) => candidate.id === apiSortState.columnId);
+    const sorted = [...demoRows].sort((left, right) => {
+      const leftValue = column?.sortValue?.(left) ?? left[apiSortState.columnId] ?? "";
+      const rightValue = column?.sortValue?.(right) ?? right[apiSortState.columnId] ?? "";
+      const comparison = String(leftValue).localeCompare(String(rightValue), undefined, { numeric: true });
+      return apiSortState.direction === "asc" ? comparison : -comparison;
+    });
+    const pageRows = sorted.slice(0, visibleCount);
+    apiHost.replaceChildren(createDataTable({
+      columns: demoColumns,
+      rows: pageRows,
+      getRowId: (row) => row.id,
+      sortMode: "external",
+      sortState: apiSortState,
+      onSortChange: (nextSort) => {
+        apiSortState = nextSort;
+        visibleCount = pageSize;
+        renderApiTable();
+      },
+      caption: "Server/API pagination example",
+    }));
+    loadMore.disabled = visibleCount >= demoRows.length;
+    loadMore.textContent = visibleCount >= demoRows.length ? "All demo rows loaded" : "Load next page";
+    pageStatus.textContent = `${pageRows.length} of ${demoRows.length} demo rows loaded`;
+  };
+
+  loadMore.addEventListener("click", () => {
+    visibleCount = Math.min(visibleCount + pageSize, demoRows.length);
+    renderApiTable();
+  });
+  renderApiTable();
+
+  apiSection.append(
+    apiHost,
+    paginationControls,
+    implementationDetails(
+      [
+        "Use ", { code: 'sortMode: "external"' }, ", control ", { code: "sortState" }, ", and handle ", { code: "onSortChange" }, ". Your API request sends limit, offset, sort, and direction; append later pages as the user scrolls or requests more rows.",
+      ],
+      [
+        "The complete fetch example is in ", { code: "examples/data-table-api-pagination-example.js" }, ". Sorting or filtering should clear loaded rows and fetch again from offset 0.",
+      ],
+    ),
+  );
+
+  showcase.append(fullSection, apiSection, rowsOnlySection);
   fragment.append(showcase);
 
   const docs = document.createElement("section");
@@ -506,6 +580,30 @@ const tablesDemo = () => {
   return fragment;
 };
 
+
+const busyIndicatorDemo = () => {
+  const fragment = document.createDocumentFragment();
+  const heading = document.createElement("div");
+  heading.className = "section-heading";
+  heading.append(
+    text("p", "Status pattern", "eyebrow"),
+    text("h2", "Busy Indicator"),
+    text("p", "One consistent spinner-and-message treatment for loading, saving, importing, processing, and other busy states."),
+  );
+
+  const showcase = document.createElement("div");
+  showcase.className = "component-showcase";
+  ["Loading tools…", "Saving changes…", "Importing tools…"].forEach((message) => {
+    showcase.append(createBusyIndicator({ message }).element);
+  });
+
+  const details = document.createElement("div");
+  details.className = "implementation-details";
+  details.innerHTML = `<strong>Implementation details</strong><div><p><code>createBusyIndicator({ message: "Saving changes…" })</code></p><p>The spinner uses <code>currentColor</code>, so it automatically matches the message text. The returned controller also exposes <code>setMessage()</code>.</p></div>`;
+  showcase.append(details);
+  fragment.append(heading, showcase);
+  return fragment;
+};
 
 const workflowDemo = () => {
   const fragment = document.createDocumentFragment();
@@ -673,7 +771,9 @@ const render = () => {
           ? navigationDemo()
           : active === "workflow"
             ? workflowDemo()
-            : overview(),
+            : active === "busy"
+              ? busyIndicatorDemo()
+              : overview(),
   );
 
   const sidebar = createSidebar({

@@ -23,6 +23,7 @@ The goal is not to replace full-scale component libraries or data-grid framework
 | AppSidebar | ✓ | ✓ | Expanded/collapsed desktop modes |
 | MobileNavigation | ✓ | ✓ | Touch-friendly drawer navigation |
 | WorkflowProgress | ✓ | ✓ | Full desktop flow, focused tablet/mobile views |
+| BusyIndicator | ✓ | ✓ | Compact inline status at any width |
 
 ## Current Patterns
 
@@ -38,7 +39,28 @@ A shared hierarchical navigation model supports expanded and collapsed desktop s
 
 `DataTable` is a lightweight semantic table component with consumer-defined columns, expandable rows, optional section headers, collapsible sections, optional footer content, configurable divider styles, consumer-provided expand/collapse icons, empty states, accessible captions, and responsive mobile rendering.
 
-Below 700px, the same column definitions are rendered as stacked labeled cards. Consumers do not need to build or maintain a second mobile-only table. The component intentionally stops short of becoming a full data-grid framework; sorting, filtering, virtualization, inline editing, and server pagination are better delegated to purpose-built grid libraries when an application requires them.
+Below 700px, the same column definitions are rendered as stacked labeled cards. Consumers do not need to build or maintain a second mobile-only table. Sorting is opt-in per column. By default DataTable sorts the supplied rows client-side; consumers using server-side pagination can set `sortMode="external"` and handle `onSortChange` themselves so the table renders server-ordered rows without re-sorting the current page. Filtering, pagination/fetching, virtualization, and inline editing remain application concerns rather than being coupled to the presentation component.
+
+
+Complete API-pagination examples are included for both implementations: [`react/examples/DataTableApiPaginationExample.tsx`](react/examples/DataTableApiPaginationExample.tsx) and [`vanilla/examples/data-table-api-pagination-example.js`](vanilla/examples/data-table-api-pagination-example.js). They demonstrate 50-row server pages, resetting to offset 0 on sort changes, and loading subsequent pages without making DataTable responsible for API behavior.
+
+### BusyIndicator
+
+`BusyIndicator` provides one reusable spinner-and-message treatment for loading, saving, importing, processing, and other busy states. The ring uses `currentColor`, so it automatically matches the surrounding text color instead of introducing component-specific colors. It also exposes a polite live status for assistive technology.
+
+**React**
+
+```tsx
+<BusyIndicator message="Saving changes…" />
+```
+
+**Vanilla JavaScript**
+
+```js
+const busy = createBusyIndicator({ message: "Saving changes…" });
+document.querySelector("#app").append(busy.element);
+busy.setMessage("Saved");
+```
 
 ### WorkflowProgress
 

@@ -1082,3 +1082,70 @@ h1 {
 .workflow-progress__count { flex: 0 0 auto; color: var(--color-muted-text); font-size: .75rem; white-space: nowrap; }
 @media (max-width: 1023px) { .workflow-progress__responsive-row { grid-template-columns: 2rem minmax(0,1fr) 2rem; gap: .5rem; } .workflow-progress__nav { display: grid; } .workflow-progress__track { width: max-content; } .workflow-progress__step { width: calc((100vw - 9rem) / 5); min-width: 112px; flex: 0 0 calc((100vw - 9rem) / 5); } .workflow-progress__compact-status { display: flex; padding: 0 2.5rem; } }
 @media (max-width: 767px) { .workflow-progress__responsive-row { grid-template-columns: 2rem minmax(0,1fr) 2rem; gap: .35rem; } .workflow-progress__step { width: calc((100vw - 7.5rem) / 3); min-width: 86px; flex-basis: calc((100vw - 7.5rem) / 3); } .workflow-progress__label { max-width: 82px; font-size: .66rem; } .workflow-progress__compact-status { padding: 0 2.35rem; } }
+
+
+/* Sortable DataTable column controls. */
+.data-table__sort-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: inherit;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+.data-table__cell--right .data-table__sort-button { justify-content: flex-end; }
+.data-table__cell--center .data-table__sort-button { justify-content: center; }
+.data-table__sort-button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 2px; }
+.data-table__sort-icon {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.12rem;
+  flex: 0 0 auto;
+  min-width: 0.7rem;
+  font-size: 0.58rem;
+  line-height: 0.55;
+}
+.data-table__sort-arrow { display: block; }
+
+/* Shared busy state: spinner inherits the surrounding text color. */
+.busy-indicator { display: inline-flex; align-items: center; gap: .5rem; color: inherit; line-height: 1.35; }
+.busy-indicator__spinner { width: 1rem; height: 1rem; flex: 0 0 1rem; box-sizing: border-box; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: busy-indicator-spin .75s linear infinite; }
+.busy-indicator__message { min-width: 0; }
+@keyframes busy-indicator-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .busy-indicator__spinner { animation-duration: 1.5s; } }
+
+.table-demo-pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.85rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.table-demo-pagination__button {
+  border: 1px solid var(--color-border);
+  border-radius: 0.35rem;
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: 0.55rem 0.8rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.table-demo-pagination__button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}

@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   Menu,
   Milestone,
+  LoaderCircle,
   Navigation,
   Table2,
   X,
@@ -19,6 +20,7 @@ import { Select } from "./components/Select";
 import { Textarea } from "./components/Textarea";
 import { TextInput } from "./components/TextInput";
 import { WorkflowProgress } from "./components/WorkflowProgress";
+import { BusyIndicator } from "./components/BusyIndicator";
 import "./styles/globals.scss";
 
 const navItems: NavItem[] = [
@@ -51,6 +53,11 @@ const navItems: NavItem[] = [
         id: "workflow",
         label: "Workflow Progress",
         icon: <Milestone size={16} />,
+      },
+      {
+        id: "busy",
+        label: "Busy Indicator",
+        icon: <LoaderCircle size={16} />,
       },
     ],
   },
@@ -307,16 +314,20 @@ const demoColumns: DataTableColumn<DemoRow>[] = [
     id: "title",
     label: "Title",
     width: "38%",
+    sortable: true,
+    sortValue: (row) => row.title,
     render: (row) => <strong>{row.title}</strong>,
   },
   {
     id: "service",
     label: "Service",
+    sortable: true,
     render: (row) => row.service,
   },
   {
     id: "status",
     label: "Status",
+    sortable: true,
     render: (row) => row.status,
   },
   {
@@ -325,6 +336,59 @@ const demoColumns: DataTableColumn<DemoRow>[] = [
     render: (row) => row.progress,
   },
 ];
+
+function ApiPaginationTableDemo() {
+  const pageSize = 2;
+  const allRows = demoRows;
+  const [sortState, setSortState] = useState<{ columnId: string; direction: "asc" | "desc" }>({
+    columnId: "title",
+    direction: "asc",
+  });
+  const [visibleCount, setVisibleCount] = useState(pageSize);
+
+  const sortedRows = [...allRows].sort((left, right) => {
+    const column = demoColumns.find((candidate) => candidate.id === sortState.columnId);
+    const fallbackValue = (row: DemoRow) => {
+      if (sortState.columnId === "service") return row.service;
+      if (sortState.columnId === "status") return row.status;
+      if (sortState.columnId === "progress") return row.progress;
+      return row.title;
+    };
+    const leftValue = column?.sortValue?.(left) ?? fallbackValue(left);
+    const rightValue = column?.sortValue?.(right) ?? fallbackValue(right);
+    const comparison = String(leftValue).localeCompare(String(rightValue), undefined, { numeric: true });
+    return sortState.direction === "asc" ? comparison : -comparison;
+  });
+  const rows = sortedRows.slice(0, visibleCount);
+
+  return (
+    <>
+      <DataTable
+        columns={demoColumns}
+        rows={rows}
+        getRowId={(row) => row.id}
+        sortMode="external"
+        sortState={sortState}
+        onSortChange={(nextSort) => {
+          setSortState(nextSort);
+          setVisibleCount(pageSize);
+        }}
+        caption="Server/API pagination example"
+      />
+      <div className="table-demo-pagination">
+        <button
+          type="button"
+          className="table-demo-pagination__button"
+          disabled={visibleCount >= allRows.length}
+          onClick={() => setVisibleCount((current) => Math.min(current + pageSize, allRows.length))}
+        >
+          {visibleCount >= allRows.length ? "All demo rows loaded" : "Load next page"}
+        </button>
+        <span>{rows.length} of {allRows.length} demo rows loaded</span>
+      </div>
+    </>
+  );
+}
 
 function TablesDemo() {
   const expandIcon = <ChevronDown size={18} strokeWidth={2} />;
@@ -390,6 +454,24 @@ function TablesDemo() {
             <p>
               When a footer exists, it owns the lower rounded corners. Without a
               footer, the final body row receives the lower rounding instead.
+            </p>
+          </ImplementationDetails>
+        </section>
+
+        <section className="demo-section">
+          <h3>Server/API pagination + external sorting</h3>
+          <p className="component-description">
+            This interactive example mimics a paged API: only a page of rows is supplied to DataTable, and sorting is owned by the consumer. In a real app, the sort callback resets the offset and requests page 1 from the server.
+          </p>
+
+          <ApiPaginationTableDemo />
+
+          <ImplementationDetails>
+            <p>
+              Use <code>sortMode=&quot;external&quot;</code>, control <code>sortState</code>, and handle <code>onSortChange</code>. Your API request sends <code>limit</code>, <code>offset</code>, <code>sort</code>, and <code>direction</code>; append later pages as the user scrolls or requests more rows.
+            </p>
+            <p>
+              The complete fetch example is in <code>examples/DataTableApiPaginationExample.tsx</code>. Sorting or filtering should clear loaded rows and fetch again from offset 0.
             </p>
           </ImplementationDetails>
         </section>
@@ -644,6 +726,28 @@ function TablesDemo() {
 }
 
 
+
+function BusyIndicatorDemo() {
+  return (
+    <>
+      <div className="section-heading">
+        <p className="eyebrow">Status pattern</p>
+        <h2>Busy Indicator</h2>
+        <p>One consistent spinner-and-message treatment for loading, saving, importing, processing, and other busy states.</p>
+      </div>
+      <div className="component-showcase">
+        <BusyIndicator message="Loading tools…" />
+        <BusyIndicator message="Saving changes…" />
+        <BusyIndicator message="Importing tools…" />
+        <ImplementationDetails>
+          <p><code>{`<BusyIndicator message="Saving changes…" />`}</code></p>
+          <p>The spinner uses <code>currentColor</code>, so it automatically matches the message text. The component exposes a polite live status for assistive technology.</p>
+        </ImplementationDetails>
+      </div>
+    </>
+  );
+}
+
 function WorkflowDemo() {
   const steps = ["Tool Inventory", "Add Tools", "Discovery Map", "Capability Overlap", "Findings", "Executive Overview"];
   return (
@@ -832,6 +936,8 @@ export function App() {
           <NavigationDemo />
         ) : activeId === "workflow" ? (
           <WorkflowDemo />
+        ) : activeId === "busy" ? (
+          <BusyIndicatorDemo />
         ) : (
           <Overview />
         )}

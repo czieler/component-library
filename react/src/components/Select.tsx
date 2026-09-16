@@ -1,4 +1,4 @@
-import { useId, type ReactNode, type SelectHTMLAttributes } from "react";
+import { useId, useState, type ChangeEvent, type ReactNode, type SelectHTMLAttributes } from "react";
 
 type SelectOption = {
   label: string;
@@ -27,11 +27,25 @@ export function Select({
   children,
   "aria-describedby": ariaDescribedby,
   "aria-invalid": ariaInvalid,
+  value,
+  defaultValue,
+  onChange,
   ...selectProps
 }: SelectProps) {
   const id = useId();
   const selectId = providedId ?? id;
   const messageId = `${id}-message`;
+  const initialValue = value ?? defaultValue ?? "";
+  const [uncontrolledValue, setUncontrolledValue] = useState(String(initialValue));
+  const currentValue = value !== undefined ? String(value ?? "") : uncontrolledValue;
+  const hasValue = currentValue !== "";
+
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    if (value === undefined) {
+      setUncontrolledValue(event.target.value);
+    }
+    onChange?.(event);
+  };
 
   const describedBy =
     [ariaDescribedby, error || helperText ? messageId : ""]
@@ -54,17 +68,20 @@ export function Select({
         error ? "field--error" : ""
       }`}
     >
-      <div className="field__control field__control--select">
+      <div className={`field__control field__control--select ${hasValue ? "field__control--has-value" : ""} ${dropdownIcon ? "field__control--custom-select-icon" : ""}`}>
         <select
           {...selectProps}
           id={selectId}
+          value={value}
+          defaultValue={defaultValue}
+          onChange={handleChange}
           className={className}
           aria-invalid={error ? true : ariaInvalid}
           aria-describedby={describedBy}
         >
           {options && (
-            <option value="" disabled>
-              Select one
+            <option value="" disabled aria-hidden="true">
+              {hasValue ? "" : label}
             </option>
           )}
 
