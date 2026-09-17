@@ -630,7 +630,14 @@ const busyIndicatorDemo = () => {
 
   const details = document.createElement("div");
   details.className = "implementation-details";
-  details.innerHTML = `<strong>Implementation details</strong><div><p><code>createBusyIndicator({ message: "Saving changes…" })</code></p><p>The spinner uses <code>currentColor</code>, so it automatically matches the message text. The returned controller also exposes <code>setMessage()</code>.</p></div>`;
+    const busyButton = document.createElement("button");
+  busyButton.type = "button";
+  busyButton.className = "button button--primary busy-button-demo";
+  busyButton.disabled = true;
+  busyButton.append(createBusyIndicator({ message: "Importing…", inline: true }).element);
+  showcase.append(busyButton);
+
+details.innerHTML = `<strong>Implementation details</strong><div><p><code>createBusyIndicator({ message: "Saving changes…" })</code></p><p>The spinner uses <code>currentColor</code>, so it automatically matches the message text. The returned controller also exposes <code>setMessage()</code>.</p></div>`;
   showcase.append(details);
   fragment.append(heading, showcase);
   return fragment;

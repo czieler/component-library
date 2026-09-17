@@ -780,6 +780,7 @@ function BusyIndicatorDemo() {
         <BusyIndicator message="Loading tools…" />
         <BusyIndicator message="Saving changes…" />
         <BusyIndicator message="Importing tools…" />
+        <button type="button" className="button button--primary" disabled><BusyIndicator inline message="Importing…" /></button>
         <ImplementationDetails>
           <p><code>{`<BusyIndicator message="Saving changes…" />`}</code></p>
           <p>The spinner uses <code>currentColor</code>, so it automatically matches the message text. The component exposes a polite live status for assistive technology.</p>

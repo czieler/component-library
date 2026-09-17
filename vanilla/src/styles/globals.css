@@ -122,7 +122,7 @@ h1 {
 .field input:not(:placeholder-shown) + label,
 .field textarea:focus + label,
 .field textarea:not(:placeholder-shown) + label,
-.field select + label {
+.field__control--select.field__control--has-value label {
   top: 0.22rem;
   color: var(--color-accent);
   font-size: 0.7rem;
@@ -1076,12 +1076,13 @@ h1 {
 .workflow-progress__step { min-width: 0; flex: 1 1 0; }
 .workflow-progress__nav { display: none; place-items: center; width: 2rem; height: 2rem; margin-top: -.2rem; padding: 0; border: 1px solid var(--color-border); border-radius: 50%; background: var(--color-surface); color: var(--color-text); font: inherit; font-size: 1.3rem; line-height: 1; cursor: pointer; }
 .workflow-progress__nav:disabled { opacity: .3; cursor: default; }
-.workflow-progress__compact-status { display: none; align-items: center; gap: .75rem; margin-top: .55rem; }
-.workflow-progress__bar { position: relative; display: block; height: 5px; flex: 1; overflow: hidden; border-radius: 999px; background: #e1e4e8; }
+.workflow-progress__nav > span { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; line-height: 1; }
+.workflow-progress__compact-status { display: none; width: 100%; grid-template-columns: 1fr; gap: .4rem; margin-top: .55rem; }
+.workflow-progress__bar { position: relative; display: block; width: 100%; height: 5px; flex: 1; overflow: hidden; border-radius: 999px; background: #e1e4e8; }
 .workflow-progress__bar > span { display: block; width: var(--workflow-progress-percent); height: 100%; border-radius: inherit; background: var(--workflow-highlight); }
-.workflow-progress__count { flex: 0 0 auto; color: var(--color-muted-text); font-size: .75rem; white-space: nowrap; }
-@media (max-width: 1023px) { .workflow-progress__responsive-row { grid-template-columns: 2rem minmax(0,1fr) 2rem; gap: .5rem; } .workflow-progress__nav { display: grid; } .workflow-progress__track { width: max-content; } .workflow-progress__step { width: calc((100vw - 9rem) / 5); min-width: 112px; flex: 0 0 calc((100vw - 9rem) / 5); } .workflow-progress__compact-status { display: flex; padding: 0 2.5rem; } }
-@media (max-width: 767px) { .workflow-progress__responsive-row { grid-template-columns: 2rem minmax(0,1fr) 2rem; gap: .35rem; } .workflow-progress__step { width: calc((100vw - 7.5rem) / 3); min-width: 86px; flex-basis: calc((100vw - 7.5rem) / 3); } .workflow-progress__label { max-width: 82px; font-size: .66rem; } .workflow-progress__compact-status { padding: 0 2.35rem; } }
+.workflow-progress__count { display:block; width:100%; text-align:center; color: var(--color-muted-text); font-size: .75rem; white-space: nowrap; }
+@media (max-width: 1023px) { .workflow-progress__responsive-row { grid-template-columns: 2rem minmax(0,1fr) 2rem; gap: .5rem; } .workflow-progress__nav { display: grid; } .workflow-progress__track { width: max-content; } .workflow-progress__step { width: calc((100vw - 9rem) / 5); min-width: 112px; flex: 0 0 calc((100vw - 9rem) / 5); } .workflow-progress__compact-status { display: grid; padding: 0; } }
+@media (max-width: 767px) { .workflow-progress__responsive-row { grid-template-columns: 2rem minmax(0,1fr) 2rem; gap: .35rem; } .workflow-progress__step { width: calc((100vw - 7.5rem) / 3); min-width: 86px; flex-basis: calc((100vw - 7.5rem) / 3); } .workflow-progress__label { max-width: 82px; font-size: .66rem; } .workflow-progress__compact-status { padding: 0; } }
 
 
 /* Sortable DataTable column controls. */
@@ -1160,3 +1161,9 @@ h1 {
 .venn-demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
 .venn-demo-card { min-width: 0; padding: var(--space-4); border: 1px solid var(--color-border); background: var(--color-surface); }
 @media (max-width: 900px) { .venn-demo-grid { grid-template-columns: 1fr; } }
+
+/* Select owns its floating-label geometry so page-level select sizing cannot collapse it. */
+.field__control--select .field__select {
+  min-height: 48px;
+  padding: 1.2rem 2.75rem 0.45rem 0.8rem;
+}

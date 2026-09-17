@@ -1268,24 +1268,25 @@ h1 {
   cursor: pointer;
 }
 .workflow-progress__nav:disabled { opacity: 0.3; cursor: default; }
-.workflow-progress__compact-status { display: none; align-items: center; gap: 0.75rem; margin-top: 0.55rem; }
-.workflow-progress__bar { position: relative; display: block; height: 5px; flex: 1; overflow: hidden; border-radius: 999px; background: #e1e4e8; }
+.workflow-progress__nav > span { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; line-height: 1; }
+.workflow-progress__compact-status { display: none; width: 100%; grid-template-columns: 1fr; gap: 0.4rem; margin-top: 0.55rem; }
+.workflow-progress__bar { position: relative; display: block; width: 100%; height: 5px; flex: 1; overflow: hidden; border-radius: 999px; background: #e1e4e8; }
 .workflow-progress__bar > span { display: block; width: var(--workflow-progress-percent); height: 100%; border-radius: inherit; background: var(--workflow-highlight); }
-.workflow-progress__count { flex: 0 0 auto; color: var(--color-muted-text); font-size: 0.75rem; white-space: nowrap; }
+.workflow-progress__count { display:block; width:100%; text-align:center; color: var(--color-muted-text); font-size: 0.75rem; white-space: nowrap; }
 
 @media (max-width: 1023px) {
   .workflow-progress__responsive-row { grid-template-columns: 2rem minmax(0, 1fr) 2rem; gap: 0.5rem; }
   .workflow-progress__nav { display: grid; }
   .workflow-progress__track { width: max-content; }
   .workflow-progress__step { width: calc((100vw - 9rem) / 5); min-width: 112px; flex: 0 0 calc((100vw - 9rem) / 5); }
-  .workflow-progress__compact-status { display: flex; padding: 0 2.5rem; }
+  .workflow-progress__compact-status { display: grid; padding: 0; }
 }
 
 @media (max-width: 767px) {
   .workflow-progress__responsive-row { grid-template-columns: 2rem minmax(0, 1fr) 2rem; gap: 0.35rem; }
   .workflow-progress__step { width: calc((100vw - 7.5rem) / 3); min-width: 86px; flex-basis: calc((100vw - 7.5rem) / 3); }
   .workflow-progress__label { max-width: 82px; font-size: 0.66rem; }
-  .workflow-progress__compact-status { padding: 0 2.35rem; }
+  .workflow-progress__compact-status { padding: 0; }
 }
 
 
@@ -1382,3 +1383,13 @@ h1 {
 .venn-demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
 .venn-demo-card { min-width: 0; padding: var(--space-4); border: 1px solid var(--color-border); background: var(--color-surface); }
 @media (max-width: 900px) { .venn-demo-grid { grid-template-columns: 1fr; } }
+
+/* Select owns its floating-label geometry so page-level select sizing cannot collapse it. */
+.field__control--select .field__select {
+  min-height: 48px;
+  padding: 1.2rem 2.75rem 0.45rem 0.8rem;
+}
+.field__control--select.field__control--has-value .field__select {
+  padding-top: 1.2rem;
+  padding-bottom: 0.45rem;
+}

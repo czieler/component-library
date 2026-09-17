@@ -75,7 +75,7 @@ export function Select({
           value={value}
           defaultValue={defaultValue}
           onChange={handleChange}
-          className={className}
+          className={`field__select ${className}`.trim()}
           aria-invalid={error ? true : ariaInvalid}
           aria-describedby={describedBy}
         >

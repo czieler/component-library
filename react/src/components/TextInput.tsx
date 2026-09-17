@@ -1,4 +1,5 @@
-import { useId, type InputHTMLAttributes, type ReactNode } from "react";
+import { useId, useState, type InputHTMLAttributes, type ReactNode } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 type TextInputProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
@@ -8,6 +9,7 @@ type TextInputProps = InputHTMLAttributes<HTMLInputElement> & {
   onClear?: () => void;
   clearIcon?: ReactNode;
   requiredIndicatorPosition?: "bottom" | "left";
+  passwordToggle?: boolean;
 };
 
 export function TextInput({
@@ -17,7 +19,8 @@ export function TextInput({
   clearable = false,
   onClear,
   clearIcon = "×",
-  requiredIndicatorPosition = "bottom",
+  requiredIndicatorPosition = "left",
+  passwordToggle = false,
   id: providedId,
   className = "",
   "aria-describedby": ariaDescribedby,
@@ -27,6 +30,9 @@ export function TextInput({
   const id = useId();
   const inputId = providedId ?? id;
   const messageId = `${id}-message`;
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const isPassword = inputProps.type === "password";
+  const effectiveType = isPassword && passwordToggle && passwordVisible ? "text" : inputProps.type;
 
   const describedBy =
     [ariaDescribedby, error || helperText ? messageId : ""]
@@ -46,6 +52,7 @@ export function TextInput({
       <div className="field__control">
         <input
           {...inputProps}
+          type={effectiveType}
           id={inputId}
           className={className}
           placeholder=" "
@@ -54,6 +61,18 @@ export function TextInput({
         />
 
         <label htmlFor={inputId}>{label}</label>
+
+        {isPassword && passwordToggle && !inputProps.disabled && (
+          <button
+            className="field__password-toggle"
+            type="button"
+            onClick={() => setPasswordVisible((value) => !value)}
+            aria-label={passwordVisible ? `Hide ${label}` : `Show ${label}`}
+            aria-pressed={passwordVisible}
+          >
+            {passwordVisible ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+          </button>
+        )}
 
         {clearable && inputProps.value && !inputProps.disabled && (
           <button

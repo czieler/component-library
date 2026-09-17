@@ -1,6 +1,6 @@
-export function createBusyIndicator({ message = "Working…", className = "", attributes = {} } = {}) {
-  const root = document.createElement("div");
-  root.className = ["busy-indicator", className].filter(Boolean).join(" ");
+export function createBusyIndicator({ message = "Working…", className = "", attributes = {}, inline = false } = {}) {
+  const root = document.createElement(inline ? "span" : "div");
+  root.className = ["busy-indicator", inline ? "busy-indicator--inline" : "", className].filter(Boolean).join(" ");
   root.setAttribute("role", "status");
   root.setAttribute("aria-live", "polite");
 

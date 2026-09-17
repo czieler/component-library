@@ -33,6 +33,7 @@ type DataTableProps<T> = {
   defaultExpandedIds?: string[];
   emptyMessage?: ReactNode;
   caption?: string;
+  onRowClick?: (row: T) => void;
   sortState?: { columnId: string; direction: "asc" | "desc" } | null;
   onSortChange?: (sortState: { columnId: string; direction: "asc" | "desc" }) => void;
   sortMode?: "client" | "external";
@@ -57,6 +58,7 @@ export function DataTable<T>({
   defaultExpandedIds = [],
   emptyMessage = "No rows to display.",
   caption,
+  onRowClick,
   sortState: controlledSortState,
   onSortChange,
   sortMode = "client",
@@ -148,7 +150,7 @@ export function DataTable<T>({
                     {columns.map((column) => {
                       const activeSort = sortState?.columnId === column.id ? sortState.direction : null;
                       return (
-                        <th key={column.id} scope="col" style={{ width: column.width }} className={`data-table__cell--${column.align ?? "left"}`} aria-sort={column.sortable ? (activeSort === "asc" ? "ascending" : activeSort === "desc" ? "descending" : "none") : undefined}>
+                        <th key={column.id} scope="col" style={{ width: column.width }} data-column={column.id} className={`data-table__cell--${column.align ?? "left"}`} aria-sort={column.sortable ? (activeSort === "asc" ? "ascending" : activeSort === "desc" ? "descending" : "none") : undefined}>
                           {column.sortable ? (
                             <button type="button" className="data-table__sort-button" onClick={() => toggleSort(column.id)}>
                               <span>{column.label}</span>
@@ -174,7 +176,12 @@ export function DataTable<T>({
                   const isExpanded = expandedIds.has(rowId);
                   return (
                     <Fragment key={rowId}>
-                      <tr className={`data-table__row ${isExpanded ? "data-table__row--expanded" : ""}`}>
+                      <tr
+                        className={`data-table__row ${isExpanded ? "data-table__row--expanded" : ""} ${onRowClick ? "data-table__row--clickable" : ""}`}
+                        onClick={onRowClick ? () => onRowClick(row) : undefined}
+                        onKeyDown={onRowClick ? (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onRowClick(row); } } : undefined}
+                        tabIndex={onRowClick ? 0 : undefined}
+                      >
                         {rowsExpandable && (
                           <td className="data-table__expand-cell">
                             <button type="button" className="data-table__expand-button" onClick={() => toggleRow(rowId)} aria-expanded={isExpanded} aria-label={isExpanded ? `Collapse row ${rowId}` : `Expand row ${rowId}`}>
@@ -182,7 +189,7 @@ export function DataTable<T>({
                             </button>
                           </td>
                         )}
-                        {columns.map((column) => <td key={column.id} className={`data-table__cell--${column.align ?? "left"}`}>{column.render(row)}</td>)}
+                        {columns.map((column) => <td key={column.id} data-column={column.id} className={`data-table__cell--${column.align ?? "left"}`}>{column.render(row)}</td>)}
                       </tr>
                       {rowsExpandable && isExpanded && (
                         <tr className="data-table__expanded-row"><td colSpan={totalColumns}><div className="data-table__expanded-content">{renderExpandedRow?.(row)}</div></td></tr>
@@ -202,7 +209,7 @@ export function DataTable<T>({
               const rowId = getRowId(row);
               const isExpanded = expandedIds.has(rowId);
               return (
-                <article className="data-table__mobile-card" role="listitem" key={`mobile-${rowId}`}>
+                <article className={`data-table__mobile-card ${onRowClick ? "data-table__mobile-card--clickable" : ""}`} role="listitem" key={`mobile-${rowId}`} onClick={onRowClick ? () => onRowClick(row) : undefined}>
                   {columns.map((column) => (
                     <div className="data-table__mobile-field" key={column.id}>
                       <span className="data-table__mobile-label">{column.label}</span>

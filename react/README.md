@@ -87,3 +87,9 @@ import { VennDiagram } from "./src/components/VennDiagram";
 ```
 
 For three items, pass a third item and optionally provide pair-specific counts with sorted ID keys such as `"slack|teams"`. `items` is intentionally limited to 2–3 entries because larger comparisons are not legible as a Venn diagram. The gallery's **Venn Diagram** menu entry shows both supported forms.
+
+
+### Inline/button busy state
+Use the inline busy variant inside a disabled button so the spinner and status text replace the normal button content without causing layout shift. React: `<BusyIndicator inline message="Importing…" />`. Vanilla: `createBusyIndicator({ message: "Importing…", inline: true })`.
+
+On tablet/mobile, `WorkflowProgress` keeps its compact progress bar at the full component width and centers the `Step X of Y` status below it.

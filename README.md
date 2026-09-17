@@ -175,3 +175,9 @@ This is an evolving portfolio project. New components are added when a pattern h
 ### Venn Diagram
 
 Both React and Vanilla galleries include a reusable responsive `VennDiagram` / `createVennDiagram` component for focused 2–3 item comparisons, including outside labels with leader lines. See each implementation README for usage.
+
+
+### Inline/button busy state
+Use the inline busy variant inside a disabled button so the spinner and status text replace the normal button content without causing layout shift. React: `<BusyIndicator inline message="Importing…" />`. Vanilla: `createBusyIndicator({ message: "Importing…", inline: true })`.
+
+On tablet/mobile, `WorkflowProgress` keeps its compact progress bar at the full component width and centers the `Step X of Y` status below it.

@@ -28,6 +28,7 @@ export function createSelect({
   control.className = "field__control field__control--select";
 
   const select = document.createElement("select");
+  select.classList.add("field__select");
   const id = attributes.id ?? `select-${crypto.randomUUID()}`;
   const messageId = `${id}-message`;
   const existingDescribedBy = attributes["aria-describedby"];
@@ -60,6 +61,11 @@ export function createSelect({
 
   select.value = value;
 
+  const syncFloatingLabel = () => {
+    control.classList.toggle("field__control--has-value", select.value !== "");
+  };
+  syncFloatingLabel();
+
   const labelElement = document.createElement("label");
   labelElement.htmlFor = id;
   labelElement.append(document.createTextNode(label));
@@ -69,7 +75,10 @@ export function createSelect({
   icon.setAttribute("aria-hidden", "true");
   icon.innerHTML = icons.chevronDown;
 
-  select.addEventListener("change", () => onChange?.(select.value));
+  select.addEventListener("change", () => {
+    syncFloatingLabel();
+    onChange?.(select.value);
+  });
 
   control.append(select, labelElement, icon);
   wrapper.append(control);
