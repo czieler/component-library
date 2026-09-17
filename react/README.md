@@ -69,3 +69,21 @@ import { BusyIndicator } from "./src/components/BusyIndicator";
 ```
 
 The demo gallery includes visible loading, saving, and importing examples.
+
+## VennDiagram
+
+`VennDiagram` renders a responsive two- or three-item SVG comparison. Labels are deliberately outside the circles and connected with leader lines so long tool names do not sit half inside a region. The consuming application calculates the intersections; the component owns drawing and responsive presentation.
+
+```tsx
+import { VennDiagram } from "./src/components/VennDiagram";
+
+<VennDiagram
+  items={[
+    { id: "teams", label: "Microsoft Teams" },
+    { id: "slack", label: "Slack" },
+  ]}
+  sharedAllCount={4}
+/>;
+```
+
+For three items, pass a third item and optionally provide pair-specific counts with sorted ID keys such as `"slack|teams"`. `items` is intentionally limited to 2–3 entries because larger comparisons are not legible as a Venn diagram. The gallery's **Venn Diagram** menu entry shows both supported forms.

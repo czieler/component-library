@@ -170,3 +170,8 @@ These components were extracted and generalized from patterns originally develop
 ## Status
 
 This is an evolving portfolio project. New components are added when a pattern has demonstrated real reuse value rather than simply to increase the component count.
+
+
+### Venn Diagram
+
+Both React and Vanilla galleries include a reusable responsive `VennDiagram` / `createVennDiagram` component for focused 2–3 item comparisons, including outside labels with leader lines. See each implementation README for usage.

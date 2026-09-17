@@ -21,6 +21,7 @@ import { Textarea } from "./components/Textarea";
 import { TextInput } from "./components/TextInput";
 import { WorkflowProgress } from "./components/WorkflowProgress";
 import { BusyIndicator } from "./components/BusyIndicator";
+import { VennDiagram } from "./components/VennDiagram";
 import "./styles/globals.scss";
 
 const navItems: NavItem[] = [
@@ -59,6 +60,11 @@ const navItems: NavItem[] = [
         label: "Busy Indicator",
         icon: <LoaderCircle size={16} />,
       },
+      {
+        id: "venn",
+        label: "Venn Diagram",
+        icon: <Milestone size={16} />,
+      },
     ],
   },
 ];
@@ -75,6 +81,41 @@ function ImplementationDetails({ children }: { children: ReactNode }) {
       <strong>Implementation details</strong>
       <div>{children}</div>
     </div>
+  );
+}
+
+function VennDiagramDemo() {
+  return (
+    <>
+      <div className="section-heading">
+        <p className="eyebrow">Data visualization</p>
+        <h2>Venn diagrams for focused 2–3 item comparisons.</h2>
+        <p className="lede">Labels stay outside the circles with leader lines so names remain readable at responsive sizes.</p>
+      </div>
+      <div className="component-showcase">
+        <section className="demo-section">
+          <h3>Two-item comparison</h3>
+          <p className="component-description">Use for a direct comparison between two tools, products, or sets.</p>
+          <div className="venn-demo-card">
+            <VennDiagram items={[{ id: "teams", label: "Microsoft Teams" }, { id: "slack", label: "Slack" }]} sharedAllCount={4} />
+          </div>
+        </section>
+        <section className="demo-section">
+          <h3>Three-item comparison</h3>
+          <p className="component-description">Use for a focused three-way comparison. Pair counts are optional; the center count represents items shared by all three.</p>
+          <div className="venn-demo-card">
+            <VennDiagram
+              items={[{ id: "teams", label: "Microsoft Teams" }, { id: "slack", label: "Slack" }, { id: "miro", label: "Miro" }]}
+              sharedAllCount={1}
+              pairCounts={{ "slack|teams": 4, "miro|teams": 2, "miro|slack": 2 }}
+            />
+          </div>
+          <ImplementationDetails>
+            <p><code>items</code> accepts exactly two or three entries. Each item can override its fill/stroke. <code>sharedAllCount</code> and <code>pairCounts</code> are optional display values; the consuming application owns the set/capability calculation.</p>
+          </ImplementationDetails>
+        </section>
+      </div>
+    </>
   );
 }
 
@@ -938,6 +979,8 @@ export function App() {
           <WorkflowDemo />
         ) : activeId === "busy" ? (
           <BusyIndicatorDemo />
+        ) : activeId === "venn" ? (
+          <VennDiagramDemo />
         ) : (
           <Overview />
         )}

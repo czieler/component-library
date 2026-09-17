@@ -71,3 +71,21 @@ busy.setMessage("Importing tools…");
 ```
 
 The demo gallery includes visible loading, saving, and importing examples.
+
+## VennDiagram
+
+`createVennDiagram` renders a responsive two- or three-item SVG comparison. Labels sit outside the circles and use leader lines so names remain readable. The consuming application calculates intersections; the component owns drawing and responsive presentation.
+
+```js
+import { createVennDiagram } from "./src/components/venn-diagram.js";
+
+document.querySelector("#app").append(createVennDiagram({
+  items: [
+    { id: "teams", label: "Microsoft Teams" },
+    { id: "slack", label: "Slack" },
+  ],
+  sharedAllCount: 4,
+}));
+```
+
+For three items, pass a third item and optionally provide pair-specific counts with sorted ID keys such as `"slack|teams"`. The factory intentionally accepts exactly 2–3 items. The gallery's **Venn Diagram** menu entry shows both supported forms.

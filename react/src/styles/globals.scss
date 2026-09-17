@@ -1371,3 +1371,14 @@ h1 {
   cursor: default;
   opacity: 0.55;
 }
+
+/* Reusable 2–3 item Venn diagram. Labels stay outside circles with leader lines. */
+.venn-diagram { width: 100%; max-width: 46rem; margin: 0; }
+.venn-diagram__svg { display: block; width: 100%; height: auto; overflow: visible; }
+.venn-diagram__label { fill: var(--color-text); font: 700 15px/1.2 system-ui, sans-serif; }
+.venn-diagram__shared-count { fill: var(--color-text); font: 700 25px/1 system-ui, sans-serif; }
+.venn-diagram__shared-label { fill: var(--color-muted-text); font: 12px/1.2 system-ui, sans-serif; }
+.venn-diagram__pair-count { fill: var(--color-text); font: 700 14px/1 system-ui, sans-serif; }
+.venn-demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+.venn-demo-card { min-width: 0; padding: var(--space-4); border: 1px solid var(--color-border); background: var(--color-surface); }
+@media (max-width: 900px) { .venn-demo-grid { grid-template-columns: 1fr; } }
