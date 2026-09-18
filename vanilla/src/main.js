@@ -656,9 +656,9 @@ const workflowDemo = () => {
   section.className = "demo-section";
   const steps = ["Tool Inventory", "Add Tools", "Discovery Map", "Capability Overlap", "Findings", "Executive Overview"];
   section.append(
-    createWorkflowProgress({ steps, currentStep: 3, primaryColor: "#555b62", highlightColor: "#a61f1f" }),
+    createWorkflowProgress({ steps, currentStep: 3, primaryColor: "#555b62", highlightColor: "#a61f1f", markerSize: 32 }),
     implementationDetails(
-      [{ code: 'createWorkflowProgress({ steps, currentStep: 3, primaryColor: "#555b62", highlightColor: "#a61f1f" })' }],
+      [{ code: 'createWorkflowProgress({ steps, currentStep: 3, primaryColor: "#555b62", highlightColor: "#a61f1f", markerSize: 32 })' }],
       ["The component is display-only and application-independent. It clamps out-of-range current-step values, exposes the active step with aria-current=step, and scrolls horizontally when space is limited."],
     ),
   );

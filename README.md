@@ -64,7 +64,7 @@ busy.setMessage("Saved");
 
 ### WorkflowProgress
 
-`WorkflowProgress` accepts a consumer-defined `primaryColor`, `highlightColor`, array of `steps`, and 1-based `currentStep`. Completed steps use the primary color, the current step uses the highlight color, and directional connectors make progression explicit.
+`WorkflowProgress` accepts a consumer-defined `primaryColor`, `highlightColor`, array of `steps`, 1-based `currentStep`, and optional `markerSize` (pixel diameter). Completed steps use the primary color, the current step uses the highlight color, and directional connectors make progression explicit.
 
 Desktop displays the full workflow. Tablet uses a focused five-step viewport. Mobile uses a focused three-step viewport. Both smaller layouts include previous/next controls plus compact “Step X of Y” context.
 
@@ -76,6 +76,7 @@ Desktop displays the full workflow. Tablet uses a focused five-step viewport. Mo
   currentStep={2}
   primaryColor="#555b62"
   highlightColor="#a61f1f"
+  markerSize={32}
 />
 ```
 
@@ -87,6 +88,7 @@ createWorkflowProgress({
   currentStep: 2,
   primaryColor: "#555b62",
   highlightColor: "#a61f1f",
+  markerSize: 32,
 });
 ```
 
@@ -181,3 +183,7 @@ Both React and Vanilla galleries include a reusable responsive `VennDiagram` / `
 Use the inline busy variant inside a disabled button so the spinner and status text replace the normal button content without causing layout shift. React: `<BusyIndicator inline message="Importing…" />`. Vanilla: `createBusyIndicator({ message: "Importing…", inline: true })`.
 
 On tablet/mobile, `WorkflowProgress` keeps its compact progress bar at the full component width and centers the `Step X of Y` status below it.
+
+### Specialized form controls
+- `UrlInput` / `createUrlInput`: shared HTTP(S) URL input with consistent format validation and inline errors.
+- `USStateSelect` / `createUSStateSelect`: shared state dropdown (50 states + District of Columbia) built on the standard Select.

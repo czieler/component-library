@@ -7,6 +7,8 @@ export type WorkflowProgressProps = {
   highlightColor: string;
   ariaLabel?: string;
   className?: string;
+  /** Optional marker diameter in pixels. Defaults to the component/theme CSS size. */
+  markerSize?: number;
 };
 
 export function WorkflowProgress({
@@ -16,6 +18,7 @@ export function WorkflowProgress({
   highlightColor,
   ariaLabel = "Workflow progress",
   className = "",
+  markerSize,
 }: WorkflowProgressProps) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const stepRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -24,10 +27,12 @@ export function WorkflowProgress({
 
   const safeCurrentStep = Math.min(Math.max(currentStep, 1), Math.max(steps.length, 1));
   const progressPercent = steps.length <= 1 ? 100 : ((safeCurrentStep - 1) / (steps.length - 1)) * 100;
+  const hasCustomMarkerSize = typeof markerSize === "number" && Number.isFinite(markerSize) && markerSize > 0;
   const style = {
     "--workflow-primary": primaryColor,
     "--workflow-highlight": highlightColor,
     "--workflow-progress-percent": `${progressPercent}%`,
+    ...(hasCustomMarkerSize ? { "--workflow-marker-size": `${markerSize}px` } : {}),
   } as CSSProperties;
 
   const updateScrollState = () => {

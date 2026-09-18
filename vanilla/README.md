@@ -48,12 +48,13 @@ const progress = createWorkflowProgress({
   currentStep: 2,
   primaryColor: "#555b62",
   highlightColor: "#a61f1f",
+  markerSize: 32,
 });
 
 document.querySelector("#app").append(progress);
 ```
 
-`currentStep` is 1-based. Completed markers/connectors use `primaryColor`; the active marker/label uses `highlightColor`. `ariaLabel` and `className` are optional.
+`currentStep` is 1-based. Completed markers/connectors use `primaryColor`; the active marker/label uses `highlightColor`. `markerSize` optionally sets the marker-circle diameter in pixels; omitting it preserves the default size. `ariaLabel` and `className` are optional.
 
 Desktop shows the complete flow. Tablet shows a focused five-step window. Mobile shows a focused three-step window with previous/next controls and “Step X of Y” context.
 
@@ -95,3 +96,6 @@ For three items, pass a third item and optionally provide pair-specific counts w
 Use the inline busy variant inside a disabled button so the spinner and status text replace the normal button content without causing layout shift. React: `<BusyIndicator inline message="Importing…" />`. Vanilla: `createBusyIndicator({ message: "Importing…", inline: true })`.
 
 On tablet/mobile, `WorkflowProgress` keeps its compact progress bar at the full component width and centers the `Step X of Y` status below it.
+
+### URL and state controls
+`createUrlInput` provides shared HTTP(S) URL validation. `createUSStateSelect` provides the shared 50-state + District of Columbia dropdown.

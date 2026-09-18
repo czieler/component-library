@@ -1189,9 +1189,9 @@ h1 {
   overflow-x: auto;
   padding: 0 0 6px;
 }
-.workflow-progress__step { display: grid; grid-template-rows: 28px auto; min-width: 110px; flex: 1 0 110px; color: var(--text-muted, #667085); }
+.workflow-progress__step { display: grid; grid-template-rows: max(28px, calc(var(--workflow-marker-size, 24px) + 4px)) auto; min-width: 110px; flex: 1 0 110px; color: var(--text-muted, #667085); }
 .workflow-progress__marker-row { display: flex; align-items: center; width: 100%; }
-.workflow-progress__marker { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; flex: 0 0 24px; padding: 0; border-radius: 50%; background: #d7dbe0; color: #fff; font-size: 11px; line-height: 1; font-weight: 700; text-align: center; }
+.workflow-progress__marker { display: flex; align-items: center; justify-content: center; width: var(--workflow-marker-size, 24px); height: var(--workflow-marker-size, 24px); flex: 0 0 var(--workflow-marker-size, 24px); padding: 0; border-radius: 50%; background: #d7dbe0; color: #fff; font-size: clamp(11px, calc(var(--workflow-marker-size, 24px) * 0.42), 16px); line-height: 1; font-weight: 700; text-align: center; }
 .workflow-progress__connector { position: relative; height: 2px; min-width: 18px; flex: 1; margin: 0 7px; background: #e2e5e8; }
 .workflow-progress__connector::after { content: ""; position: absolute; top: 50%; right: -1px; width: 0; height: 0; transform: translateY(-50%); border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 6px solid #e2e5e8; }
 .workflow-progress__label { max-width: 100px; padding-top: 2px; font-size: .72rem; line-height: 1.2; white-space: normal; }
@@ -1383,6 +1383,16 @@ h1 {
 .venn-demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
 .venn-demo-card { min-width: 0; padding: var(--space-4); border: 1px solid var(--color-border); background: var(--color-surface); }
 @media (max-width: 900px) { .venn-demo-grid { grid-template-columns: 1fr; } }
+
+/* Empty selects use the placeholder as the visible label. Avoid rendering the floating label on top of it. */
+.field__control--select:not(.field__control--has-value) label {
+  opacity: 0;
+  visibility: hidden;
+}
+.field__control--select:not(.field__control--has-value) .field__select {
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+}
 
 /* Select owns its floating-label geometry so page-level select sizing cannot collapse it. */
 .field__control--select .field__select {

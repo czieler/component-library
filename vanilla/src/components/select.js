@@ -48,7 +48,7 @@ export function createSelect({
   const placeholder = document.createElement("option");
   placeholder.value = "";
   placeholder.disabled = true;
-  placeholder.textContent = "Select one";
+  placeholder.textContent = label;
   select.append(placeholder);
 
   options.forEach((option) => {

@@ -5,12 +5,16 @@ export function createWorkflowProgress({
   highlightColor,
   ariaLabel = "Workflow progress",
   className = "",
+  markerSize,
 }) {
   const root = document.createElement("nav");
   root.className = `workflow-progress ${className}`.trim();
   root.setAttribute("aria-label", ariaLabel);
   root.style.setProperty("--workflow-primary", primaryColor);
   root.style.setProperty("--workflow-highlight", highlightColor);
+  if (Number.isFinite(markerSize) && markerSize > 0) {
+    root.style.setProperty("--workflow-marker-size", `${markerSize}px`);
+  }
 
   const safeCurrentStep = Math.min(Math.max(Number(currentStep) || 1, 1), Math.max(steps.length, 1));
   const progressPercent = steps.length <= 1 ? 100 : ((safeCurrentStep - 1) / (steps.length - 1)) * 100;
