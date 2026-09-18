@@ -1403,3 +1403,7 @@ h1 {
   padding-top: 1.2rem;
   padding-bottom: 0.45rem;
 }
+
+.field__password-toggle { position:absolute; right:12px; top:50%; transform:translateY(-50%); display:grid; place-items:center; width:32px; height:32px; padding:0; border:0; background:transparent; color:var(--muted,#6b7280); cursor:pointer; }
+.field__password-toggle:hover { color:var(--text,#111827); }
+.field__control:has(.field__password-toggle) input { padding-right:48px; }

@@ -17,6 +17,8 @@ The goal is not to replace full-scale component libraries or data-grid framework
 | Component | React + TypeScript | Vanilla JavaScript | Responsive behavior |
 | --- | :---: | :---: | --- |
 | TextInput | ✓ | ✓ | Form-safe at narrow widths |
+| PasswordInput | ✓ | ✓ | Show/hide password control |
+| PhoneInput | ✓ | ✓ | U.S. 10-digit formatting + validation |
 | Select | ✓ | ✓ | Native select behavior |
 | Textarea | ✓ | ✓ | Fluid width |
 | DataTable | ✓ | ✓ | Converts to labeled cards on mobile |
@@ -185,5 +187,7 @@ Use the inline busy variant inside a disabled button so the spinner and status t
 On tablet/mobile, `WorkflowProgress` keeps its compact progress bar at the full component width and centers the `Step X of Y` status below it.
 
 ### Specialized form controls
+- `PasswordInput` / `createPasswordInput`: password field built on the standard text input with a consistent accessible show/hide control.
+- `PhoneInput` / `createPhoneInput`: U.S. phone field that accepts up to 10 digits, displays `(###) ###-####`, and reports an inline validation error after blur when a non-empty value is incomplete. Required instances also report an error when left blank. This component currently targets U.S. 10-digit phone numbers; international formats are intentionally out of scope.
 - `UrlInput` / `createUrlInput`: shared HTTP(S) URL input with consistent format validation and inline errors.
 - `USStateSelect` / `createUSStateSelect`: shared state dropdown (50 states + District of Columbia) built on the standard Select.

@@ -97,3 +97,31 @@ On tablet/mobile, `WorkflowProgress` keeps its compact progress bar at the full 
 
 ### UrlInput and USStateSelect
 Use `UrlInput` for website/logo/support URLs that must be valid HTTP(S) URLs. Use `USStateSelect` for U.S. state fields so applications do not duplicate state option lists.
+
+
+## PasswordInput and PhoneInput
+
+`PasswordInput` wraps the standard `TextInput` and owns the accessible show/hide-password control. It accepts the normal `TextInput` props except `type` and the internal password-toggle option.
+
+```tsx
+<PasswordInput
+  label="Password"
+  value={password}
+  onChange={(event) => setPassword(event.target.value)}
+  autoComplete="new-password"
+  required
+/>
+```
+
+`PhoneInput` is a controlled U.S. phone-number field. Pass the displayed/stored `value` and an `onChange(value)` callback. It strips non-digits, limits entry to 10 digits, formats the value as `(###) ###-####`, and validates on blur. A blank optional phone is valid; an incomplete non-empty value is not. `invalidMessage` can override the default validation copy.
+
+```tsx
+<PhoneInput
+  label="Phone"
+  value={phone}
+  onChange={setPhone}
+  required
+/>
+```
+
+**Scope:** `PhoneInput` currently supports U.S. 10-digit phone numbers only. It is not an international phone-number parser or country-code selector.

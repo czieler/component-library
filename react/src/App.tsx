@@ -19,6 +19,8 @@ import { MobileNavigation } from "./components/MobileNavigation";
 import { Select } from "./components/Select";
 import { Textarea } from "./components/Textarea";
 import { TextInput } from "./components/TextInput";
+import { PasswordInput } from "./components/PasswordInput";
+import { PhoneInput } from "./components/PhoneInput";
 import { WorkflowProgress } from "./components/WorkflowProgress";
 import { BusyIndicator } from "./components/BusyIndicator";
 import { VennDiagram } from "./components/VennDiagram";
@@ -40,6 +42,8 @@ const navItems: NavItem[] = [
         label: "Inputs",
         icon: <FormInput size={16} />,
       },
+      { id: "password-input", label: "Password Input", icon: <FormInput size={16} /> },
+      { id: "phone-input", label: "Phone Input", icon: <FormInput size={16} /> },
       {
         id: "tables",
         label: "Data Table",
@@ -115,6 +119,39 @@ function VennDiagramDemo() {
           </ImplementationDetails>
         </section>
       </div>
+    </>
+  );
+}
+
+
+function PasswordInputDemo() {
+  const [password, setPassword] = useState("");
+  return (
+    <>
+      <div className="section-heading"><p className="eyebrow">Form controls</p><h2>Password Input</h2><p className="lede">A shared password field with a consistent show/hide control.</p></div>
+      <div className="component-showcase"><section className="demo-section">
+        <h3>Interactive example</h3><p className="component-description">Type a password and use the eye icon to show or hide it.</p>
+        <div className="state-grid"><PasswordInput label="Password" value={password} onChange={(e) => setPassword(e.target.value)} required /></div>
+        <ImplementationDetails><p>Built on <code>TextInput</code> so required, error, helper text, accessibility, and styling remain consistent.</p></ImplementationDetails>
+      </section></div>
+    </>
+  );
+}
+
+function PhoneInputDemo() {
+  const [phone, setPhone] = useState("");
+  const [optionalPhone, setOptionalPhone] = useState("");
+  return (
+    <>
+      <div className="section-heading"><p className="eyebrow">Form controls</p><h2>Phone Input</h2><p className="lede">A U.S. phone field that accepts digits, formats the value, and validates on blur.</p></div>
+      <div className="component-showcase"><section className="demo-section">
+        <h3>Formatting and validation</h3><p className="component-description">Try leaving an incomplete number to see the validation message.</p>
+        <div className="state-grid">
+          <PhoneInput label="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+          <PhoneInput label="Backup phone" value={optionalPhone} onChange={(e) => setOptionalPhone(e.target.value)} />
+        </div>
+        <ImplementationDetails><p>Blank optional values are valid. Entered values must contain 10 digits and display as <code>(317) 555-1234</code>.</p></ImplementationDetails>
+      </section></div>
     </>
   );
 }
@@ -972,6 +1009,10 @@ export function App() {
 
         {activeId === "inputs" ? (
           <InputsDemo />
+        ) : activeId === "password-input" ? (
+          <PasswordInputDemo />
+        ) : activeId === "phone-input" ? (
+          <PhoneInputDemo />
         ) : activeId === "tables" ? (
           <TablesDemo />
         ) : activeId === "navigation" ? (

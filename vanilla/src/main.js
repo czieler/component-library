@@ -5,6 +5,8 @@ import { createDataTable } from "./components/data-table.js";
 import { createSelect } from "./components/select.js";
 import { createTextarea } from "./components/textarea.js";
 import { createTextInput } from "./components/text-input.js";
+import { createPasswordInput } from "./components/password-input.js";
+import { createPhoneInput } from "./components/phone-input.js";
 import { createWorkflowProgress } from "./components/workflow-progress.js";
 import { createBusyIndicator } from "./components/busy-indicator.js";
 import { createVennDiagram } from "./components/venn-diagram.js";
@@ -18,6 +20,8 @@ const items = [
     icon: icons.inputs,
     children: [
       { id: "inputs", label: "Inputs", icon: icons.inputs },
+      { id: "password-input", label: "Password Input", icon: icons.inputs },
+      { id: "phone-input", label: "Phone Input", icon: icons.inputs },
       { id: "tables", label: "Data Table", icon: icons.table },
       { id: "navigation", label: "Navigation", icon: icons.navigation },
       { id: "workflow", label: "Workflow Progress", icon: icons.workflow },
@@ -97,6 +101,33 @@ const vennDiagramDemo = () => {
     {code:"items"}, " accepts exactly two or three entries. Each item can override its fill/stroke. ", {code:"sharedAllCount"}, " and ", {code:"pairCounts"}, " are optional display values; the consuming application owns the set/capability calculation."
   ]));
   showcase.append(three); fragment.append(showcase); return fragment;
+};
+
+
+const passwordInputDemo = () => {
+  const fragment = document.createDocumentFragment();
+  const heading = document.createElement("div"); heading.className = "section-heading";
+  heading.append(text("p", "Form controls", "eyebrow"), text("h2", "Password Input"), text("p", "A shared password field with a consistent show/hide control.", "lede"));
+  const showcase = document.createElement("div"); showcase.className = "component-showcase";
+  const section = document.createElement("section"); section.className = "demo-section";
+  section.append(text("h3", "Interactive example"), text("p", "Type a password and use the eye icon to show or hide it.", "component-description"));
+  const grid = document.createElement("div"); grid.className = "state-grid";
+  grid.append(createPasswordInput({ label: "Password", required: true, attributes: { name: "demo-password" } }));
+  section.append(grid, implementationDetails(["Built on the shared text input so required, error, helper text, accessibility, and styling remain consistent."]));
+  showcase.append(section); fragment.append(heading, showcase); return fragment;
+};
+
+const phoneInputDemo = () => {
+  const fragment = document.createDocumentFragment();
+  const heading = document.createElement("div"); heading.className = "section-heading";
+  heading.append(text("p", "Form controls", "eyebrow"), text("h2", "Phone Input"), text("p", "A U.S. phone field that accepts digits, formats the value, and validates on blur.", "lede"));
+  const showcase = document.createElement("div"); showcase.className = "component-showcase";
+  const section = document.createElement("section"); section.className = "demo-section";
+  section.append(text("h3", "Formatting and validation"), text("p", "Try leaving an incomplete number to see the validation message.", "component-description"));
+  const grid = document.createElement("div"); grid.className = "state-grid";
+  grid.append(createPhoneInput({ label: "Phone", required: true }), createPhoneInput({ label: "Backup phone" }));
+  section.append(grid, implementationDetails(["Blank optional values are valid. Entered values must contain 10 digits and display as (317) 555-1234."]));
+  showcase.append(section); fragment.append(heading, showcase); return fragment;
 };
 
 const inputsDemo = () => {
@@ -803,7 +834,11 @@ const render = () => {
     topbar,
     active === "inputs"
       ? inputsDemo()
-      : active === "tables"
+      : active === "password-input"
+        ? passwordInputDemo()
+        : active === "phone-input"
+          ? phoneInputDemo()
+          : active === "tables"
         ? tablesDemo()
         : active === "navigation"
           ? navigationDemo()
