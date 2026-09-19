@@ -35,7 +35,7 @@ export function createDataTable({
   const rowsExpandable = typeof renderExpandedRow === "function";
   const hasSectionHeader = sectionHeader !== undefined && sectionHeader !== null;
   const showColumnHeaders = headerMode === "columns";
-  const totalColumns = columns.length + (rowsExpandable ? 1 : 0);
+  const totalColumns = columns.length;
 
   const setRootClassName = () => {
     root.className = [
@@ -135,12 +135,6 @@ export function createDataTable({
     if (showColumnHeaders) {
       const thead = document.createElement("thead");
       const tr = document.createElement("tr");
-      if (rowsExpandable) {
-        const th = document.createElement("th");
-        th.className = "data-table__expand-heading";
-        th.setAttribute("aria-label", "Expand row");
-        tr.append(th);
-      }
       columns.forEach((column) => {
         const th = document.createElement("th");
         th.scope = "col";
@@ -192,23 +186,27 @@ export function createDataTable({
         const isExpanded = expandedIds.has(rowId);
         const tr = document.createElement("tr");
         tr.className = `data-table__row ${isExpanded ? "data-table__row--expanded" : ""}`;
-        if (rowsExpandable) {
-          const td = document.createElement("td");
-          td.className = "data-table__expand-cell";
-          const button = document.createElement("button");
-          button.type = "button";
-          button.className = "data-table__expand-button";
-          button.setAttribute("aria-expanded", String(isExpanded));
-          button.setAttribute("aria-label", isExpanded ? `Collapse row ${rowId}` : `Expand row ${rowId}`);
-          button.innerHTML = `<span aria-hidden="true">${isExpanded ? collapseIcon : expandIcon}</span>`;
-          button.addEventListener("click", () => toggleRow(rowId));
-          td.append(button);
-          tr.append(td);
-        }
-        columns.forEach((column) => {
+        columns.forEach((column, columnIndex) => {
           const td = document.createElement("td");
           td.className = `data-table__cell--${column.align ?? "left"}`;
-          appendContent(td, column.render(row));
+          if (rowsExpandable && columnIndex === 0) {
+            const wrapper = document.createElement("div");
+            wrapper.className = "data-table__first-cell-with-expand";
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "data-table__expand-button";
+            button.setAttribute("aria-expanded", String(isExpanded));
+            button.setAttribute("aria-label", isExpanded ? `Collapse row ${rowId}` : `Expand row ${rowId}`);
+            button.innerHTML = `<span aria-hidden="true">${isExpanded ? collapseIcon : expandIcon}</span>`;
+            button.addEventListener("click", (event) => { event.stopPropagation(); toggleRow(rowId); });
+            const content = document.createElement("div");
+            content.className = "data-table__first-cell-content";
+            appendContent(content, column.render(row));
+            wrapper.append(button, content);
+            td.append(wrapper);
+          } else {
+            appendContent(td, column.render(row));
+          }
           tr.append(td);
         });
         tbody.append(tr);

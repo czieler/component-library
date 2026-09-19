@@ -856,6 +856,14 @@ h1 {
   text-align: right;
 }
 
+
+.data-table__first-cell-with-expand {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  min-width: 0;
+}
+.data-table__first-cell-content { min-width: 0; flex: 1; }
 .data-table__row {
   background: var(--color-surface);
   transition: background 0.15s ease;

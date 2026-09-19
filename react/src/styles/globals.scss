@@ -907,6 +907,14 @@ h1 {
   text-align: right !important;
 }
 
+
+.data-table__first-cell-with-expand {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  min-width: 0;
+}
+.data-table__first-cell-content { min-width: 0; flex: 1; }
 .data-table__row {
   background: var(--color-surface);
   transition: background 0.15s ease;
@@ -923,17 +931,18 @@ h1 {
 .data-table__expand-button {
   display: inline-grid;
   place-items: center;
-  width: 2rem;
-  height: 2rem;
+  width: 1.5rem;
+  height: 1.5rem;
   padding: 0;
   border: 0;
-  border-radius: 50%;
+  border-radius: 4px;
   background: transparent;
-  color: var(--color-accent);
+  color: var(--color-text-muted);
 }
 
 .data-table__expand-button:hover {
-  background: rgba(15, 118, 110, 0.1);
+  background: transparent;
+  color: var(--color-accent);
 }
 
 .data-table__expand-button:focus-visible {

@@ -1,4 +1,5 @@
 import { Fragment, useMemo, useState, type CSSProperties, type ReactNode } from "react";
+import { ChevronDown, ChevronRight, ChevronUp } from "lucide-react";
 
 export type DataTableColumn<T> = {
   id: string;
@@ -28,6 +29,7 @@ type DataTableProps<T> = {
 
   footer?: ReactNode;
   renderExpandedRow?: (row: T) => ReactNode;
+  isRowExpandable?: (row: T) => boolean;
   expandIcon?: ReactNode;
   collapseIcon?: ReactNode;
   defaultExpandedIds?: string[];
@@ -48,13 +50,14 @@ export function DataTable<T>({
   sectionHeader,
   collapsible = false,
   defaultCollapsed = false,
-  headerExpandIcon = "⌄",
-  headerCollapseIcon = "⌃",
+  headerExpandIcon = <ChevronDown size={16} strokeWidth={2} />,
+  headerCollapseIcon = <ChevronUp size={16} strokeWidth={2} />,
   cellDividers = "all",
   footer,
   renderExpandedRow,
-  expandIcon = "⌄",
-  collapseIcon = "⌃",
+  isRowExpandable,
+  expandIcon = <ChevronRight size={16} strokeWidth={2} />,
+  collapseIcon = <ChevronDown size={16} strokeWidth={2} />,
   defaultExpandedIds = [],
   emptyMessage = "No rows to display.",
   caption,
@@ -100,7 +103,7 @@ export function DataTable<T>({
   };
 
   const rowsExpandable = Boolean(renderExpandedRow);
-  const totalColumns = columns.length + (rowsExpandable ? 1 : 0);
+  const totalColumns = columns.length;
   const hasSectionHeader = Boolean(sectionHeader);
   const showColumnHeaders = headerMode === "columns";
 
@@ -146,7 +149,6 @@ export function DataTable<T>({
               {showColumnHeaders && (
                 <thead>
                   <tr>
-                    {rowsExpandable && <th className="data-table__expand-heading" aria-label="Expand row" />}
                     {columns.map((column) => {
                       const activeSort = sortState?.columnId === column.id ? sortState.direction : null;
                       return (
@@ -173,7 +175,8 @@ export function DataTable<T>({
                   <tr><td className="data-table__empty" colSpan={totalColumns}>{emptyMessage}</td></tr>
                 ) : displayRows.map((row) => {
                   const rowId = getRowId(row);
-                  const isExpanded = expandedIds.has(rowId);
+                  const rowExpandable = rowsExpandable && (isRowExpandable ? isRowExpandable(row) : true);
+                  const isExpanded = rowExpandable && expandedIds.has(rowId);
                   return (
                     <Fragment key={rowId}>
                       <tr
@@ -182,16 +185,9 @@ export function DataTable<T>({
                         onKeyDown={onRowClick ? (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onRowClick(row); } } : undefined}
                         tabIndex={onRowClick ? 0 : undefined}
                       >
-                        {rowsExpandable && (
-                          <td className="data-table__expand-cell">
-                            <button type="button" className="data-table__expand-button" onClick={() => toggleRow(rowId)} aria-expanded={isExpanded} aria-label={isExpanded ? `Collapse row ${rowId}` : `Expand row ${rowId}`}>
-                              <span aria-hidden="true">{isExpanded ? collapseIcon : expandIcon}</span>
-                            </button>
-                          </td>
-                        )}
-                        {columns.map((column) => <td key={column.id} data-column={column.id} className={`data-table__cell--${column.align ?? "left"}`}>{column.render(row)}</td>)}
+                        {columns.map((column, columnIndex) => <td key={column.id} data-column={column.id} className={`data-table__cell--${column.align ?? "left"}`}>{rowExpandable && columnIndex === 0 ? <div className="data-table__first-cell-with-expand"><button type="button" className="data-table__expand-button" onClick={(event) => { event.stopPropagation(); toggleRow(rowId); }} aria-expanded={isExpanded} aria-label={isExpanded ? `Collapse row ${rowId}` : `Expand row ${rowId}`}><span aria-hidden="true">{isExpanded ? collapseIcon : expandIcon}</span></button><div className="data-table__first-cell-content">{column.render(row)}</div></div> : column.render(row)}</td>)}
                       </tr>
-                      {rowsExpandable && isExpanded && (
+                      {rowExpandable && isExpanded && (
                         <tr className="data-table__expanded-row"><td colSpan={totalColumns}><div className="data-table__expanded-content">{renderExpandedRow?.(row)}</div></td></tr>
                       )}
                     </Fragment>
@@ -207,7 +203,8 @@ export function DataTable<T>({
               <div className="data-table__mobile-empty">{emptyMessage}</div>
             ) : displayRows.map((row) => {
               const rowId = getRowId(row);
-              const isExpanded = expandedIds.has(rowId);
+              const rowExpandable = rowsExpandable && (isRowExpandable ? isRowExpandable(row) : true);
+              const isExpanded = rowExpandable && expandedIds.has(rowId);
               return (
                 <article className={`data-table__mobile-card ${onRowClick ? "data-table__mobile-card--clickable" : ""}`} role="listitem" key={`mobile-${rowId}`} onClick={onRowClick ? () => onRowClick(row) : undefined}>
                   {columns.map((column) => (
@@ -216,7 +213,7 @@ export function DataTable<T>({
                       <div className={`data-table__mobile-value data-table__cell--${column.align ?? "left"}`}>{column.render(row)}</div>
                     </div>
                   ))}
-                  {rowsExpandable && (
+                  {rowExpandable && (
                     <div className="data-table__mobile-expand">
                       <button type="button" className="data-table__expand-button" onClick={() => toggleRow(rowId)} aria-expanded={isExpanded}>
                         <span aria-hidden="true">{isExpanded ? collapseIcon : expandIcon}</span>
@@ -224,7 +221,7 @@ export function DataTable<T>({
                       </button>
                     </div>
                   )}
-                  {rowsExpandable && isExpanded && <div className="data-table__mobile-expanded">{renderExpandedRow?.(row)}</div>}
+                  {rowExpandable && isExpanded && <div className="data-table__mobile-expanded">{renderExpandedRow?.(row)}</div>}
                 </article>
               );
             })}
