@@ -24,6 +24,9 @@ import { PhoneInput } from "./components/PhoneInput";
 import { WorkflowProgress } from "./components/WorkflowProgress";
 import { BusyIndicator } from "./components/BusyIndicator";
 import { VennDiagram } from "./components/VennDiagram";
+import { Button } from "./components/Button";
+import { Alert } from "./components/Alert";
+import { Card } from "./components/Card";
 import "./styles/globals.scss";
 
 const navItems: NavItem[] = [
@@ -42,8 +45,9 @@ const navItems: NavItem[] = [
         label: "Inputs",
         icon: <FormInput size={16} />,
       },
-      { id: "password-input", label: "Password Input", icon: <FormInput size={16} /> },
-      { id: "phone-input", label: "Phone Input", icon: <FormInput size={16} /> },
+      { id: "buttons", label: "Buttons", icon: <FormInput size={16} /> },
+      { id: "alerts", label: "Alerts", icon: <FormInput size={16} /> },
+      { id: "cards", label: "Cards", icon: <FormInput size={16} /> },
       {
         id: "tables",
         label: "Data Table",
@@ -124,40 +128,46 @@ function VennDiagramDemo() {
 }
 
 
-function PasswordInputDemo() {
-  const [password, setPassword] = useState("");
-  return (
-    <>
-      <div className="section-heading"><p className="eyebrow">Form controls</p><h2>Password Input</h2><p className="lede">A shared password field with a consistent show/hide control.</p></div>
-      <div className="component-showcase"><section className="demo-section">
-        <h3>Interactive example</h3><p className="component-description">Type a password and use the eye icon to show or hide it.</p>
-        <div className="state-grid"><PasswordInput label="Password" value={password} onChange={(e) => setPassword(e.target.value)} required /></div>
-        <ImplementationDetails><p>Built on <code>TextInput</code> so required, error, helper text, accessibility, and styling remain consistent.</p></ImplementationDetails>
-      </section></div>
-    </>
-  );
+function ButtonsDemo() {
+  const [loading, setLoading] = useState(false);
+  return <>
+    <div className="section-heading"><p className="eyebrow">Actions</p><h2>Buttons</h2><p className="lede">Consistent action variants, sizes, disabled states, icons, and in-button loading.</p></div>
+    <div className="component-showcase"><section className="demo-section">
+      <h3>Variants and states</h3>
+      <div className="state-grid">
+        <Button>Primary</Button><Button variant="secondary">Secondary</Button><Button variant="outline">Outline</Button><Button variant="ghost">Ghost</Button><Button variant="danger">Danger</Button><Button size="small">Small</Button>
+        <Button loading={loading} loadingLabel="Saving…" onClick={() => { setLoading(true); window.setTimeout(() => setLoading(false), 900); }}>Save changes</Button>
+        <Button loading aria-label="Finishing setup">Finishing setup</Button>
+      </div>
+      <ImplementationDetails><p><code>loading</code> disables the button and renders the shared spinner inside it. Omit <code>loadingLabel</code> for spinner-only progress.</p></ImplementationDetails>
+    </section></div>
+  </>;
 }
 
-function PhoneInputDemo() {
-  const [phone, setPhone] = useState("");
-  const [optionalPhone, setOptionalPhone] = useState("");
-  return (
-    <>
-      <div className="section-heading"><p className="eyebrow">Form controls</p><h2>Phone Input</h2><p className="lede">A U.S. phone field that accepts digits, formats the value, and validates on blur.</p></div>
-      <div className="component-showcase"><section className="demo-section">
-        <h3>Formatting and validation</h3><p className="component-description">Try leaving an incomplete number to see the validation message.</p>
-        <div className="state-grid">
-          <PhoneInput label="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} required />
-          <PhoneInput label="Backup phone" value={optionalPhone} onChange={(e) => setOptionalPhone(e.target.value)} />
-        </div>
-        <ImplementationDetails><p>Blank optional values are valid. Entered values must contain 10 digits and display as <code>(317) 555-1234</code>.</p></ImplementationDetails>
-      </section></div>
-    </>
-  );
+function AlertsDemo() {
+  return <>
+    <div className="section-heading"><p className="eyebrow">Feedback</p><h2>Alerts</h2><p className="lede">Accessible inline status, success, warning, and error messaging.</p></div>
+    <div className="component-showcase"><section className="demo-section">
+      <div className="state-grid"><Alert>Informational status message.</Alert><Alert variant="success" title="Saved">Your changes were saved.</Alert><Alert variant="warning" title="Check this">Review this value before continuing.</Alert><Alert variant="error" title="Could not save">Try again or contact support.</Alert></div>
+    </section></div>
+  </>;
+}
+
+function CardsDemo() {
+  return <>
+    <div className="section-heading"><p className="eyebrow">Layout</p><h2>Cards</h2><p className="lede">A lightweight surface wrapper for generic grouped content.</p></div>
+    <div className="component-showcase"><section className="demo-section"><div className="component-card-demo-grid">
+      <Card><h3>Default card</h3><p>Standard padding and border.</p></Card>
+      <Card elevated padding="compact"><h3>Elevated card</h3><p>Compact spacing with a soft shadow.</p></Card>
+    </div><ImplementationDetails><p>Use Card only for generic surface treatment. Product-specific layouts should remain in the consuming application.</p></ImplementationDetails></section></div>
+  </>;
 }
 
 function InputsDemo() {
   const [clearableValue, setClearableValue] = useState("A reusable value");
+  const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [optionalPhone, setOptionalPhone] = useState("");
   const dropdownIcon = <ChevronDown size={18} strokeWidth={2} />;
 
   return (
@@ -227,6 +237,42 @@ function InputsDemo() {
               <code>requiredIndicatorPosition</code> supports bottom or left
               accents, allowing required-field emphasis to adapt to different
               form designs.
+            </p>
+          </ImplementationDetails>
+        </section>
+
+        <section className="demo-section">
+          <h3>Password input</h3>
+          <p className="component-description">
+            A password variant built on the standard input with a consistent accessible show/hide control.
+          </p>
+          <div className="state-grid">
+            <PasswordInput
+              label="Password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
+          </div>
+          <ImplementationDetails>
+            <p>
+              PasswordInput builds on TextInput so required, error, helper text, accessibility, and styling remain consistent.
+            </p>
+          </ImplementationDetails>
+        </section>
+
+        <section className="demo-section">
+          <h3>Phone input</h3>
+          <p className="component-description">
+            A U.S. phone variant that accepts digits, formats the value, and validates on blur.
+          </p>
+          <div className="state-grid">
+            <PhoneInput label="Phone" value={phone} onChange={(event) => setPhone(event.target.value)} required />
+            <PhoneInput label="Backup phone" value={optionalPhone} onChange={(event) => setOptionalPhone(event.target.value)} />
+          </div>
+          <ImplementationDetails>
+            <p>
+              Blank optional values are valid. Entered values must contain 10 digits and display as <code>(317) 555-1234</code>.
             </p>
           </ImplementationDetails>
         </section>
@@ -1007,12 +1053,14 @@ export function App() {
           <strong>Reusable Components</strong>
         </header>
 
-        {activeId === "inputs" ? (
+        {activeId === "buttons" ? (
+          <ButtonsDemo />
+        ) : activeId === "alerts" ? (
+          <AlertsDemo />
+        ) : activeId === "cards" ? (
+          <CardsDemo />
+        ) : activeId === "inputs" ? (
           <InputsDemo />
-        ) : activeId === "password-input" ? (
-          <PasswordInputDemo />
-        ) : activeId === "phone-input" ? (
-          <PhoneInputDemo />
         ) : activeId === "tables" ? (
           <TablesDemo />
         ) : activeId === "navigation" ? (

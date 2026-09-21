@@ -45,7 +45,7 @@ export function TextInput({
         inputProps.required
           ? `field--required field--required-${requiredIndicatorPosition}`
           : ""
-      } ${inputProps.disabled ? "field--disabled" : ""} ${
+      } ${inputProps.placeholder ? "field--has-placeholder" : ""} ${inputProps.disabled ? "field--disabled" : ""} ${
         error ? "field--error" : ""
       }`}
     >
@@ -55,7 +55,7 @@ export function TextInput({
           type={effectiveType}
           id={inputId}
           className={className}
-          placeholder=" "
+          placeholder={inputProps.placeholder || " "}
           aria-invalid={error ? true : ariaInvalid}
           aria-describedby={describedBy}
         />

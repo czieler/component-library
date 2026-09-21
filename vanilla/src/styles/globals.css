@@ -1189,3 +1189,35 @@ h1 {
 .field__password-toggle { position:absolute; right:12px; top:50%; transform:translateY(-50%); display:grid; place-items:center; width:32px; height:32px; padding:0; border:0; background:transparent; color:var(--muted,#6b7280); cursor:pointer; }
 .field__password-toggle:hover { color:var(--text,#111827); }
 .field__control:has(.field__password-toggle) input { padding-right:48px; }
+
+/* Reusable Button */
+.button { display:inline-flex; align-items:center; justify-content:center; gap:.45rem; min-height:42px; padding:0 1rem; border:1px solid transparent; border-radius:var(--radius-sm); font:inherit; font-weight:700; line-height:1; cursor:pointer; transition:background-color .15s ease,border-color .15s ease,color .15s ease,opacity .15s ease; }
+.button:disabled { opacity:.5; cursor:not-allowed; }
+.button--primary { background:var(--color-accent); color:#fff; }
+.button--primary:hover:not(:disabled) { background:var(--color-accent-strong); }
+.button--secondary { background:transparent; color:var(--color-accent); border-color:var(--color-accent); }
+.button--outline { background:var(--color-surface); color:var(--color-accent); border-color:var(--color-accent); }
+.button--ghost { background:transparent; color:var(--color-text); border-color:var(--color-border); }
+.button--danger { background:var(--color-error); color:#fff; }
+.button--small { min-height:34px; padding:0 .75rem; font-size:.875rem; }
+.button__spinner { width:1rem; height:1rem; flex:0 0 1rem; box-sizing:border-box; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; animation:button-spin .75s linear infinite; }
+@keyframes button-spin { to { transform:rotate(360deg); } }
+@media (prefers-reduced-motion:reduce) { .button__spinner { animation-duration:1.5s; } }
+
+/* Reusable Alert */
+.alert { padding:.85rem 1rem; border:1px solid var(--color-border); border-left-width:4px; border-radius:var(--radius-sm); background:var(--color-surface); color:var(--color-text); }
+.alert__title { margin-bottom:.2rem; font-weight:700; }
+.alert__content { line-height:1.45; }
+.alert--info { border-left-color:var(--color-accent); }
+.alert--success { border-left-color:#15803d; background:#f0fdf4; }
+.alert--warning { border-left-color:#b45309; background:#fffbeb; }
+.alert--error { border-left-color:var(--color-error); background:#fef3f2; }
+
+/* Reusable Card */
+.card { border:1px solid var(--color-border); border-radius:var(--radius-md); background:var(--color-surface); color:var(--color-text); }
+.card--padding-default { padding:var(--space-5); }
+.card--padding-compact { padding:var(--space-4); }
+.card--padding-none { padding:0; }
+.card--elevated { box-shadow:var(--shadow-soft); }
+.component-card-demo-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--space-4); }
+@media (max-width:700px) { .component-card-demo-grid { grid-template-columns:1fr; } }

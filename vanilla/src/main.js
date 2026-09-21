@@ -10,6 +10,9 @@ import { createPhoneInput } from "./components/phone-input.js";
 import { createWorkflowProgress } from "./components/workflow-progress.js";
 import { createBusyIndicator } from "./components/busy-indicator.js";
 import { createVennDiagram } from "./components/venn-diagram.js";
+import { createButton } from "./components/button.js";
+import { createAlert } from "./components/alert.js";
+import { createCard } from "./components/card.js";
 import "./styles/globals.css";
 
 const items = [
@@ -20,8 +23,9 @@ const items = [
     icon: icons.inputs,
     children: [
       { id: "inputs", label: "Inputs", icon: icons.inputs },
-      { id: "password-input", label: "Password Input", icon: icons.inputs },
-      { id: "phone-input", label: "Phone Input", icon: icons.inputs },
+      { id: "buttons", label: "Buttons", icon: icons.inputs },
+      { id: "alerts", label: "Alerts", icon: icons.inputs },
+      { id: "cards", label: "Cards", icon: icons.inputs },
       { id: "tables", label: "Data Table", icon: icons.table },
       { id: "navigation", label: "Navigation", icon: icons.navigation },
       { id: "workflow", label: "Workflow Progress", icon: icons.workflow },
@@ -104,30 +108,42 @@ const vennDiagramDemo = () => {
 };
 
 
-const passwordInputDemo = () => {
+const buttonsDemo = () => {
   const fragment = document.createDocumentFragment();
   const heading = document.createElement("div"); heading.className = "section-heading";
-  heading.append(text("p", "Form controls", "eyebrow"), text("h2", "Password Input"), text("p", "A shared password field with a consistent show/hide control.", "lede"));
+  heading.append(text("p", "Actions", "eyebrow"), text("h2", "Buttons"), text("p", "Consistent action variants, sizes, disabled states, and in-button loading.", "lede"));
   const showcase = document.createElement("div"); showcase.className = "component-showcase";
   const section = document.createElement("section"); section.className = "demo-section";
-  section.append(text("h3", "Interactive example"), text("p", "Type a password and use the eye icon to show or hide it.", "component-description"));
   const grid = document.createElement("div"); grid.className = "state-grid";
-  grid.append(createPasswordInput({ label: "Password", required: true, attributes: { name: "demo-password" } }));
-  section.append(grid, implementationDetails(["Built on the shared text input so required, error, helper text, accessibility, and styling remain consistent."]));
+  ["primary","secondary","outline","ghost","danger"].forEach((variant) => grid.append(createButton({ label: variant[0].toUpperCase()+variant.slice(1), variant }).element));
+  grid.append(createButton({ label: "Small", size: "small" }).element);
+  const loadingButton = createButton({ label: "Save changes", loadingLabel: "Saving…" });
+  loadingButton.element.addEventListener("click", () => { loadingButton.setLoading(true); window.setTimeout(() => loadingButton.setLoading(false), 900); });
+  grid.append(loadingButton.element, createButton({ label: "Finishing setup", loading: true, ariaLabel: "Finishing setup" }).element);
+  section.append(grid, implementationDetails(["Loading disables the button and renders the shared spinner inside it. Omit the loading label for spinner-only progress."]));
   showcase.append(section); fragment.append(heading, showcase); return fragment;
 };
 
-const phoneInputDemo = () => {
+const alertsDemo = () => {
   const fragment = document.createDocumentFragment();
   const heading = document.createElement("div"); heading.className = "section-heading";
-  heading.append(text("p", "Form controls", "eyebrow"), text("h2", "Phone Input"), text("p", "A U.S. phone field that accepts digits, formats the value, and validates on blur.", "lede"));
+  heading.append(text("p", "Feedback", "eyebrow"), text("h2", "Alerts"), text("p", "Accessible inline status, success, warning, and error messaging.", "lede"));
   const showcase = document.createElement("div"); showcase.className = "component-showcase";
   const section = document.createElement("section"); section.className = "demo-section";
-  section.append(text("h3", "Formatting and validation"), text("p", "Try leaving an incomplete number to see the validation message.", "component-description"));
   const grid = document.createElement("div"); grid.className = "state-grid";
-  grid.append(createPhoneInput({ label: "Phone", required: true }), createPhoneInput({ label: "Backup phone" }));
-  section.append(grid, implementationDetails(["Blank optional values are valid. Entered values must contain 10 digits and display as (317) 555-1234."]));
-  showcase.append(section); fragment.append(heading, showcase); return fragment;
+  grid.append(createAlert({message:"Informational status message."}).element, createAlert({variant:"success",title:"Saved",message:"Your changes were saved."}).element, createAlert({variant:"warning",title:"Check this",message:"Review this value before continuing."}).element, createAlert({variant:"error",title:"Could not save",message:"Try again or contact support."}).element);
+  section.append(grid); showcase.append(section); fragment.append(heading, showcase); return fragment;
+};
+
+const cardsDemo = () => {
+  const fragment = document.createDocumentFragment();
+  const heading = document.createElement("div"); heading.className = "section-heading";
+  heading.append(text("p", "Layout", "eyebrow"), text("h2", "Cards"), text("p", "A lightweight surface wrapper for generic grouped content.", "lede"));
+  const showcase = document.createElement("div"); showcase.className = "component-showcase";
+  const section = document.createElement("section"); section.className = "demo-section"; const grid = document.createElement("div"); grid.className = "component-card-demo-grid";
+  const one = createCard(); one.append(text("h3","Default card"), text("p","Standard padding and border."));
+  const two = createCard({elevated:true,padding:"compact"}); two.append(text("h3","Elevated card"), text("p","Compact spacing with a soft shadow."));
+  grid.append(one,two); section.append(grid, implementationDetails(["Use Card only for generic surface treatment. Product-specific layouts should remain in the consuming application."])); showcase.append(section); fragment.append(heading,showcase); return fragment;
 };
 
 const inputsDemo = () => {
@@ -218,6 +234,36 @@ const inputsDemo = () => {
   );
 
   showcase.append(inputSection);
+
+  const passwordSection = document.createElement("section");
+  passwordSection.className = "demo-section";
+  passwordSection.append(
+    text("h3", "Password input"),
+    text("p", "A password variant built on the standard input with a consistent accessible show/hide control.", "component-description"),
+  );
+  const passwordStates = document.createElement("div");
+  passwordStates.className = "state-grid";
+  passwordStates.append(createPasswordInput({ label: "Password", required: true, attributes: { name: "demo-password" } }));
+  passwordSection.append(
+    passwordStates,
+    implementationDetails(["Password input builds on the shared text input so required, error, helper text, accessibility, and styling remain consistent."]),
+  );
+  showcase.append(passwordSection);
+
+  const phoneSection = document.createElement("section");
+  phoneSection.className = "demo-section";
+  phoneSection.append(
+    text("h3", "Phone input"),
+    text("p", "A U.S. phone variant that accepts digits, formats the value, and validates on blur.", "component-description"),
+  );
+  const phoneStates = document.createElement("div");
+  phoneStates.className = "state-grid";
+  phoneStates.append(createPhoneInput({ label: "Phone", required: true }), createPhoneInput({ label: "Backup phone" }));
+  phoneSection.append(
+    phoneStates,
+    implementationDetails(["Blank optional values are valid. Entered values must contain 10 digits and display as (317) 555-1234."]),
+  );
+  showcase.append(phoneSection);
 
   const selectSection = document.createElement("section");
   selectSection.className = "demo-section";
@@ -832,12 +878,14 @@ const render = () => {
 
   main.append(
     topbar,
-    active === "inputs"
-      ? inputsDemo()
-      : active === "password-input"
-        ? passwordInputDemo()
-        : active === "phone-input"
-          ? phoneInputDemo()
+    active === "buttons"
+      ? buttonsDemo()
+      : active === "alerts"
+        ? alertsDemo()
+        : active === "cards"
+          ? cardsDemo()
+          : active === "inputs"
+            ? inputsDemo()
           : active === "tables"
         ? tablesDemo()
         : active === "navigation"

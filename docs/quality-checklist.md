@@ -57,3 +57,10 @@ cd vanilla
 npm run check
 npm run build
 ```
+
+
+## Button / Alert / Card
+- Verify all Button variants, disabled states, small size, and spinner-only/labeled loading states.
+- Confirm loading Buttons expose `aria-busy` and remain disabled while busy.
+- Confirm error Alerts use `role=alert`; non-error Alerts use polite status semantics.
+- Resize Card demos to confirm padding/elevation remain stable without imposing product-specific layout.

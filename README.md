@@ -26,6 +26,9 @@ The goal is not to replace full-scale component libraries or data-grid framework
 | MobileNavigation | ✓ | ✓ | Touch-friendly drawer navigation |
 | WorkflowProgress | ✓ | ✓ | Full desktop flow, focused tablet/mobile views |
 | BusyIndicator | ✓ | ✓ | Compact inline status at any width |
+| Button | ✓ | ✓ | Action variants, sizes, disabled/loading states |
+| Alert | ✓ | ✓ | Accessible status/error feedback |
+| Card | ✓ | ✓ | Generic grouped-content surface |
 
 ## Current Patterns
 
@@ -63,6 +66,19 @@ const busy = createBusyIndicator({ message: "Saving changes…" });
 document.querySelector("#app").append(busy.element);
 busy.setMessage("Saved");
 ```
+
+
+### Button
+
+`Button` / `createButton` centralizes primary, secondary, outline, ghost, danger, small, disabled, and loading states. Loading progress stays inside the button to avoid layout shift.
+
+### Alert
+
+`Alert` / `createAlert` provides consistent info, success, warning, and error feedback with accessible roles.
+
+### Card
+
+`Card` / `createCard` is intentionally lightweight: border, surface, padding, and optional elevation only. Product-specific card layouts remain application concerns.
 
 ### WorkflowProgress
 

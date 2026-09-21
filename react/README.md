@@ -99,7 +99,7 @@ On tablet/mobile, `WorkflowProgress` keeps its compact progress bar at the full 
 Use `UrlInput` for website/logo/support URLs that must be valid HTTP(S) URLs. Use `USStateSelect` for U.S. state fields so applications do not duplicate state option lists.
 
 
-## PasswordInput and PhoneInput
+## Input variants: PasswordInput and PhoneInput
 
 `PasswordInput` wraps the standard `TextInput` and owns the accessible show/hide-password control. It accepts the normal `TextInput` props except `type` and the internal password-toggle option.
 
@@ -125,3 +125,8 @@ Use `UrlInput` for website/logo/support URLs that must be valid HTTP(S) URLs. Us
 ```
 
 **Scope:** `PhoneInput` currently supports U.S. 10-digit phone numbers only. It is not an international phone-number parser or country-code selector.
+
+
+## Button, Alert, and Card
+
+The gallery now includes dedicated menu entries for `Button`, `Alert`, and `Card`. Button owns common action variants and in-button loading; Alert owns reusable feedback states; Card is a minimal generic surface wrapper. Product-specific composition remains in the consuming application.

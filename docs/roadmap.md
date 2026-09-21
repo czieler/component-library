@@ -15,3 +15,9 @@ This repository grows when a reusable pattern emerges from real application work
 - Add CI when the automated test surface is large enough to provide useful signal.
 
 Publishing and monorepo orchestration remain intentionally deferred until they solve a concrete reuse problem.
+
+
+## Recently added
+- Button primitive with consistent variants and loading state.
+- Alert primitive for inline feedback.
+- Card primitive for reusable surface treatment.

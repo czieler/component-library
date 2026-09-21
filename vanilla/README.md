@@ -101,7 +101,7 @@ On tablet/mobile, `WorkflowProgress` keeps its compact progress bar at the full 
 `createUrlInput` provides shared HTTP(S) URL validation. `createUSStateSelect` provides the shared 50-state + District of Columbia dropdown.
 
 
-## Password input and phone input
+## Input variants: password and phone
 
 `createPasswordInput` builds on the standard text-input factory and adds the accessible show/hide-password control. Supply the same field options used by `createTextInput`.
 
@@ -126,3 +126,8 @@ const phone = createPhoneInput({
 ```
 
 **Scope:** `createPhoneInput` currently supports U.S. 10-digit phone numbers only. International formatting and country selection are intentionally outside this component's current API.
+
+
+## Button, Alert, and Card
+
+The gallery now includes dedicated menu entries for `Button`, `Alert`, and `Card`. Button owns common action variants and in-button loading; Alert owns reusable feedback states; Card is a minimal generic surface wrapper. Product-specific composition remains in the consuming application.

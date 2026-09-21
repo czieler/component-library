@@ -31,3 +31,8 @@ Consumers own data and state. Components own presentation and interaction patter
 ## Accessibility approach
 
 Accessibility is treated as part of the component contract. Native semantic elements are preferred, labels and helper/error messaging are associated correctly, keyboard behavior is preserved, and focus behavior is considered when components introduce overlays or navigation states.
+
+
+## Action, feedback, and surface primitives
+
+Buttons, alerts, and cards are shared only at the primitive level. Applications keep workflow-specific copy, routing, layout, and business behavior. Loading belongs inside Button when an action is in progress; Alert owns semantic feedback roles; Card intentionally avoids product-specific header/body/footer APIs.
