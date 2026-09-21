@@ -130,3 +130,7 @@ Use `UrlInput` for website/logo/support URLs that must be valid HTTP(S) URLs. Us
 ## Button, Alert, and Card
 
 The gallery now includes dedicated menu entries for `Button`, `Alert`, and `Card`. Button owns common action variants and in-button loading; Alert owns reusable feedback states; Card is a minimal generic surface wrapper. Product-specific composition remains in the consuming application.
+
+
+### DataTable responsive expansion
+On mobile, expandable rows use a full-width **Show details / Hide details** control within the row card so the expansion affordance remains readable and attached to the correct record.

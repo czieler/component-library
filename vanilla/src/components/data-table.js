@@ -275,7 +275,7 @@ export function createDataTable({
           button.className = "data-table__expand-button";
           button.setAttribute("aria-expanded", String(isExpanded));
           button.innerHTML = `<span aria-hidden="true">${isExpanded ? collapseIcon : expandIcon}</span><span>${isExpanded ? "Hide details" : "Show details"}</span>`;
-          button.addEventListener("click", () => toggleRow(rowId));
+          button.addEventListener("click", (event) => { event.stopPropagation(); toggleRow(rowId); });
           expand.append(button);
           card.append(expand);
         }

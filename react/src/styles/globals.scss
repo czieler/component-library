@@ -1241,8 +1241,10 @@ h1 {
 .data-table__mobile-value { min-width: 0; overflow-wrap: anywhere; }
 .data-table__mobile-expand { padding: 0.5rem 0.9rem; }
 .data-table__mobile-expand .data-table__expand-button {
-  width: auto;
+  display: inline-flex;
+  width: 100%;
   min-height: 2rem;
+  justify-content: flex-start;
   gap: 0.4rem;
   padding: 0 0.35rem;
   border-radius: var(--radius-sm);

@@ -1069,7 +1069,7 @@ h1 {
 .data-table__mobile-label { color: var(--color-muted-text); font-size: .72rem; font-weight: 700; letter-spacing: .035em; text-transform: uppercase; }
 .data-table__mobile-value { min-width: 0; overflow-wrap: anywhere; }
 .data-table__mobile-expand { padding: .5rem .9rem; }
-.data-table__mobile-expand .data-table__expand-button { width: auto; min-height: 2rem; gap: .4rem; padding: 0 .35rem; border-radius: var(--radius-sm); }
+.data-table__mobile-expand .data-table__expand-button { display: inline-flex; width: 100%; min-height: 2rem; justify-content: flex-start; gap: .4rem; padding: 0 .35rem; border-radius: var(--radius-sm); }
 .data-table__mobile-expanded { padding: .9rem; border-top: 1px solid var(--color-border); background: var(--color-background); }
 .data-table__mobile-empty { padding: 2rem 1rem; text-align: center; color: var(--color-muted-text); }
 .data-table__mobile-footer { margin-top: var(--space-3); padding: .85rem 1rem; border-radius: var(--radius-md); background: #173b36; color: #fff; }

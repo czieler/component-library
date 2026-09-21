@@ -215,7 +215,7 @@ export function DataTable<T>({
                   ))}
                   {rowExpandable && (
                     <div className="data-table__mobile-expand">
-                      <button type="button" className="data-table__expand-button" onClick={() => toggleRow(rowId)} aria-expanded={isExpanded}>
+                      <button type="button" className="data-table__expand-button" onClick={(event) => { event.stopPropagation(); toggleRow(rowId); }} aria-expanded={isExpanded}>
                         <span aria-hidden="true">{isExpanded ? collapseIcon : expandIcon}</span>
                         <span>{isExpanded ? "Hide details" : "Show details"}</span>
                       </button>
