@@ -3,6 +3,7 @@ import { icons } from "./components/icons.js";
 import { createMobileNavigation } from "./components/mobile-navigation.js";
 import { createDataTable } from "./components/data-table.js";
 import { createSelect } from "./components/select.js";
+import { createCountryCombobox } from "./components/country-combobox.js";
 import { createTextarea } from "./components/textarea.js";
 import { createTextInput } from "./components/text-input.js";
 import { createPasswordInput } from "./components/password-input.js";
@@ -33,6 +34,14 @@ const items = [
       { id: "venn", label: "Venn Diagram", icon: icons.workflow },
     ],
   },
+];
+
+const countryOptions = [
+  { code: "US", name: "United States" },
+  { code: "CA", name: "Canada" },
+  { code: "GB", name: "United Kingdom" },
+  { code: "AU", name: "Australia" },
+  { code: "DE", name: "Germany" },
 ];
 
 const frameworkOptions = [
@@ -308,13 +317,18 @@ const inputsDemo = () => {
       options: frameworkOptions,
       disabled: true,
     }),
+    createCountryCombobox({
+      label: "Searchable country",
+      value: "US",
+      options: countryOptions,
+    }),
   );
 
   selectSection.append(
     selectStates,
     implementationDetails(
       [
-        "Consumers provide options and native select attributes. Label association, validation state, and a lightweight SVG dropdown icon are layered over the browser control without replacing its native keyboard behavior.",
+        "Consumers provide options and native select attributes. Label association, validation state, and a lightweight SVG dropdown icon are layered over the browser control without replacing its native keyboard behavior. CountryCombobox extends the same Select visual foundation with searchable country options.",
       ],
       [
         { code: "requiredIndicatorPosition" },

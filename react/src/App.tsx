@@ -17,6 +17,7 @@ import { AppSidebar, type NavItem } from "./components/AppSidebar";
 import { DataTable, type DataTableColumn } from "./components/DataTable";
 import { MobileNavigation } from "./components/MobileNavigation";
 import { Select } from "./components/Select";
+import { CountryCombobox } from "./components/CountryCombobox";
 import { Textarea } from "./components/Textarea";
 import { TextInput } from "./components/TextInput";
 import { PasswordInput } from "./components/PasswordInput";
@@ -75,6 +76,14 @@ const navItems: NavItem[] = [
       },
     ],
   },
+];
+
+const countryOptions = [
+  { code: "US", name: "United States" },
+  { code: "CA", name: "Canada" },
+  { code: "GB", name: "United Kingdom" },
+  { code: "AU", name: "Australia" },
+  { code: "DE", name: "Germany" },
 ];
 
 const frameworkOptions = [
@@ -168,6 +177,7 @@ function InputsDemo() {
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [optionalPhone, setOptionalPhone] = useState("");
+  const [country, setCountry] = useState("US");
   const dropdownIcon = <ChevronDown size={18} strokeWidth={2} />;
 
   return (
@@ -322,6 +332,12 @@ function InputsDemo() {
               dropdownIcon={dropdownIcon}
               onChange={() => undefined}
             />
+            <CountryCombobox
+              label="Searchable country"
+              value={country}
+              onChange={setCountry}
+              options={countryOptions}
+            />
           </div>
 
           <ImplementationDetails>
@@ -333,7 +349,8 @@ function InputsDemo() {
             </p>
             <p>
               <code>requiredIndicatorPosition</code> changes the required accent
-              edge.
+              edge. <code>CountryCombobox</code> extends the same Select visual
+              foundation with searchable country options.
             </p>
           </ImplementationDetails>
         </section>
