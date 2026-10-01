@@ -11,7 +11,7 @@ const svgNode = (tag, attrs = {}) => {
   return node;
 };
 
-export function createVennDiagram({ items, sharedAllCount, pairCounts = {}, ariaLabel = "Capability overlap Venn diagram", className = "" }) {
+export function createVennDiagram({ items, sharedAllCount, pairCounts = {}, ariaLabel = "Set comparison Venn diagram", className = "" }) {
   if (!Array.isArray(items) || (items.length !== 2 && items.length !== 3)) throw new Error("VennDiagram requires exactly 2 or 3 items.");
   const three = items.length === 3;
   const circles = three

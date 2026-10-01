@@ -44,7 +44,7 @@ The gallery includes a **Workflow Progress** entry so the component can be viewe
 import { createWorkflowProgress } from "./src/components/workflow-progress.js";
 
 const progress = createWorkflowProgress({
-  steps: ["Inventory", "Add Tools", "Review", "Complete"],
+  steps: ["Plan", "Design", "Build", "Launch"],
   currentStep: 2,
   primaryColor: "#555b62",
   highlightColor: "#a61f1f",
@@ -68,10 +68,10 @@ import { createBusyIndicator } from "./src/components/busy-indicator.js";
 
 const busy = createBusyIndicator({ message: "Saving changes…" });
 document.querySelector("#app").append(busy.element);
-busy.setMessage("Importing tools…");
+busy.setMessage("Processing upload…");
 ```
 
-The demo gallery includes visible loading, saving, and importing examples.
+The demo gallery includes visible loading, saving, and processing examples.
 
 ## VennDiagram
 
@@ -82,18 +82,18 @@ import { createVennDiagram } from "./src/components/venn-diagram.js";
 
 document.querySelector("#app").append(createVennDiagram({
   items: [
-    { id: "teams", label: "Microsoft Teams" },
-    { id: "slack", label: "Slack" },
+    { id: "alpha", label: "Set Alpha" },
+    { id: "beta", label: "Set Beta" },
   ],
   sharedAllCount: 4,
 }));
 ```
 
-For three items, pass a third item and optionally provide pair-specific counts with sorted ID keys such as `"slack|teams"`. The factory intentionally accepts exactly 2–3 items. The gallery's **Venn Diagram** menu entry shows both supported forms.
+For three items, pass a third item and optionally provide pair-specific counts with sorted ID keys such as `"alpha|beta"`. The factory intentionally accepts exactly 2–3 items. The gallery's **Venn Diagram** menu entry shows both supported forms.
 
 
 ### Inline/button busy state
-Use the inline busy variant inside a disabled button so the spinner and status text replace the normal button content without causing layout shift. React: `<BusyIndicator inline message="Importing…" />`. Vanilla: `createBusyIndicator({ message: "Importing…", inline: true })`.
+Use the inline busy variant inside a disabled button so the spinner and status text replace the normal button content without causing layout shift. React: `<BusyIndicator inline message="Processing…" />`. Vanilla: `createBusyIndicator({ message: "Processing…", inline: true })`.
 
 On tablet/mobile, `WorkflowProgress` keeps its compact progress bar at the full component width and centers the `Step X of Y` status below it.
 

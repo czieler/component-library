@@ -12,10 +12,21 @@ import {
   Navigation,
   Table2,
   X,
+  House,
+  Folder,
+  Archive,
+  Plus,
+  Activity,
+  BarChart3,
+  GitBranch,
+  FileText,
+  Settings,
+  SearchCheck,
 } from "lucide-react";
 import { AppSidebar, type NavItem } from "./components/AppSidebar";
 import { DataTable, type DataTableColumn } from "./components/DataTable";
 import { MobileNavigation } from "./components/MobileNavigation";
+import { TopNavigation, type TopNavigationItem } from "./components/TopNavigation";
 import { Select } from "./components/Select";
 import { CountryCombobox } from "./components/CountryCombobox";
 import { Textarea } from "./components/Textarea";
@@ -112,9 +123,9 @@ function VennDiagramDemo() {
       <div className="component-showcase">
         <section className="demo-section">
           <h3>Two-item comparison</h3>
-          <p className="component-description">Use for a direct comparison between two tools, products, or sets.</p>
+          <p className="component-description">Use for a direct comparison between two or three datasets, groups, or sets.</p>
           <div className="venn-demo-card">
-            <VennDiagram items={[{ id: "teams", label: "Microsoft Teams" }, { id: "slack", label: "Slack" }]} sharedAllCount={4} />
+            <VennDiagram items={[{ id: "alpha", label: "Set Alpha" }, { id: "beta", label: "Set Beta" }]} sharedAllCount={4} />
           </div>
         </section>
         <section className="demo-section">
@@ -122,13 +133,13 @@ function VennDiagramDemo() {
           <p className="component-description">Use for a focused three-way comparison. Pair counts are optional; the center count represents items shared by all three.</p>
           <div className="venn-demo-card">
             <VennDiagram
-              items={[{ id: "teams", label: "Microsoft Teams" }, { id: "slack", label: "Slack" }, { id: "miro", label: "Miro" }]}
+              items={[{ id: "alpha", label: "Set Alpha" }, { id: "beta", label: "Set Beta" }, { id: "gamma", label: "Set Gamma" }]}
               sharedAllCount={1}
-              pairCounts={{ "slack|teams": 4, "miro|teams": 2, "miro|slack": 2 }}
+              pairCounts={{ "alpha|beta": 4, "alpha|gamma": 2, "beta|gamma": 2 }}
             />
           </div>
           <ImplementationDetails>
-            <p><code>items</code> accepts exactly two or three entries. Each item can override its fill/stroke. <code>sharedAllCount</code> and <code>pairCounts</code> are optional display values; the consuming application owns the set/capability calculation.</p>
+            <p><code>items</code> accepts exactly two or three entries. Each item can override its fill/stroke. <code>sharedAllCount</code> and <code>pairCounts</code> are optional display values; the consuming application owns the set/intersection calculation.</p>
           </ImplementationDetails>
         </section>
       </div>
@@ -446,7 +457,7 @@ const demoRows: DemoRow[] = [
     service: "Apple TV+",
     status: "Completed",
     progress: "Finished",
-    note: "The same table could be used for users, orders, releases, or inventory.",
+    note: "The same table could be used for users, orders, releases, or other record sets.",
   },
 ];
 
@@ -877,10 +888,10 @@ function BusyIndicatorDemo() {
         <p>One consistent spinner-and-message treatment for loading, saving, importing, processing, and other busy states.</p>
       </div>
       <div className="component-showcase">
-        <BusyIndicator message="Loading tools…" />
+        <BusyIndicator message="Loading records…" />
         <BusyIndicator message="Saving changes…" />
-        <BusyIndicator message="Importing tools…" />
-        <button type="button" className="button button--primary" disabled><BusyIndicator inline message="Importing…" /></button>
+        <BusyIndicator message="Processing upload…" />
+        <button type="button" className="button button--primary" disabled><BusyIndicator inline message="Processing…" /></button>
         <ImplementationDetails>
           <p><code>{`<BusyIndicator message="Saving changes…" />`}</code></p>
           <p>The spinner uses <code>currentColor</code>, so it automatically matches the message text. The component exposes a polite live status for assistive technology.</p>
@@ -891,7 +902,7 @@ function BusyIndicatorDemo() {
 }
 
 function WorkflowDemo() {
-  const steps = ["Tool Inventory", "Add Tools", "Discovery Map", "Capability Overlap", "Findings", "Executive Overview"];
+  const steps = ["Plan", "Design", "Build", "Review", "Launch", "Measure"];
   return (
     <>
       <div className="section-heading">
@@ -911,17 +922,52 @@ function WorkflowDemo() {
 }
 
 function NavigationDemo() {
+  const [topActive, setTopActive] = useState("active-projects");
+  const topItems: TopNavigationItem[] = [
+    { id: "home-top", label: "Home", icon: <House size={17} /> },
+    { id: "projects-top", label: "Projects", icon: <Folder size={17} />, children: [
+      { id: "active-projects", label: "Active Projects", icon: <Folder size={17} />, description: "View work currently in progress" },
+      { id: "new-project", label: "New Project", icon: <Plus size={17} />, description: "Start a new project" },
+      { id: "archive", label: "Archive", icon: <Archive size={17} />, description: "Browse completed work" },
+    ] },
+    { id: "insights-top", label: "Insights", icon: <BarChart3 size={17} />, children: [
+      { id: "analytics", label: "Analytics", icon: <BarChart3 size={17} />, description: "Review performance trends" },
+      { id: "activity", label: "Activity", icon: <Activity size={17} />, description: "See recent changes and events" },
+    ] },
+    { id: "documents-top", label: "Documents", icon: <FileText size={17} /> },
+    { id: "settings-top", label: "Settings", icon: <Settings size={17} /> },
+  ];
   return (
     <>
       <div className="section-heading">
         <p className="eyebrow">Navigation patterns</p>
         <h2>Hierarchical navigation that adapts as space changes.</h2>
         <p className="lede">
-          The desktop sidebar and mobile drawer share one item model, including
-          nested items, while the consuming application owns labels, IDs, icons,
-          and active state.
+          The library includes both sidebar/drawer navigation and a top-navigation pattern with responsive flyouts. The consuming application owns labels, IDs, icons, routing, and active state.
         </p>
       </div>
+
+      <section className="demo-section">
+        <h3>Top navigation with hover flyouts</h3>
+        <p className="component-description">A full-width application navigation pattern with desktop hover/focus flyouts, a page-dimming backdrop, and a built-in mobile drawer.</p>
+        <div style={{ borderRadius: 12, overflow: "visible" }}>
+          <TopNavigation
+            items={topItems}
+            activeId={topActive}
+            onSelect={setTopActive}
+            brand={<strong>Acme Workspace</strong>}
+            endContent={<span style={{ fontSize: ".85rem" }}>Demo User</span>}
+            mobileHeaderEnd={<span style={{ fontSize: ".78rem" }}>DU</span>}
+            submenuIcon={<ChevronDown size={15} />}
+            menuIcon={<Menu size={20} />}
+            closeIcon={<X size={20} />}
+          />
+        </div>
+        <ImplementationDetails>
+          <p><code>TopNavigation</code> is application-agnostic. Consumers supply item IDs, labels, optional descriptions/icons, active state, brand content, right-side content, and optional compact mobile-header actions.</p>
+          <p>Desktop submenus open on hover or focus and dim the underlying page; keyboard users can use Enter/Space/Arrow Down and Escape. Under 900px the same item model becomes a touch-friendly drawer. React consumers may also control the open submenu with `openMenuId` / `onOpenMenuChange`.</p>
+        </ImplementationDetails>
+      </section>
 
       <section className="demo-section navigation-notes">
         <div className="navigation-feature-grid">
@@ -1080,7 +1126,7 @@ export function App() {
           <InputsDemo />
         ) : activeId === "tables" ? (
           <TablesDemo />
-        ) : activeId === "navigation" ? (
+        ) : activeId === "navigation" || activeId === "top-navigation" ? (
           <NavigationDemo />
         ) : activeId === "workflow" ? (
           <WorkflowDemo />

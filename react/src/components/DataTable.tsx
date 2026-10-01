@@ -185,7 +185,7 @@ export function DataTable<T>({
                         onKeyDown={onRowClick ? (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onRowClick(row); } } : undefined}
                         tabIndex={onRowClick ? 0 : undefined}
                       >
-                        {columns.map((column, columnIndex) => <td key={column.id} data-column={column.id} className={`data-table__cell--${column.align ?? "left"}`}>{rowExpandable && columnIndex === 0 ? <div className="data-table__first-cell-with-expand"><button type="button" className="data-table__expand-button" onClick={(event) => { event.stopPropagation(); toggleRow(rowId); }} aria-expanded={isExpanded} aria-label={isExpanded ? `Collapse row ${rowId}` : `Expand row ${rowId}`}><span aria-hidden="true">{isExpanded ? collapseIcon : expandIcon}</span></button><div className="data-table__first-cell-content">{column.render(row)}</div></div> : column.render(row)}</td>)}
+                        {columns.map((column, columnIndex) => <td key={column.id} data-column={column.id} className={`data-table__cell--${column.align ?? "left"}`} onClick={column.id === "actions" && onRowClick ? (event) => event.stopPropagation() : undefined} onKeyDown={column.id === "actions" && onRowClick ? (event) => event.stopPropagation() : undefined}>{rowExpandable && columnIndex === 0 ? <div className="data-table__first-cell-with-expand"><button type="button" className="data-table__expand-button" onClick={(event) => { event.stopPropagation(); toggleRow(rowId); }} aria-expanded={isExpanded} aria-label={isExpanded ? `Collapse row ${rowId}` : `Expand row ${rowId}`}><span aria-hidden="true">{isExpanded ? collapseIcon : expandIcon}</span></button><div className="data-table__first-cell-content">{column.render(row)}</div></div> : column.render(row)}</td>)}
                       </tr>
                       {rowExpandable && isExpanded && (
                         <tr className="data-table__expanded-row"><td colSpan={totalColumns}><div className="data-table__expanded-content">{renderExpandedRow?.(row)}</div></td></tr>
@@ -208,7 +208,7 @@ export function DataTable<T>({
               return (
                 <article className={`data-table__mobile-card ${onRowClick ? "data-table__mobile-card--clickable" : ""}`} role="listitem" key={`mobile-${rowId}`} onClick={onRowClick ? () => onRowClick(row) : undefined}>
                   {columns.map((column) => (
-                    <div className="data-table__mobile-field" key={column.id}>
+                    <div className="data-table__mobile-field" key={column.id} onClick={column.id === "actions" && onRowClick ? (event) => event.stopPropagation() : undefined}>
                       <span className="data-table__mobile-label">{column.label}</span>
                       <div className={`data-table__mobile-value data-table__cell--${column.align ?? "left"}`}>{column.render(row)}</div>
                     </div>

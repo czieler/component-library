@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 export type WorkflowProgressProps = {
-  steps: string[];
+  steps: readonly string[];
   currentStep: number;
   primaryColor: string;
   highlightColor: string;

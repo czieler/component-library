@@ -90,7 +90,7 @@ Desktop displays the full workflow. Tablet uses a focused five-step viewport. Mo
 
 ```tsx
 <WorkflowProgress
-  steps={["Inventory", "Add Tools", "Review", "Complete"]}
+  steps={["Plan", "Design", "Build", "Launch"]}
   currentStep={2}
   primaryColor="#555b62"
   highlightColor="#a61f1f"
@@ -102,7 +102,7 @@ Desktop displays the full workflow. Tablet uses a focused five-step viewport. Mo
 
 ```js
 createWorkflowProgress({
-  steps: ["Inventory", "Add Tools", "Review", "Complete"],
+  steps: ["Plan", "Design", "Build", "Launch"],
   currentStep: 2,
   primaryColor: "#555b62",
   highlightColor: "#a61f1f",
@@ -198,7 +198,7 @@ Both React and Vanilla galleries include a reusable responsive `VennDiagram` / `
 
 
 ### Inline/button busy state
-Use the inline busy variant inside a disabled button so the spinner and status text replace the normal button content without causing layout shift. React: `<BusyIndicator inline message="Importing…" />`. Vanilla: `createBusyIndicator({ message: "Importing…", inline: true })`.
+Use the inline busy variant inside a disabled button so the spinner and status text replace the normal button content without causing layout shift. React: `<BusyIndicator inline message="Processing…" />`. Vanilla: `createBusyIndicator({ message: "Processing…", inline: true })`.
 
 On tablet/mobile, `WorkflowProgress` keeps its compact progress bar at the full component width and centers the `Step X of Y` status below it.
 
@@ -207,3 +207,12 @@ On tablet/mobile, `WorkflowProgress` keeps its compact progress bar at the full 
 - `PhoneInput` / `createPhoneInput`: U.S. phone field that accepts up to 10 digits, displays `(###) ###-####`, and reports an inline validation error after blur when a non-empty value is incomplete. Required instances also report an error when left blank. This component currently targets U.S. 10-digit phone numbers; international formats are intentionally out of scope.
 - `UrlInput` / `createUrlInput`: shared HTTP(S) URL input with consistent format validation and inline errors.
 - `USStateSelect` / `createUSStateSelect`: shared state dropdown (50 states + District of Columbia) built on the standard Select.
+
+## Top Navigation
+
+The library now includes a framework-neutral top-navigation pattern in both implementations:
+
+- React: `react/src/components/TopNavigation.tsx`
+- Vanilla JavaScript: `vanilla/src/components/top-navigation.js`
+
+The component accepts a consumer-owned navigation item model and supports nested flyout menus, active state, optional item descriptions/icons, custom brand content, custom right-side content, an optional `mobileHeaderEnd` slot for compact mobile actions, keyboard dismissal, a desktop backdrop while a flyout is open, and a built-in mobile drawer below 900px. React consumers can optionally control the open flyout with `openMenuId` / `onOpenMenuChange` so application-owned menus can participate in the same one-menu-at-a-time behavior. It contains no product-specific routes or branding. When a menu uses icons, supply them consistently for every sibling item; the flyout reserves a fixed icon column so labels and descriptions stay aligned in React and Vanilla implementations.

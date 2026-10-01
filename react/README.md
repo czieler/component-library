@@ -43,7 +43,7 @@ The gallery includes a **Workflow Progress** entry so the component can be viewe
 ```tsx
 import { WorkflowProgress } from "./components/WorkflowProgress";
 
-const steps = ["Inventory", "Add Tools", "Review", "Complete"];
+const steps = ["Plan", "Design", "Build", "Launch"];
 
 <WorkflowProgress
   steps={steps}
@@ -69,29 +69,29 @@ import { BusyIndicator } from "./src/components/BusyIndicator";
 <BusyIndicator message="Saving changes…" />;
 ```
 
-The demo gallery includes visible loading, saving, and importing examples.
+The demo gallery includes visible loading, saving, and processing examples.
 
 ## VennDiagram
 
-`VennDiagram` renders a responsive two- or three-item SVG comparison. Labels are deliberately outside the circles and connected with leader lines so long tool names do not sit half inside a region. The consuming application calculates the intersections; the component owns drawing and responsive presentation.
+`VennDiagram` renders a responsive two- or three-item SVG comparison. Labels are deliberately outside the circles and connected with leader lines so long labels do not sit half inside a region. The consuming application calculates the intersections; the component owns drawing and responsive presentation.
 
 ```tsx
 import { VennDiagram } from "./src/components/VennDiagram";
 
 <VennDiagram
   items={[
-    { id: "teams", label: "Microsoft Teams" },
-    { id: "slack", label: "Slack" },
+    { id: "alpha", label: "Set Alpha" },
+    { id: "beta", label: "Set Beta" },
   ]}
   sharedAllCount={4}
 />;
 ```
 
-For three items, pass a third item and optionally provide pair-specific counts with sorted ID keys such as `"slack|teams"`. `items` is intentionally limited to 2–3 entries because larger comparisons are not legible as a Venn diagram. The gallery's **Venn Diagram** menu entry shows both supported forms.
+For three items, pass a third item and optionally provide pair-specific counts with sorted ID keys such as `"alpha|beta"`. `items` is intentionally limited to 2–3 entries because larger comparisons are not legible as a Venn diagram. The gallery's **Venn Diagram** menu entry shows both supported forms.
 
 
 ### Inline/button busy state
-Use the inline busy variant inside a disabled button so the spinner and status text replace the normal button content without causing layout shift. React: `<BusyIndicator inline message="Importing…" />`. Vanilla: `createBusyIndicator({ message: "Importing…", inline: true })`.
+Use the inline busy variant inside a disabled button so the spinner and status text replace the normal button content without causing layout shift. React: `<BusyIndicator inline message="Processing…" />`. Vanilla: `createBusyIndicator({ message: "Processing…", inline: true })`.
 
 On tablet/mobile, `WorkflowProgress` keeps its compact progress bar at the full component width and centers the `Step X of Y` status below it.
 

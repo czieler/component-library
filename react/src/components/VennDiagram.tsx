@@ -26,7 +26,7 @@ export function VennDiagram({
   items,
   sharedAllCount,
   pairCounts = {},
-  ariaLabel = "Capability overlap Venn diagram",
+  ariaLabel = "Set comparison Venn diagram",
   className = "",
 }: VennDiagramProps) {
   const three = items.length === 3;

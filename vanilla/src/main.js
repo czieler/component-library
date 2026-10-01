@@ -1,6 +1,7 @@
 import { createSidebar } from "./components/app-sidebar.js";
 import { icons } from "./components/icons.js";
 import { createMobileNavigation } from "./components/mobile-navigation.js";
+import { createTopNavigation } from "./components/top-navigation.js";
 import { createDataTable } from "./components/data-table.js";
 import { createSelect } from "./components/select.js";
 import { createCountryCombobox } from "./components/country-combobox.js";
@@ -29,6 +30,7 @@ const items = [
       { id: "cards", label: "Cards", icon: icons.inputs },
       { id: "tables", label: "Data Table", icon: icons.table },
       { id: "navigation", label: "Navigation", icon: icons.navigation },
+      { id: "top-navigation", label: "Top Navigation", icon: icons.navigation },
       { id: "workflow", label: "Workflow Progress", icon: icons.workflow },
       { id: "busy", label: "Busy Indicator", icon: icons.workflow },
       { id: "venn", label: "Venn Diagram", icon: icons.workflow },
@@ -101,17 +103,17 @@ const vennDiagramDemo = () => {
   showcase.className = "component-showcase";
 
   const two = document.createElement("section"); two.className = "demo-section";
-  two.append(text("h3", "Two-item comparison"), text("p", "Use for a direct comparison between two tools, products, or sets.", "component-description"));
+  two.append(text("h3", "Two-item comparison"), text("p", "Use for a direct comparison between two or three datasets, groups, or sets.", "component-description"));
   const twoCard = document.createElement("div"); twoCard.className = "venn-demo-card";
-  twoCard.append(createVennDiagram({ items: [{id:"teams",label:"Microsoft Teams"},{id:"slack",label:"Slack"}], sharedAllCount: 4 }));
+  twoCard.append(createVennDiagram({ items: [{id:"alpha",label:"Set Alpha"},{id:"beta",label:"Set Beta"}], sharedAllCount: 4 }));
   two.append(twoCard); showcase.append(two);
 
   const three = document.createElement("section"); three.className = "demo-section";
   three.append(text("h3", "Three-item comparison"), text("p", "Use for a focused three-way comparison. Pair counts are optional; the center count represents items shared by all three.", "component-description"));
   const threeCard = document.createElement("div"); threeCard.className = "venn-demo-card";
-  threeCard.append(createVennDiagram({ items: [{id:"teams",label:"Microsoft Teams"},{id:"slack",label:"Slack"},{id:"miro",label:"Miro"}], sharedAllCount: 1, pairCounts: {"slack|teams":4,"miro|teams":2,"miro|slack":2} }));
+  threeCard.append(createVennDiagram({ items: [{id:"alpha",label:"Set Alpha"},{id:"beta",label:"Set Beta"},{id:"gamma",label:"Set Gamma"}], sharedAllCount: 1, pairCounts: {"alpha|beta":4,"alpha|gamma":2,"beta|gamma":2} }));
   three.append(threeCard, implementationDetails([
-    {code:"items"}, " accepts exactly two or three entries. Each item can override its fill/stroke. ", {code:"sharedAllCount"}, " and ", {code:"pairCounts"}, " are optional display values; the consuming application owns the set/capability calculation."
+    {code:"items"}, " accepts exactly two or three entries. Each item can override its fill/stroke. ", {code:"sharedAllCount"}, " and ", {code:"pairCounts"}, " are optional display values; the consuming application owns the set/intersection calculation."
   ]));
   showcase.append(three); fragment.append(showcase); return fragment;
 };
@@ -438,7 +440,7 @@ const demoRows = [
     service: "Apple TV+",
     status: "Completed",
     progress: "Finished",
-    note: "The same table could be used for users, orders, releases, or inventory.",
+    note: "The same table could be used for users, orders, releases, or other record sets.",
   },
 ];
 
@@ -715,7 +717,7 @@ const busyIndicatorDemo = () => {
 
   const showcase = document.createElement("div");
   showcase.className = "component-showcase";
-  ["Loading tools…", "Saving changes…", "Importing tools…"].forEach((message) => {
+  ["Loading records…", "Saving changes…", "Processing upload…"].forEach((message) => {
     showcase.append(createBusyIndicator({ message }).element);
   });
 
@@ -725,7 +727,7 @@ const busyIndicatorDemo = () => {
   busyButton.type = "button";
   busyButton.className = "button button--primary busy-button-demo";
   busyButton.disabled = true;
-  busyButton.append(createBusyIndicator({ message: "Importing…", inline: true }).element);
+  busyButton.append(createBusyIndicator({ message: "Processing…", inline: true }).element);
   showcase.append(busyButton);
 
 details.innerHTML = `<strong>Implementation details</strong><div><p><code>createBusyIndicator({ message: "Saving changes…" })</code></p><p>The spinner uses <code>currentColor</code>, so it automatically matches the message text. The returned controller also exposes <code>setMessage()</code>.</p></div>`;
@@ -745,7 +747,7 @@ const workflowDemo = () => {
   );
   const section = document.createElement("section");
   section.className = "demo-section";
-  const steps = ["Tool Inventory", "Add Tools", "Discovery Map", "Capability Overlap", "Findings", "Executive Overview"];
+  const steps = ["Plan", "Design", "Build", "Review", "Launch", "Measure"];
   section.append(
     createWorkflowProgress({ steps, currentStep: 3, primaryColor: "#555b62", highlightColor: "#a61f1f", markerSize: 32 }),
     implementationDetails(
@@ -767,10 +769,32 @@ const navigationDemo = () => {
     text("h2", "Hierarchical navigation that adapts as space changes."),
     text(
       "p",
-      "The desktop sidebar and mobile drawer share one item model, including nested items, while the consuming application owns labels, IDs, icons, and active state.",
+      "The library includes both sidebar/drawer navigation and a top-navigation pattern with responsive flyouts. The consuming application owns labels, IDs, icons, routing, and active state.",
       "lede",
     ),
   );
+
+  const topSection = document.createElement("section");
+  topSection.className = "demo-section";
+  topSection.append(text("h3", "Top navigation with hover flyouts"), text("p", "A full-width application navigation pattern with desktop hover flyouts and a built-in mobile drawer.", "component-description"));
+  const topItems = [
+    { id: "home-top", label: "Home", icon: "⌂" },
+    { id: "projects-top", label: "Projects", icon: "▣", children: [
+      { id: "active-projects", label: "Active Projects", icon: "▣", description: "View work currently in progress" },
+      { id: "new-project", label: "New Project", icon: "+", description: "Start a new project" },
+      { id: "archive", label: "Archive", icon: "▤", description: "Browse completed work" },
+    ] },
+    { id: "insights-top", label: "Insights", icon: "▥", children: [
+      { id: "analytics", label: "Analytics", icon: "▥", description: "Review performance trends" },
+      { id: "activity", label: "Activity", icon: "↗", description: "See recent changes and events" },
+    ] },
+    { id: "documents-top", label: "Documents", icon: "▤" },
+    { id: "settings-top", label: "Settings", icon: "⚙" },
+  ];
+  let topActive = "active-projects";
+  const mobileHeaderEnd = document.createElement("span"); mobileHeaderEnd.textContent = "DU"; mobileHeaderEnd.style.fontSize = ".78rem";
+  const topNav = createTopNavigation({ items: topItems, activeId: topActive, brand: "Acme Workspace", mobileHeaderEnd, onSelect: (id) => { topActive = id; topNav.setActiveId(id); } });
+  topSection.append(topNav.element, implementationDetails(["The top navigation is application-agnostic. Consumers provide item IDs, labels, icons, optional descriptions, active state, and brand/end content. Use icons consistently within a menu so labels share one alignment column."], ["Desktop flyouts open on hover and the same item model becomes a touch-friendly drawer on narrow screens."]));
 
   const section = document.createElement("section");
   section.className = "demo-section navigation-notes";
@@ -806,7 +830,7 @@ const navigationDemo = () => {
 
   grid.append(tryBlock, detailsBlock);
   section.append(grid);
-  fragment.append(heading, section);
+  fragment.append(heading, topSection, section);
 
   return fragment;
 };
@@ -902,7 +926,7 @@ const render = () => {
             ? inputsDemo()
           : active === "tables"
         ? tablesDemo()
-        : active === "navigation"
+        : active === "navigation" || active === "top-navigation"
           ? navigationDemo()
           : active === "workflow"
             ? workflowDemo()

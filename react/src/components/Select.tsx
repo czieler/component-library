@@ -13,6 +13,8 @@ type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
   helperText?: string;
   dropdownIcon?: ReactNode;
   requiredIndicatorPosition?: "bottom" | "left";
+  floatingLabel?: boolean;
+  floatLabelWhenEmpty?: boolean;
 };
 
 export function Select({
@@ -22,6 +24,8 @@ export function Select({
   helperText,
   dropdownIcon,
   requiredIndicatorPosition = "bottom",
+  floatingLabel = true,
+  floatLabelWhenEmpty = false,
   id: providedId,
   className = "",
   children,
@@ -68,7 +72,7 @@ export function Select({
         error ? "field--error" : ""
       }`}
     >
-      <div className={`field__control field__control--select ${hasValue ? "field__control--has-value" : ""} ${dropdownIcon ? "field__control--custom-select-icon" : ""}`}>
+      <div className={`field__control field__control--select ${hasValue || (floatingLabel && floatLabelWhenEmpty) ? "field__control--has-value" : ""} ${!floatingLabel ? "field__control--no-floating-label" : ""} ${dropdownIcon ? "field__control--custom-select-icon" : ""}`}>
         <select
           {...selectProps}
           id={selectId}
@@ -89,7 +93,7 @@ export function Select({
           {children}
         </select>
 
-        <label htmlFor={selectId}>{label}</label>
+        {floatingLabel && <label htmlFor={selectId}>{label}</label>}
 
         {dropdownIcon && (
           <span className="field__select-icon" aria-hidden="true">
