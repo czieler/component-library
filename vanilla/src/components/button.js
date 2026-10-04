@@ -1,5 +1,4 @@
 const variants = new Set(["primary", "secondary", "outline", "ghost", "danger"]);
-
 export function createButton({
   label = "Button",
   variant = "primary",
@@ -18,11 +17,9 @@ export function createButton({
   element.className = ["button", `button--${safeVariant}`, size === "small" ? "button--small" : "", className].filter(Boolean).join(" ");
   if (ariaLabel) element.setAttribute("aria-label", ariaLabel);
   if (onClick) element.addEventListener("click", onClick);
-
   let currentLabel = label;
   let currentLoading = loading;
   let currentDisabled = disabled;
-
   const render = () => {
     element.replaceChildren();
     element.disabled = currentDisabled || currentLoading;
@@ -42,11 +39,19 @@ export function createButton({
     }
   };
   render();
-
   return {
     element,
-    setLoading(value) { currentLoading = Boolean(value); render(); },
-    setDisabled(value) { currentDisabled = Boolean(value); render(); },
-    setLabel(value) { currentLabel = String(value); render(); },
+    setLoading(value) {
+      currentLoading = Boolean(value);
+      render();
+    },
+    setDisabled(value) {
+      currentDisabled = Boolean(value);
+      render();
+    },
+    setLabel(value) {
+      currentLabel = String(value);
+      render();
+    },
   };
 }

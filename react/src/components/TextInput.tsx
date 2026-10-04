@@ -1,6 +1,6 @@
-import { useId, useState, type InputHTMLAttributes, type ReactNode } from "react";
+import { useFieldAccessibility } from "../hooks/useFieldAccessibility";
+import { useState, type InputHTMLAttributes, type ReactNode } from "react";
 import { Eye, EyeOff } from "lucide-react";
-
 type TextInputProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   error?: string;
@@ -11,7 +11,6 @@ type TextInputProps = InputHTMLAttributes<HTMLInputElement> & {
   requiredIndicatorPosition?: "bottom" | "left";
   passwordToggle?: boolean;
 };
-
 export function TextInput({
   label,
   error,
@@ -27,27 +26,17 @@ export function TextInput({
   "aria-invalid": ariaInvalid,
   ...inputProps
 }: TextInputProps) {
-  const id = useId();
-  const inputId = providedId ?? id;
-  const messageId = `${id}-message`;
+  const { controlId: inputId, messageId, describedBy } = useFieldAccessibility(providedId, ariaDescribedby, error, helperText);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const isPassword = inputProps.type === "password";
   const effectiveType = isPassword && passwordToggle && passwordVisible ? "text" : inputProps.type;
-
-  const describedBy =
-    [ariaDescribedby, error || helperText ? messageId : ""]
-      .filter(Boolean)
-      .join(" ") || undefined;
-
   return (
     <div
-      className={`field ${
-        inputProps.required
+      className={`field ${inputProps.required
           ? `field--required field--required-${requiredIndicatorPosition}`
           : ""
-      } ${inputProps.placeholder ? "field--has-placeholder" : ""} ${inputProps.disabled ? "field--disabled" : ""} ${
-        error ? "field--error" : ""
-      }`}
+        } ${inputProps.placeholder ? "field--has-placeholder" : ""} ${inputProps.disabled ? "field--disabled" : ""} ${error ? "field--error" : ""
+        }`}
     >
       <div className="field__control">
         <input
@@ -59,9 +48,7 @@ export function TextInput({
           aria-invalid={error ? true : ariaInvalid}
           aria-describedby={describedBy}
         />
-
         <label htmlFor={inputId}>{label}</label>
-
         {isPassword && passwordToggle && !inputProps.disabled && (
           <button
             className="field__password-toggle"
@@ -73,7 +60,6 @@ export function TextInput({
             {passwordVisible ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
           </button>
         )}
-
         {clearable && inputProps.value && !inputProps.disabled && (
           <button
             className="field__clear"
@@ -85,7 +71,6 @@ export function TextInput({
           </button>
         )}
       </div>
-
       {(error || helperText) && (
         <small id={messageId} className="field__message">
           {error || helperText}

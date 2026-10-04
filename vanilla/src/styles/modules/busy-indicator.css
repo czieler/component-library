@@ -1,0 +1,36 @@
+/* Shared busy state: spinner inherits the surrounding text color. */
+
+.busy-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  color: inherit;
+  line-height: 1.35;
+}
+
+.busy-indicator__spinner {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 1rem;
+  box-sizing: border-box;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: busy-indicator-spin .75s linear infinite;
+}
+
+.busy-indicator__message {
+  min-width: 0;
+}
+
+@keyframes busy-indicator-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .busy-indicator__spinner {
+    animation-duration: 1.5s;
+  }
+}

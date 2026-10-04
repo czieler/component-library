@@ -1,6 +1,5 @@
 import { type ComponentProps } from "react";
 import { TextInput } from "./TextInput";
-
 export function isValidHttpUrl(value: string) {
   const candidate = value.trim();
   if (!candidate) return true;
@@ -11,13 +10,18 @@ export function isValidHttpUrl(value: string) {
     return false;
   }
 }
-
 type UrlInputProps = Omit<ComponentProps<typeof TextInput>, "type"> & {
   invalidMessage?: string;
 };
-
 export function UrlInput({ value, error, invalidMessage = "Enter a valid URL starting with http:// or https://.", ...props }: UrlInputProps) {
   const textValue = value == null ? "" : String(value);
   const validationError = textValue.trim() && !isValidHttpUrl(textValue) ? invalidMessage : "";
-  return <TextInput {...props} type="url" inputMode="url" autoCapitalize="none" spellCheck={false} value={value} error={error || validationError} />;
+  return <TextInput
+    {...props}
+    type="url"
+    inputMode="url"
+    autoCapitalize="none"
+    spellCheck={false}
+    value={value}
+    error={error || validationError} />;
 }

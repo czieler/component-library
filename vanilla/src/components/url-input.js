@@ -1,5 +1,4 @@
 import { createTextInput } from "./text-input.js";
-
 export function isValidHttpUrl(value = "") {
   const candidate = value.trim();
   if (!candidate) return true;
@@ -10,9 +9,19 @@ export function isValidHttpUrl(value = "") {
     return false;
   }
 }
-
 export function createUrlInput({ invalidMessage = "Enter a valid URL starting with http:// or https://.", error = "", attributes = {}, ...options }) {
   const value = options.value ?? "";
   const validationError = value.trim() && !isValidHttpUrl(value) ? invalidMessage : "";
-  return createTextInput({ ...options, value, error: error || validationError, attributes: { type: "url", inputmode: "url", autocapitalize: "none", spellcheck: "false", ...attributes } });
+  return createTextInput({
+    ...options,
+    value,
+    error: error || validationError,
+    attributes: {
+      type: "url",
+      inputmode: "url",
+      autocapitalize: "none",
+      spellcheck: "false",
+      ...attributes
+    }
+  });
 }

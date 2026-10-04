@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
-
 export type TopNavigationItem = {
   id: string;
   label: string;
@@ -8,7 +7,6 @@ export type TopNavigationItem = {
   disabled?: boolean;
   children?: TopNavigationItem[];
 };
-
 type TopNavigationProps = {
   items: TopNavigationItem[];
   activeId?: string;
@@ -28,7 +26,6 @@ type TopNavigationProps = {
   onOpenMenuChange?: (id: string | null) => void;
   onMobileOpenChange?: (open: boolean) => void;
 };
-
 export function TopNavigation({
   items,
   activeId,
@@ -49,24 +46,23 @@ export function TopNavigation({
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const controlled = openMenuId !== undefined;
   const openId = controlled ? openMenuId ?? undefined : internalOpenId;
-
   const changeOpenId = (next: string | undefined | ((current: string | undefined) => string | undefined)) => {
     const resolved = typeof next === "function" ? next(openId) : next;
     if (!controlled) setInternalOpenId(resolved);
     onOpenMenuChange?.(resolved ?? null);
   };
-
   const changeMobileOpen = useCallback((next: boolean) => {
     setMobileOpen(next);
     onMobileOpenChange?.(next);
   }, [onMobileOpenChange]);
-
+  const activateItem = (item: TopNavigationItem) => {
+    if (item.children?.length) changeOpenId((current) => current === item.id ? undefined : item.id);
+    else select(item.id);
+  };
   const activeGroupId = items.find((item) => item.children?.some((child) => child.id === activeId))?.id;
-
   useEffect(() => {
     if (mobileOpen) closeButtonRef.current?.focus();
   }, [mobileOpen]);
-
   useEffect(() => {
     if (!mobileOpen) return;
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
@@ -75,13 +71,11 @@ export function TopNavigation({
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [mobileOpen, changeMobileOpen]);
-
   const select = (id: string) => {
     onSelect(id);
     changeOpenId(undefined);
     changeMobileOpen(false);
   };
-
   const handleDesktopKeyDown = (event: KeyboardEvent<HTMLButtonElement>, item: TopNavigationItem) => {
     if (!item.children?.length) return;
     if (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") {
@@ -92,7 +86,6 @@ export function TopNavigation({
     }
     if (event.key === "Escape") changeOpenId(undefined);
   };
-
   return (
     <>
       <header className="cz-top-nav">
@@ -108,7 +101,11 @@ export function TopNavigation({
                 key={item.id}
                 onMouseEnter={() => hasChildren && changeOpenId(item.id)}
                 onMouseLeave={() => hasChildren && changeOpenId((current) => (current === item.id ? undefined : current))}
-                onFocus={() => hasChildren && changeOpenId(item.id)}
+                onFocus={(event) => {
+                  if (hasChildren && !event.currentTarget.contains(event.relatedTarget as Node | null)) {
+                    changeOpenId(item.id);
+                  }
+                }}
                 onBlur={(event) => {
                   if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
                     changeOpenId((current) => (current === item.id ? undefined : current));
@@ -122,7 +119,7 @@ export function TopNavigation({
                   aria-current={!hasChildren && active ? "page" : undefined}
                   aria-expanded={hasChildren ? open : undefined}
                   aria-haspopup={hasChildren ? "menu" : undefined}
-                  onClick={() => hasChildren ? changeOpenId((current) => current === item.id ? undefined : item.id) : select(item.id)}
+                  onClick={() => activateItem(item)}
                   onKeyDown={(event) => handleDesktopKeyDown(event, item)}
                 >
                   {item.icon && <span className="cz-top-nav__icon" aria-hidden="true">{item.icon}</span>}
@@ -130,12 +127,16 @@ export function TopNavigation({
                   {hasChildren && <span className="cz-top-nav__chevron" aria-hidden="true">{submenuIcon}</span>}
                 </button>
                 {hasChildren && open && (
-                  <div className="cz-top-nav__flyout" role="menu" aria-label={item.label} onKeyDown={(event) => {
-                    if (event.key === "Escape") {
-                      changeOpenId(undefined);
-                      (event.currentTarget.previousElementSibling as HTMLButtonElement | null)?.focus();
-                    }
-                  }}>
+                  <div
+                    className="cz-top-nav__flyout"
+                    role="menu"
+                    aria-label={item.label}
+                    onKeyDown={(event) => {
+                      if (event.key === "Escape") {
+                        changeOpenId(undefined);
+                        (event.currentTarget.previousElementSibling as HTMLButtonElement | null)?.focus();
+                      }
+                    }}>
                     {item.children?.map((child) => (
                       <button
                         type="button"
@@ -155,25 +156,40 @@ export function TopNavigation({
             );
           })}
         </nav>
-        <button className="cz-top-nav__mobile-trigger" type="button" aria-label="Open navigation" aria-expanded={mobileOpen} onClick={() => changeMobileOpen(true)}>
+        <button
+          className="cz-top-nav__mobile-trigger"
+          type="button"
+          aria-label="Open navigation"
+          aria-expanded={mobileOpen}
+          onClick={() => changeMobileOpen(true)}>
           <span aria-hidden="true">{menuIcon}</span>
         </button>
         <div className="cz-top-nav__mobile-brand">{brand}</div>
         <div className="cz-top-nav__mobile-header-end">{mobileHeaderEnd}</div>
         <div className="cz-top-nav__end">{endContent}</div>
       </header>
-
       {openId && !mobileOpen && (
-        <button className="cz-top-nav__desktop-scrim" type="button" aria-label="Close open navigation menu" onClick={() => changeOpenId(undefined)} />
+        <button
+          className="cz-top-nav__desktop-scrim"
+          type="button"
+          aria-label="Close open navigation menu"
+          onClick={() => changeOpenId(undefined)} />
       )}
-
       {mobileOpen && (
         <>
-          <button className="cz-top-nav__scrim" type="button" aria-label="Close navigation" onClick={() => changeMobileOpen(false)} />
+          <button
+            className="cz-top-nav__scrim"
+            type="button"
+            aria-label="Close navigation"
+            onClick={() => changeMobileOpen(false)} />
           <aside className="cz-top-nav__mobile-panel" aria-label="Mobile navigation">
             <div className="cz-top-nav__mobile-header">
               <div>{brand}</div>
-              <button ref={closeButtonRef} type="button" aria-label="Close navigation" onClick={() => changeMobileOpen(false)}><span aria-hidden="true">{closeIcon}</span></button>
+              <button
+                ref={closeButtonRef}
+                type="button"
+                aria-label="Close navigation"
+                onClick={() => changeMobileOpen(false)}><span aria-hidden="true">{closeIcon}</span></button>
             </div>
             <nav>
               {items.map((item) => {
@@ -185,13 +201,18 @@ export function TopNavigation({
                     type="button"
                     className={`cz-top-nav__mobile-item ${active ? "cz-top-nav__mobile-item--active" : ""}`}
                     disabled={item.disabled}
-                    onClick={() => hasChildren ? changeOpenId((current) => current === item.id ? undefined : item.id) : select(item.id)}
+                    onClick={() => activateItem(item)}
                     aria-expanded={hasChildren ? open : undefined}
                   >
                     <span className="cz-top-nav__mobile-label">{item.icon && <span className="cz-top-nav__mobile-icon" aria-hidden="true">{item.icon}</span>}<span>{item.label}</span></span>{hasChildren && <span aria-hidden="true">{submenuIcon}</span>}
                   </button>
                   {hasChildren && open && <div className="cz-top-nav__mobile-children">
-                    {item.children?.map((child) => <button type="button" key={child.id} className={activeId === child.id ? "is-active" : ""} disabled={child.disabled} onClick={() => select(child.id)}><span className="cz-top-nav__mobile-label"><span className="cz-top-nav__mobile-icon" aria-hidden="true">{child.icon}</span><span>{child.label}</span></span></button>)}
+                    {item.children?.map((child) => <button
+                      type="button"
+                      key={child.id}
+                      className={activeId === child.id ? "is-active" : ""}
+                      disabled={child.disabled}
+                      onClick={() => select(child.id)}><span className="cz-top-nav__mobile-label"><span className="cz-top-nav__mobile-icon" aria-hidden="true">{child.icon}</span><span>{child.label}</span></span></button>)}
                   </div>}
                 </div>;
               })}

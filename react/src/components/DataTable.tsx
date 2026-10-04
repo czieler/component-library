@@ -1,6 +1,5 @@
 import { Fragment, useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import { ChevronDown, ChevronRight, ChevronUp } from "lucide-react";
-
 export type DataTableColumn<T> = {
   id: string;
   label: ReactNode;
@@ -10,23 +9,18 @@ export type DataTableColumn<T> = {
   sortable?: boolean;
   sortValue?: (row: T) => string | number | null | undefined;
 };
-
 type DataTableProps<T> = {
   columns: DataTableColumn<T>[];
   rows: T[];
   getRowId: (row: T) => string;
   className?: string;
-
   headerMode?: "columns" | "section";
   sectionHeader?: ReactNode;
-
   collapsible?: boolean;
   defaultCollapsed?: boolean;
   headerExpandIcon?: ReactNode;
   headerCollapseIcon?: ReactNode;
-
   cellDividers?: "all" | "rows";
-
   footer?: ReactNode;
   renderExpandedRow?: (row: T) => ReactNode;
   isRowExpandable?: (row: T) => boolean;
@@ -40,7 +34,6 @@ type DataTableProps<T> = {
   onSortChange?: (sortState: { columnId: string; direction: "asc" | "desc" }) => void;
   sortMode?: "client" | "external";
 };
-
 export function DataTable<T>({
   columns,
   rows,
@@ -72,7 +65,6 @@ export function DataTable<T>({
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
   const [internalSortState, setInternalSortState] = useState<{ columnId: string; direction: "asc" | "desc" } | null>(null);
   const sortState = controlledSortState !== undefined ? controlledSortState : internalSortState;
-
   const displayRows = useMemo(() => {
     if (sortMode === "external" || !sortState) return rows;
     const column = columns.find((candidate) => candidate.id === sortState.columnId);
@@ -93,7 +85,6 @@ export function DataTable<T>({
       return sortState.direction === "asc" ? comparison : -comparison;
     });
   }, [columns, rows, sortMode, sortState]);
-
   const toggleSort = (columnId: string) => {
     const next = sortState?.columnId === columnId
       ? { columnId, direction: sortState.direction === "asc" ? "desc" as const : "asc" as const }
@@ -101,12 +92,10 @@ export function DataTable<T>({
     if (onSortChange) onSortChange(next);
     else setInternalSortState(next);
   };
-
   const rowsExpandable = Boolean(renderExpandedRow);
   const totalColumns = columns.length;
   const hasSectionHeader = Boolean(sectionHeader);
   const showColumnHeaders = headerMode === "columns";
-
   const toggleRow = (rowId: string) => {
     setExpandedIds((current) => {
       const next = new Set(current);
@@ -115,7 +104,6 @@ export function DataTable<T>({
       return next;
     });
   };
-
   const rootClassName = [
     "data-table",
     className,
@@ -125,13 +113,16 @@ export function DataTable<T>({
     showColumnHeaders && !hasSectionHeader ? "data-table--standalone-columns" : "",
     cellDividers === "rows" ? "data-table--row-dividers" : "data-table--cell-dividers",
   ].filter(Boolean).join(" ");
-
   return (
     <div className={rootClassName}>
       {hasSectionHeader && (
         <div className="data-table__header">
           {collapsible ? (
-            <button type="button" className="data-table__header-toggle" onClick={() => setIsCollapsed((value) => !value)} aria-expanded={!isCollapsed}>
+            <button
+              type="button"
+              className="data-table__header-toggle"
+              onClick={() => setIsCollapsed((value) => !value)}
+              aria-expanded={!isCollapsed}>
               <span className="data-table__header-content">{sectionHeader}</span>
               <span className="data-table__header-icon" aria-hidden="true">{isCollapsed ? headerExpandIcon : headerCollapseIcon}</span>
             </button>
@@ -140,7 +131,6 @@ export function DataTable<T>({
           )}
         </div>
       )}
-
       {!isCollapsed && (
         <>
           <div className="data-table__scroll">
@@ -152,7 +142,13 @@ export function DataTable<T>({
                     {columns.map((column) => {
                       const activeSort = sortState?.columnId === column.id ? sortState.direction : null;
                       return (
-                        <th key={column.id} scope="col" style={{ width: column.width }} data-column={column.id} className={`data-table__cell--${column.align ?? "left"}`} aria-sort={column.sortable ? (activeSort === "asc" ? "ascending" : activeSort === "desc" ? "descending" : "none") : undefined}>
+                        <th
+                          key={column.id}
+                          scope="col"
+                          style={{ width: column.width }}
+                          data-column={column.id}
+                          className={`data-table__cell--${column.align ?? "left"}`}
+                          aria-sort={column.sortable ? (activeSort === "asc" ? "ascending" : activeSort === "desc" ? "descending" : "none") : undefined}>
                           {column.sortable ? (
                             <button type="button" className="data-table__sort-button" onClick={() => toggleSort(column.id)}>
                               <span>{column.label}</span>
@@ -182,10 +178,28 @@ export function DataTable<T>({
                       <tr
                         className={`data-table__row ${isExpanded ? "data-table__row--expanded" : ""} ${onRowClick ? "data-table__row--clickable" : ""}`}
                         onClick={onRowClick ? () => onRowClick(row) : undefined}
-                        onKeyDown={onRowClick ? (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onRowClick(row); } } : undefined}
+                        onKeyDown={onRowClick ? (event) => {
+                          if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            onRowClick(row);
+                          }
+                        } : undefined}
                         tabIndex={onRowClick ? 0 : undefined}
                       >
-                        {columns.map((column, columnIndex) => <td key={column.id} data-column={column.id} className={`data-table__cell--${column.align ?? "left"}`} onClick={column.id === "actions" && onRowClick ? (event) => event.stopPropagation() : undefined} onKeyDown={column.id === "actions" && onRowClick ? (event) => event.stopPropagation() : undefined}>{rowExpandable && columnIndex === 0 ? <div className="data-table__first-cell-with-expand"><button type="button" className="data-table__expand-button" onClick={(event) => { event.stopPropagation(); toggleRow(rowId); }} aria-expanded={isExpanded} aria-label={isExpanded ? `Collapse row ${rowId}` : `Expand row ${rowId}`}><span aria-hidden="true">{isExpanded ? collapseIcon : expandIcon}</span></button><div className="data-table__first-cell-content">{column.render(row)}</div></div> : column.render(row)}</td>)}
+                        {columns.map((column, columnIndex) => <td
+                          key={column.id}
+                          data-column={column.id}
+                          className={`data-table__cell--${column.align ?? "left"}`}
+                          onClick={column.id === "actions" && onRowClick ? (event) => event.stopPropagation() : undefined}
+                          onKeyDown={column.id === "actions" && onRowClick ? (event) => event.stopPropagation() : undefined}>{rowExpandable && columnIndex === 0 ? <div className="data-table__first-cell-with-expand"><button
+                            type="button"
+                            className="data-table__expand-button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              toggleRow(rowId);
+                            }}
+                            aria-expanded={isExpanded}
+                            aria-label={isExpanded ? `Collapse row ${rowId}` : `Expand row ${rowId}`}><span aria-hidden="true">{isExpanded ? collapseIcon : expandIcon}</span></button><div className="data-table__first-cell-content">{column.render(row)}</div></div> : column.render(row)}</td>)}
                       </tr>
                       {rowExpandable && isExpanded && (
                         <tr className="data-table__expanded-row"><td colSpan={totalColumns}><div className="data-table__expanded-content">{renderExpandedRow?.(row)}</div></td></tr>
@@ -197,7 +211,6 @@ export function DataTable<T>({
               {footer && <tfoot><tr><td className="data-table__footer" colSpan={totalColumns}>{footer}</td></tr></tfoot>}
             </table>
           </div>
-
           <div className="data-table__mobile" role="list" aria-label={caption ?? "Table rows"}>
             {rows.length === 0 ? (
               <div className="data-table__mobile-empty">{emptyMessage}</div>
@@ -206,7 +219,11 @@ export function DataTable<T>({
               const rowExpandable = rowsExpandable && (isRowExpandable ? isRowExpandable(row) : true);
               const isExpanded = rowExpandable && expandedIds.has(rowId);
               return (
-                <article className={`data-table__mobile-card ${onRowClick ? "data-table__mobile-card--clickable" : ""}`} role="listitem" key={`mobile-${rowId}`} onClick={onRowClick ? () => onRowClick(row) : undefined}>
+                <article
+                  className={`data-table__mobile-card ${onRowClick ? "data-table__mobile-card--clickable" : ""}`}
+                  role="listitem"
+                  key={`mobile-${rowId}`}
+                  onClick={onRowClick ? () => onRowClick(row) : undefined}>
                   {columns.map((column) => (
                     <div className="data-table__mobile-field" key={column.id} onClick={column.id === "actions" && onRowClick ? (event) => event.stopPropagation() : undefined}>
                       <span className="data-table__mobile-label">{column.label}</span>
@@ -215,7 +232,14 @@ export function DataTable<T>({
                   ))}
                   {rowExpandable && (
                     <div className="data-table__mobile-expand">
-                      <button type="button" className="data-table__expand-button" onClick={(event) => { event.stopPropagation(); toggleRow(rowId); }} aria-expanded={isExpanded}>
+                      <button
+                        type="button"
+                        className="data-table__expand-button"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          toggleRow(rowId);
+                        }}
+                        aria-expanded={isExpanded}>
                         <span aria-hidden="true">{isExpanded ? collapseIcon : expandIcon}</span>
                         <span>{isExpanded ? "Hide details" : "Show details"}</span>
                       </button>

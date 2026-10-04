@@ -1,0 +1,22 @@
+@media (max-width: 700px) {
+  .mobile-nav-group__children {
+    margin-left: 2rem;
+  }
+
+  .data-table table {
+    min-width: 560px;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 0.8rem;
+  }
+
+  .data-table__expanded-content {
+    padding-left: 1rem;
+  }
+
+  .table-docs-grid {
+    grid-template-columns: 1fr;
+  }
+}

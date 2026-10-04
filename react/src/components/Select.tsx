@@ -1,11 +1,10 @@
-import { useId, useState, type ChangeEvent, type ReactNode, type SelectHTMLAttributes } from "react";
-
+import { useFieldAccessibility } from "../hooks/useFieldAccessibility";
+import { useState, type ChangeEvent, type ReactNode, type SelectHTMLAttributes } from "react";
 type SelectOption = {
   label: string;
   value: string;
   disabled?: boolean;
 };
-
 type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
   label: string;
   options?: SelectOption[];
@@ -16,7 +15,6 @@ type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
   floatingLabel?: boolean;
   floatLabelWhenEmpty?: boolean;
 };
-
 export function Select({
   label,
   options,
@@ -36,41 +34,29 @@ export function Select({
   onChange,
   ...selectProps
 }: SelectProps) {
-  const id = useId();
-  const selectId = providedId ?? id;
-  const messageId = `${id}-message`;
+  const { controlId: selectId, messageId, describedBy } = useFieldAccessibility(providedId, ariaDescribedby, error, helperText);
   const initialValue = value ?? defaultValue ?? "";
   const [uncontrolledValue, setUncontrolledValue] = useState(String(initialValue));
   const currentValue = value !== undefined ? String(value ?? "") : uncontrolledValue;
   const hasValue = currentValue !== "";
-
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     if (value === undefined) {
       setUncontrolledValue(event.target.value);
     }
     onChange?.(event);
   };
-
-  const describedBy =
-    [ariaDescribedby, error || helperText ? messageId : ""]
-      .filter(Boolean)
-      .join(" ") || undefined;
-
   const optionNodes: ReactNode = options?.map((option) => (
     <option key={option.value} value={option.value} disabled={option.disabled}>
       {option.label}
     </option>
   ));
-
   return (
     <div
-      className={`field ${
-        selectProps.required
-          ? `field--required field--required-${requiredIndicatorPosition}`
-          : ""
-      } ${selectProps.disabled ? "field--disabled" : ""} ${
-        error ? "field--error" : ""
-      }`}
+      className={`field ${selectProps.required
+        ? `field--required field--required-${requiredIndicatorPosition}`
+        : ""
+        } ${selectProps.disabled ? "field--disabled" : ""} ${error ? "field--error" : ""
+        }`}
     >
       <div className={`field__control field__control--select ${hasValue || (floatingLabel && floatLabelWhenEmpty) ? "field__control--has-value" : ""} ${!floatingLabel ? "field__control--no-floating-label" : ""} ${dropdownIcon ? "field__control--custom-select-icon" : ""}`}>
         <select
@@ -88,20 +74,16 @@ export function Select({
               {hasValue ? "" : label}
             </option>
           )}
-
           {optionNodes}
           {children}
         </select>
-
         {floatingLabel && <label htmlFor={selectId}>{label}</label>}
-
         {dropdownIcon && (
           <span className="field__select-icon" aria-hidden="true">
             {dropdownIcon}
           </span>
         )}
       </div>
-
       {(error || helperText) && (
         <small id={messageId} className="field__message">
           {error || helperText}

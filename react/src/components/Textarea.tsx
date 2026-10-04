@@ -1,12 +1,11 @@
-import { useId, type TextareaHTMLAttributes } from "react";
-
+import { useFieldAccessibility } from "../hooks/useFieldAccessibility";
+import { type TextareaHTMLAttributes } from "react";
 type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
   label: string;
   error?: string;
   helperText?: string;
   requiredIndicatorPosition?: "bottom" | "left";
 };
-
 export function Textarea({
   label,
   error,
@@ -18,13 +17,7 @@ export function Textarea({
   "aria-invalid": ariaInvalid,
   ...textareaProps
 }: TextareaProps) {
-  const id = useId();
-  const textareaId = providedId ?? id;
-  const messageId = `${id}-message`;
-  const describedBy =
-    [ariaDescribedby, error || helperText ? messageId : ""]
-      .filter(Boolean)
-      .join(" ") || undefined;
+  const { controlId: textareaId, messageId, describedBy } = useFieldAccessibility(providedId, ariaDescribedby, error, helperText);
   return (
     <div
       className={`field ${textareaProps.required ? `field--required field--required-${requiredIndicatorPosition}` : ""} ${textareaProps.disabled ? "field--disabled" : ""} ${error ? "field--error" : ""}`}

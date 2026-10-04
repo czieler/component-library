@@ -1,0 +1,23 @@
+import { text, implementationDetails } from "./content.js";
+import { createCard } from "../components/card.js";
+export const cardsDemo = () => {
+  const fragment = document.createDocumentFragment();
+  const heading = document.createElement("div");
+  heading.className = "section-heading";
+  heading.append(text("p", "Layout", "eyebrow"), text("h2", "Cards"), text("p", "A lightweight surface wrapper for generic grouped content.", "lede"));
+  const showcase = document.createElement("div");
+  showcase.className = "component-showcase";
+  const section = document.createElement("section");
+  section.className = "demo-section";
+  const grid = document.createElement("div");
+  grid.className = "component-card-demo-grid";
+  const one = createCard();
+  one.append(text("h3", "Default card"), text("p", "Standard padding and border."));
+  const two = createCard({ elevated: true, padding: "compact" });
+  two.append(text("h3", "Elevated card"), text("p", "Compact spacing with a soft shadow."));
+  grid.append(one, two);
+  section.append(grid, implementationDetails(["Use Card only for generic surface treatment. Product-specific layouts should remain in the consuming application."]));
+  showcase.append(section);
+  fragment.append(heading, showcase);
+  return fragment;
+};

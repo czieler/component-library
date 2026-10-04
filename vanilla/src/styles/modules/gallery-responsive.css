@@ -1,0 +1,6 @@
+@media (max-width: 450px) {
+  .project-facts,
+  .state-grid {
+    grid-template-columns: 1fr;
+  }
+}

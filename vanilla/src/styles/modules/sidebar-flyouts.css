@@ -1,0 +1,32 @@
+/* Hierarchical navigation parity */
+
+.sidebar {
+  overflow: visible;
+}
+
+.nav-item,
+.nav-subitem,
+.nav-flyout__item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+
+.nav-group {
+  position: relative;
+}
+
+.nav-group__chevron {
+  display: inline-flex;
+  margin-left: auto;
+  transition: transform 0.18s ease;
+}
+
+.nav-group__chevron--open {
+  transform: rotate(180deg);
+}

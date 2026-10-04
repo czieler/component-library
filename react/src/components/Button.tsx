@@ -1,8 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
-
 export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "danger";
 export type ButtonSize = "default" | "small";
-
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant;
   size?: ButtonSize;
@@ -11,7 +9,6 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
 };
-
 export function Button({
   variant = "primary",
   size = "default",
@@ -30,7 +27,6 @@ export function Button({
     size === "small" ? "button--small" : "",
     className,
   ].filter(Boolean).join(" ");
-
   return (
     <button
       {...props}

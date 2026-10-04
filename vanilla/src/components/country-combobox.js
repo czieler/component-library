@@ -1,5 +1,5 @@
+import { createFieldId } from "./field-helpers.js";
 import { icons } from "./icons.js";
-
 export function createCountryCombobox({
   label = "Country",
   options = [],
@@ -16,7 +16,7 @@ export function createCountryCombobox({
   const control = document.createElement("div");
   control.className = `field__control field__control--select country-combobox__control ${value ? "field__control--has-value" : ""}`;
   const input = document.createElement("input");
-  const inputId = `country-${crypto.randomUUID()}`;
+  const inputId = createFieldId("country");
   input.id = inputId;
   input.type = "text";
   input.placeholder = " ";
@@ -40,25 +40,75 @@ export function createCountryCombobox({
   menu.className = "country-combobox__menu";
   menu.setAttribute("role", "listbox");
   menu.hidden = true;
+  let blurTimer;
   let currentValue = value;
   const selectedName = () => sorted.find((item) => item.code === currentValue)?.name ?? "";
   input.value = selectedName();
-  const setOpen = (open) => { menu.hidden = !open; input.setAttribute("aria-expanded", String(open)); };
+  const setOpen = (open) => {
+    menu.hidden = !open;
+    input.setAttribute("aria-expanded", String(open));
+  };
   const render = () => {
     const normalized = input.value.trim().toLowerCase();
     const selected = selectedName().toLowerCase();
     const filtered = !normalized || normalized === selected ? sorted : sorted.filter((item) => item.name.toLowerCase().includes(normalized) || item.code.toLowerCase().startsWith(normalized));
     menu.replaceChildren();
-    if (!filtered.length) { const empty=document.createElement("div"); empty.className="country-combobox__empty"; empty.textContent="No countries found."; menu.append(empty); return; }
+    if (!filtered.length) {
+      const empty = document.createElement("div");
+      empty.className = "country-combobox__empty";
+      empty.textContent = "No countries found.";
+      menu.append(empty);
+      return;
+    }
     filtered.forEach((country) => {
-      const option = document.createElement("button"); option.type="button"; option.className=`country-combobox__option ${country.code===currentValue?"is-selected":""}`; option.setAttribute("role","option"); option.setAttribute("aria-selected",String(country.code===currentValue));
-      const name=document.createElement("span"); name.textContent=country.name; const code=document.createElement("small"); code.textContent=country.code; option.append(name,code);
-      option.addEventListener("mousedown",(event)=>event.preventDefault()); option.addEventListener("click",()=>{ currentValue=country.code; input.value=country.name; control.classList.add("field__control--has-value"); setOpen(false); onChange?.(currentValue); }); menu.append(option);
+      const option = document.createElement("button");
+      option.type = "button";
+      option.className = `country-combobox__option ${country.code === currentValue ? "is-selected" : ""}`;
+      option.setAttribute("role", "option");
+      option.setAttribute("aria-selected", String(country.code === currentValue));
+      const name = document.createElement("span");
+      name.textContent = country.name;
+      const code = document.createElement("small");
+      code.textContent = country.code;
+      option.append(name, code);
+      option.addEventListener("mousedown", (event) => event.preventDefault());
+      option.addEventListener("click", () => {
+        currentValue = country.code;
+        input.value = country.name;
+        control.classList.add("field__control--has-value");
+        setOpen(false);
+        onChange?.(currentValue);
+      });
+      menu.append(option);
     });
   };
-  input.addEventListener("focus",()=>{render();setOpen(true)});
-  input.addEventListener("blur",()=>window.setTimeout(()=>{setOpen(false); if(!currentValue) input.value="";},120));
-  input.addEventListener("input",()=>{ const normalized=input.value.trim().toLowerCase(); const exact=sorted.find((item)=>item.name.toLowerCase()===normalized||item.code.toLowerCase()===normalized); currentValue=exact?.code??""; control.classList.toggle("field__control--has-value",Boolean(currentValue)); onChange?.(currentValue); render(); setOpen(true); });
-  toggle.addEventListener("mousedown",(event)=>event.preventDefault()); toggle.addEventListener("click",()=>{render();setOpen(menu.hidden)});
-  control.append(input,labelElement,toggle,menu); wrapper.append(control); return wrapper;
+  input.addEventListener("focus", () => {
+    render();
+    setOpen(true)
+  });
+  input.addEventListener("blur", () => {
+    window.clearTimeout(blurTimer);
+    blurTimer = window.setTimeout(() => {
+      setOpen(false);
+      if (!currentValue) input.value = "";
+    }, 120);
+  });
+  input.addEventListener("input", () => {
+    const normalized = input.value.trim().toLowerCase();
+    const exact = sorted.find((item) => item.name.toLowerCase() === normalized || item.code.toLowerCase() === normalized);
+    currentValue = exact?.code ?? "";
+    control.classList.toggle("field__control--has-value", Boolean(currentValue));
+    onChange?.(currentValue);
+    render();
+    setOpen(true);
+  });
+  toggle.addEventListener("mousedown", (event) => event.preventDefault());
+  toggle.addEventListener("click", () => {
+    render();
+    setOpen(menu.hidden)
+  });
+  control.append(input, labelElement, toggle, menu);
+  wrapper.append(control);
+  wrapper.destroy = () => window.clearTimeout(blurTimer);
+  return wrapper;
 }

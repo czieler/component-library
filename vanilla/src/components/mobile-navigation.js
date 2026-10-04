@@ -1,14 +1,11 @@
 import { icons } from "./icons.js";
-
 export function createMobileNavigation({ items, active, onSelect }) {
   const scrim = document.createElement("div");
   scrim.className = "mobile-nav__scrim";
   scrim.hidden = true;
-
   const drawer = document.createElement("aside");
   drawer.className = "mobile-nav";
   drawer.setAttribute("aria-label", "Mobile navigation");
-
   const header = document.createElement("div");
   header.className = "mobile-nav__header";
   const title = document.createElement("h2");
@@ -20,9 +17,7 @@ export function createMobileNavigation({ items, active, onSelect }) {
   close.setAttribute("aria-label", "Close navigation");
   header.append(title, close);
   drawer.append(header);
-
   let returnFocusTo = null;
-
   const setOpen = (open, trigger = null) => {
     if (open && trigger) returnFocusTo = trigger;
     drawer.classList.toggle("mobile-nav--open", open);
@@ -30,28 +25,23 @@ export function createMobileNavigation({ items, active, onSelect }) {
     if (open) close.focus();
     else if (returnFocusTo?.isConnected) returnFocusTo.focus();
   };
-
   close.addEventListener("click", () => setOpen(false));
   scrim.addEventListener("click", () => setOpen(false));
-
   const handleKeydown = (event) => {
     if (event.key === "Escape" && drawer.classList.contains("mobile-nav--open")) {
       setOpen(false);
     }
   };
   document.addEventListener("keydown", handleKeydown);
-
   items.forEach((item) => {
     const hasChildren = Boolean(item.children?.length);
     const childActive = item.children?.some((child) => child.id === active);
     const group = document.createElement("div");
     group.className = "mobile-nav-group";
-
     const button = document.createElement("button");
     button.type = "button";
     button.className = `nav-item ${item.id === active || childActive ? "nav-item--active" : ""}`;
     button.disabled = item.disabled ?? false;
-
     if (item.icon) {
       const icon = document.createElement("span");
       icon.className = "nav-item__icon";
@@ -59,12 +49,10 @@ export function createMobileNavigation({ items, active, onSelect }) {
       icon.innerHTML = item.icon;
       button.append(icon);
     }
-
     const label = document.createElement("span");
     label.className = "nav-item__label";
     label.textContent = item.label;
     button.append(label);
-
     if (hasChildren) {
       button.setAttribute("aria-expanded", "true");
       const chevron = document.createElement("span");
@@ -79,9 +67,7 @@ export function createMobileNavigation({ items, active, onSelect }) {
         onSelect(item.id);
       });
     }
-
     group.append(button);
-
     if (hasChildren) {
       const children = document.createElement("div");
       children.className = "mobile-nav-group__children";
@@ -99,10 +85,8 @@ export function createMobileNavigation({ items, active, onSelect }) {
       });
       group.append(children);
     }
-
     drawer.append(group);
   });
-
   return {
     drawer,
     scrim,

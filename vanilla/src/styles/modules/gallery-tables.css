@@ -1,0 +1,18 @@
+.table-demo-details strong {
+  color: var(--color-text);
+}
+
+.table-demo-section-header,
+.table-demo-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.table-demo-section-header span,
+.table-demo-footer span {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.85rem;
+  font-weight: 400;
+}

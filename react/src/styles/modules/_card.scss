@@ -1,0 +1,11 @@
+/* Reusable Card */
+
+.card { border:1px solid var(--color-border); border-radius:var(--radius-md); background:var(--color-surface); color:var(--color-text); }
+
+.card--padding-default { padding:var(--space-5); }
+
+.card--padding-compact { padding:var(--space-4); }
+
+.card--padding-none { padding:0; }
+
+.card--elevated { box-shadow:var(--shadow-soft); }

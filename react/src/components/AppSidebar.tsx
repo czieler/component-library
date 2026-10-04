@@ -1,5 +1,4 @@
 import { useEffect, useState, type FocusEvent, type ReactNode } from "react";
-
 export type NavItem = {
   id: string;
   label: string;
@@ -7,7 +6,6 @@ export type NavItem = {
   disabled?: boolean;
   children?: NavItem[];
 };
-
 type AppSidebarProps = {
   items: NavItem[];
   activeId?: string;
@@ -20,7 +18,6 @@ type AppSidebarProps = {
   expandIcon?: ReactNode;
   submenuIcon?: ReactNode;
 };
-
 export function AppSidebar({
   items,
   activeId,
@@ -41,17 +38,14 @@ export function AppSidebar({
   const activeGroupId = items.find((item) =>
     item.children?.some((child) => child.id === activeId),
   )?.id;
-
   const [openGroupId, setOpenGroupId] = useState<string | undefined>(
     activeGroupId,
   );
-
   useEffect(() => {
     if (!collapsed && activeGroupId) {
       setOpenGroupId(activeGroupId);
     }
   }, [activeGroupId, collapsed]);
-
   const closeFlyoutOnBlur = (
     event: FocusEvent<HTMLDivElement>,
     groupId: string,
@@ -63,18 +57,15 @@ export function AppSidebar({
       setOpenGroupId((current) => (current === groupId ? undefined : current));
     }
   };
-
   const renderIcon = (item: NavItem) =>
     item.icon ? (
       <span className="nav-item__icon" aria-hidden="true">
         {item.icon}
       </span>
     ) : null;
-
   return (
     <aside className={`sidebar ${collapsed ? "sidebar--collapsed" : ""}`}>
       <div className="sidebar__brand">{brand}</div>
-
       <nav aria-label={ariaLabel}>
         {items.map((item) => {
           const hasChildren = Boolean(item.children?.length);
@@ -83,7 +74,6 @@ export function AppSidebar({
             item.children?.some((child) => child.id === activeId),
           );
           const isOpen = openGroupId === item.id;
-
           if (!hasChildren) {
             return (
               <button
@@ -102,7 +92,6 @@ export function AppSidebar({
               </button>
             );
           }
-
           return (
             <div
               key={item.id}
@@ -118,9 +107,8 @@ export function AppSidebar({
             >
               <button
                 type="button"
-                className={`nav-item nav-group__trigger ${
-                  hasActiveChild || isActive ? "nav-item--active" : ""
-                }`}
+                className={`nav-item nav-group__trigger ${hasActiveChild || isActive ? "nav-item--active" : ""
+                  }`}
                 disabled={item.disabled}
                 onClick={() =>
                   setOpenGroupId((current) =>
@@ -131,14 +119,12 @@ export function AppSidebar({
                 title={collapsed ? item.label : undefined}
               >
                 {renderIcon(item)}
-
                 {!collapsed && (
                   <>
                     <span className="nav-item__label">{item.label}</span>
                     <span
-                      className={`nav-group__chevron ${
-                        isOpen ? "nav-group__chevron--open" : ""
-                      }`}
+                      className={`nav-group__chevron ${isOpen ? "nav-group__chevron--open" : ""
+                        }`}
                       aria-hidden="true"
                     >
                       {submenuIcon}
@@ -146,19 +132,16 @@ export function AppSidebar({
                   </>
                 )}
               </button>
-
               {!collapsed && isOpen && (
                 <div className="nav-group__children">
                   {item.children?.map((child) => {
                     const childActive = activeId === child.id;
-
                     return (
                       <button
                         key={child.id}
                         type="button"
-                        className={`nav-subitem ${
-                          childActive ? "nav-subitem--active" : ""
-                        }`}
+                        className={`nav-subitem ${childActive ? "nav-subitem--active" : ""
+                          }`}
                         disabled={child.disabled}
                         onClick={() => onSelect(child.id)}
                         aria-current={childActive ? "page" : undefined}
@@ -170,7 +153,6 @@ export function AppSidebar({
                   })}
                 </div>
               )}
-
               {collapsed && isOpen && (
                 <div
                   className="nav-flyout"
@@ -186,17 +168,14 @@ export function AppSidebar({
                   }}
                 >
                   <div className="nav-flyout__title">{item.label}</div>
-
                   {item.children?.map((child) => {
                     const childActive = activeId === child.id;
-
                     return (
                       <button
                         key={child.id}
                         type="button"
-                        className={`nav-flyout__item ${
-                          childActive ? "nav-flyout__item--active" : ""
-                        }`}
+                        className={`nav-flyout__item ${childActive ? "nav-flyout__item--active" : ""
+                          }`}
                         disabled={child.disabled}
                         onClick={() => {
                           onSelect(child.id);
@@ -215,7 +194,6 @@ export function AppSidebar({
           );
         })}
       </nav>
-
       <button
         type="button"
         className="sidebar-toggle"

@@ -1,0 +1,6 @@
+@media (max-width: 700px) {
+  .table-docs-grid,
+  .table-combination-grid {
+    grid-template-columns: 1fr;
+  }
+}

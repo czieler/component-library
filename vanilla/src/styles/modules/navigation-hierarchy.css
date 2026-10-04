@@ -1,0 +1,8 @@
+.nav-group__children,
+.mobile-nav-group__children {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0 0 0.45rem 2rem;
+  padding-left: 0.65rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.25);
+}

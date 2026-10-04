@@ -1,11 +1,11 @@
 export function createTopNavigation({
   items = [],
   activeId,
-  onSelect = () => {},
+  onSelect = () => { },
   brand = "Reusable Components",
   endContent,
   mobileHeaderEnd,
-  onMobileOpenChange = () => {},
+  onMobileOpenChange = () => { },
   ariaLabel = "Primary navigation",
   menuIcon = "☰",
   closeIcon = "×",
@@ -13,7 +13,6 @@ export function createTopNavigation({
 } = {}) {
   const root = document.createElement("div");
   let openId;
-
   const createIcon = (icon, className) => {
     const span = document.createElement("span");
     span.className = className;
@@ -22,7 +21,6 @@ export function createTopNavigation({
     else if (icon != null) span.textContent = String(icon);
     return span;
   };
-
   const header = document.createElement("header");
   header.className = "cz-top-nav";
   const brandEl = document.createElement("div");
@@ -46,7 +44,6 @@ export function createTopNavigation({
   mobileHeaderEndEl.className = "cz-top-nav__mobile-header-end";
   if (mobileHeaderEnd instanceof Node) mobileHeaderEndEl.append(mobileHeaderEnd);
   header.append(brandEl, nav, mobileTrigger, mobileBrand, mobileHeaderEndEl, end);
-
   const scrim = document.createElement("button");
   scrim.type = "button";
   scrim.className = "cz-top-nav__scrim";
@@ -56,12 +53,13 @@ export function createTopNavigation({
   desktopScrim.className = "cz-top-nav__desktop-scrim";
   desktopScrim.setAttribute("aria-label", "Close open navigation menu");
   desktopScrim.hidden = true;
-  desktopScrim.addEventListener("click", () => { openId = undefined; render(); });
-
+  desktopScrim.addEventListener("click", () => {
+    openId = undefined;
+    render();
+  });
   const panel = document.createElement("aside");
   panel.className = "cz-top-nav__mobile-panel";
   panel.setAttribute("aria-label", "Mobile navigation");
-
   const closeMobile = () => {
     scrim.classList.remove("is-open");
     panel.classList.remove("is-open");
@@ -77,10 +75,20 @@ export function createTopNavigation({
   };
   mobileTrigger.addEventListener("click", openMobile);
   scrim.addEventListener("click", closeMobile);
-  document.addEventListener("keydown", (event) => { if (event.key === "Escape") { closeMobile(); openId = undefined; render(); } });
-
-  const select = (id) => { onSelect(id); closeMobile(); openId = undefined; render(); };
-
+  const handleKeydown = (event) => {
+    if (event.key === "Escape") {
+      closeMobile();
+      openId = undefined;
+      render();
+    }
+  };
+  document.addEventListener("keydown", handleKeydown);
+  const select = (id) => {
+    onSelect(id);
+    closeMobile();
+    openId = undefined;
+    render();
+  };
   function renderDesktop() {
     nav.replaceChildren();
     items.forEach((item) => {
@@ -106,9 +114,22 @@ export function createTopNavigation({
       if (hasChildren) {
         button.setAttribute("aria-haspopup", "menu");
         button.setAttribute("aria-expanded", String(openId === item.id));
-        button.addEventListener("click", () => { openId = openId === item.id ? undefined : item.id; render(); });
-        wrap.addEventListener("mouseenter", () => { if (openId !== item.id) { openId = item.id; render(); }});
-        wrap.addEventListener("mouseleave", () => { if (openId === item.id) { openId = undefined; render(); }});
+        button.addEventListener("click", () => {
+          openId = openId === item.id ? undefined : item.id;
+          render();
+        });
+        wrap.addEventListener("mouseenter", () => {
+          if (openId !== item.id) {
+            openId = item.id;
+            render();
+          }
+        });
+        wrap.addEventListener("mouseleave", () => {
+          if (openId === item.id) {
+            openId = undefined;
+            render();
+          }
+        });
       } else {
         if (activeId === item.id) button.setAttribute("aria-current", "page");
         button.addEventListener("click", () => select(item.id));
@@ -143,7 +164,6 @@ export function createTopNavigation({
       nav.append(wrap);
     });
   }
-
   function renderMobile() {
     panel.replaceChildren();
     const head = document.createElement("div");
@@ -207,9 +227,22 @@ export function createTopNavigation({
       panel.append(mobileEnd);
     }
   }
-
-  function render() { renderDesktop(); renderMobile(); desktopScrim.hidden = !openId; }
+  function render() {
+    renderDesktop();
+    renderMobile();
+    desktopScrim.hidden = !openId;
+  }
   render();
   root.append(header, desktopScrim, scrim, panel);
-  return { element: root, setActiveId(id) { activeId = id; render(); }, close: closeMobile };
+  return {
+    element: root,
+    setActiveId(id) {
+      activeId = id;
+      render();
+    },
+    close: closeMobile,
+    destroy() {
+      document.removeEventListener("keydown", handleKeydown);
+    }
+  };
 }

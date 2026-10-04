@@ -1,6 +1,5 @@
 import { createTextInput } from "./text-input.js";
 import { passwordIcons } from "./icons.js";
-
 export function createPasswordInput(options) {
   const field = createTextInput({ ...options, attributes: { ...(options.attributes || {}), type: "password" } });
   const control = field.querySelector(".field__control");

@@ -3,7 +3,6 @@ const appendContent = (element, content) => {
   if (content instanceof Node) element.append(content);
   else element.append(document.createTextNode(String(content)));
 };
-
 export function createDataTable({
   columns,
   rows,
@@ -31,12 +30,10 @@ export function createDataTable({
   const expandedIds = new Set(defaultExpandedIds);
   let isCollapsed = defaultCollapsed;
   let internalSortState = null;
-
   const rowsExpandable = typeof renderExpandedRow === "function";
   const hasSectionHeader = sectionHeader !== undefined && sectionHeader !== null;
   const showColumnHeaders = headerMode === "columns";
   const totalColumns = columns.length;
-
   const setRootClassName = () => {
     root.className = [
       "data-table",
@@ -48,15 +45,12 @@ export function createDataTable({
       cellDividers === "rows" ? "data-table--row-dividers" : "data-table--cell-dividers",
     ].filter(Boolean).join(" ");
   };
-
   const toggleRow = (rowId) => {
     if (expandedIds.has(rowId)) expandedIds.delete(rowId);
     else expandedIds.add(rowId);
     renderTable();
   };
-
   const getSortState = () => controlledSortState !== undefined ? controlledSortState : internalSortState;
-
   const getDisplayRows = () => {
     const sortState = getSortState();
     if (sortMode === "external" || !sortState) return rows;
@@ -78,7 +72,6 @@ export function createDataTable({
       return sortState.direction === "asc" ? comparison : -comparison;
     });
   };
-
   const toggleSort = (columnId) => {
     const sortState = getSortState();
     const next = sortState?.columnId === columnId
@@ -88,11 +81,9 @@ export function createDataTable({
     else internalSortState = next;
     renderTable();
   };
-
   const renderTable = () => {
     setRootClassName();
     root.replaceChildren();
-
     if (hasSectionHeader) {
       const header = document.createElement("div");
       header.className = "data-table__header";
@@ -109,7 +100,10 @@ export function createDataTable({
         icon.setAttribute("aria-hidden", "true");
         icon.innerHTML = isCollapsed ? headerExpandIcon : headerCollapseIcon;
         button.append(content, icon);
-        button.addEventListener("click", () => { isCollapsed = !isCollapsed; renderTable(); });
+        button.addEventListener("click", () => {
+          isCollapsed = !isCollapsed;
+          renderTable();
+        });
         header.append(button);
       } else {
         const content = document.createElement("div");
@@ -119,9 +113,7 @@ export function createDataTable({
       }
       root.append(header);
     }
-
     if (isCollapsed) return;
-
     const scroll = document.createElement("div");
     scroll.className = "data-table__scroll";
     const table = document.createElement("table");
@@ -131,7 +123,6 @@ export function createDataTable({
       captionElement.textContent = caption;
       table.append(captionElement);
     }
-
     if (showColumnHeaders) {
       const thead = document.createElement("thead");
       const tr = document.createElement("tr");
@@ -170,7 +161,6 @@ export function createDataTable({
       thead.append(tr);
       table.append(thead);
     }
-
     const tbody = document.createElement("tbody");
     if (rows.length === 0) {
       const tr = document.createElement("tr");
@@ -198,7 +188,10 @@ export function createDataTable({
             button.setAttribute("aria-expanded", String(isExpanded));
             button.setAttribute("aria-label", isExpanded ? `Collapse row ${rowId}` : `Expand row ${rowId}`);
             button.innerHTML = `<span aria-hidden="true">${isExpanded ? collapseIcon : expandIcon}</span>`;
-            button.addEventListener("click", (event) => { event.stopPropagation(); toggleRow(rowId); });
+            button.addEventListener("click", (event) => {
+              event.stopPropagation();
+              toggleRow(rowId);
+            });
             const content = document.createElement("div");
             content.className = "data-table__first-cell-content";
             appendContent(content, column.render(row));
@@ -238,7 +231,6 @@ export function createDataTable({
     }
     scroll.append(table);
     root.append(scroll);
-
     const mobile = document.createElement("div");
     mobile.className = "data-table__mobile";
     mobile.setAttribute("role", "list");
@@ -275,7 +267,10 @@ export function createDataTable({
           button.className = "data-table__expand-button";
           button.setAttribute("aria-expanded", String(isExpanded));
           button.innerHTML = `<span aria-hidden="true">${isExpanded ? collapseIcon : expandIcon}</span><span>${isExpanded ? "Hide details" : "Show details"}</span>`;
-          button.addEventListener("click", (event) => { event.stopPropagation(); toggleRow(rowId); });
+          button.addEventListener("click", (event) => {
+            event.stopPropagation();
+            toggleRow(rowId);
+          });
           expand.append(button);
           card.append(expand);
         }
@@ -296,7 +291,6 @@ export function createDataTable({
     }
     root.append(mobile);
   };
-
   renderTable();
   return root;
 }

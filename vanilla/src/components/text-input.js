@@ -1,10 +1,9 @@
 import { icons } from "./icons.js";
 import {
-  applyAttributes,
+  createFieldShell,
+  configureField,
   createFieldMessage,
-  setFieldAccessibility,
 } from "./field-helpers.js";
-
 export function createTextInput({
   label,
   value = "",
@@ -18,65 +17,48 @@ export function createTextInput({
   onInput,
   onClear,
 }) {
-  const wrapper = document.createElement("div");
-  wrapper.className = `field ${
-    required
-      ? `field--required field--required-${requiredIndicatorPosition}`
-      : ""
-  } ${disabled ? "field--disabled" : ""} ${error ? "field--error" : ""}`;
-
-  const control = document.createElement("div");
-  control.className = "field__control";
-
+  const { wrapper, control } = createFieldShell({
+    required,
+    requiredIndicatorPosition,
+    disabled,
+    error
+  }, false);
   const input = document.createElement("input");
-  const id = attributes.id ?? `input-${crypto.randomUUID()}`;
-  const messageId = `${id}-message`;
-  const existingDescribedBy = attributes["aria-describedby"];
-
-  input.id = id;
   input.value = value;
   input.placeholder = " ";
-  input.disabled = disabled;
-  input.required = required;
-
-  applyAttributes(input, attributes);
-  setFieldAccessibility(input, {
+  const { id, messageId } = configureField(input, "input", {
+    attributes,
+    required,
+    disabled,
     error,
-    helperText,
-    messageId,
-    describedBy: existingDescribedBy,
+    helperText
   });
-
   const labelElement = document.createElement("label");
   labelElement.htmlFor = id;
   labelElement.append(document.createTextNode(label));
-
   control.append(input, labelElement);
-
   if (clearable && value && !disabled) {
     const clear = document.createElement("button");
     clear.className = "field__clear";
     clear.type = "button";
     clear.innerHTML = `<span aria-hidden="true">${icons.clear}</span>`;
     clear.setAttribute("aria-label", `Clear ${label}`);
-
     clear.addEventListener("click", () => {
       input.value = "";
       onClear?.();
       input.focus();
     });
-
     control.append(clear);
   }
-
   if (onInput) {
     input.addEventListener("input", () => onInput(input.value));
   }
-
   wrapper.append(control);
-
-  const message = createFieldMessage({ id: messageId, error, helperText });
+  const message = createFieldMessage({
+    id: messageId,
+    error,
+    helperText
+  });
   if (message) wrapper.append(message);
-
   return wrapper;
 }

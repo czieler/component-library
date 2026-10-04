@@ -6,13 +6,20 @@ export function createAlert({ variant = "info", title = "", message = "", classN
   titleElement.className = "alert__title";
   const content = document.createElement("div");
   content.className = "alert__content";
-
   const render = () => {
     element.replaceChildren();
-    if (title) { titleElement.textContent = title; element.append(titleElement); }
+    if (title) {
+      titleElement.textContent = title;
+      element.append(titleElement);
+    }
     content.textContent = message;
     element.append(content);
   };
   render();
-  return { element, setMessage(value) { message = String(value); render(); } };
+  return {
+    element, setMessage(value) {
+      message = String(value);
+      render();
+    }
+  };
 }

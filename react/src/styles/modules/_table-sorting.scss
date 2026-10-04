@@ -1,0 +1,39 @@
+/* Sortable DataTable column controls. */
+
+.data-table__sort-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: inherit;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.data-table__cell--right .data-table__sort-button { justify-content: flex-end; }
+
+.data-table__cell--center .data-table__sort-button { justify-content: center; }
+
+.data-table__sort-button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 2px; }
+
+.data-table__sort-icon {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  flex: 0 0 auto;
+  min-width: 0.7rem;
+  font-size: 0.58rem;
+  line-height: 1;
+}
+
+.data-table__sort-arrow { display: block; }

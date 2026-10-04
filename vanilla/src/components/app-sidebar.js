@@ -1,5 +1,4 @@
 import { icons } from "./icons.js";
-
 const createIcon = (markup, className = "nav-item__icon") => {
   const icon = document.createElement("span");
   icon.className = className;
@@ -7,7 +6,6 @@ const createIcon = (markup, className = "nav-item__icon") => {
   icon.innerHTML = markup;
   return icon;
 };
-
 export function createSidebar({
   items,
   active,
@@ -17,39 +15,31 @@ export function createSidebar({
 }) {
   const aside = document.createElement("aside");
   aside.className = `sidebar ${collapsed ? "sidebar--collapsed" : ""}`;
-
   const brand = document.createElement("div");
   brand.className = "sidebar__brand";
   brand.innerHTML =
     '<span class="brand-mark">U</span><strong>Reusable Components</strong>';
   aside.append(brand);
-
   const nav = document.createElement("nav");
   nav.setAttribute("aria-label", "Primary navigation");
-
   items.forEach((item) => {
     const hasChildren = Boolean(item.children?.length);
     const childActive = item.children?.some((child) => child.id === active);
     const group = document.createElement("div");
     group.className = "nav-group";
-
     const button = document.createElement("button");
     button.type = "button";
     button.className = `nav-item ${item.id === active || childActive ? "nav-item--active" : ""}`;
     button.disabled = item.disabled ?? false;
     button.title = collapsed ? item.label : "";
-
     if (item.id === active) button.setAttribute("aria-current", "page");
     if (hasChildren) button.setAttribute("aria-expanded", String(!collapsed));
-
     if (item.icon) button.append(createIcon(item.icon));
-
     if (!collapsed) {
       const label = document.createElement("span");
       label.className = "nav-item__label";
       label.textContent = item.label;
       button.append(label);
-
       if (hasChildren) {
         const chevron = createIcon(
           icons.chevronDown,
@@ -58,13 +48,10 @@ export function createSidebar({
         button.append(chevron);
       }
     }
-
     if (!hasChildren) {
       button.addEventListener("click", () => onSelect(item.id));
     }
-
     group.append(button);
-
     if (hasChildren && !collapsed) {
       const children = document.createElement("div");
       children.className = "nav-group__children";
@@ -81,17 +68,14 @@ export function createSidebar({
       });
       group.append(children);
     }
-
     if (hasChildren && collapsed) {
       const flyout = document.createElement("div");
       flyout.className = "nav-flyout";
       flyout.hidden = true;
-
       const title = document.createElement("div");
       title.className = "nav-flyout__title";
       title.textContent = item.label;
       flyout.append(title);
-
       item.children.forEach((child) => {
         const childButton = document.createElement("button");
         childButton.type = "button";
@@ -100,7 +84,6 @@ export function createSidebar({
         childButton.addEventListener("click", () => onSelect(child.id));
         flyout.append(childButton);
       });
-
       const open = () => {
         flyout.hidden = false;
         button.setAttribute("aria-expanded", "true");
@@ -109,7 +92,6 @@ export function createSidebar({
         flyout.hidden = true;
         button.setAttribute("aria-expanded", "false");
       };
-
       button.addEventListener("click", () => {
         if (flyout.hidden) open();
         else close();
@@ -126,15 +108,11 @@ export function createSidebar({
           button.focus();
         }
       });
-
       group.append(flyout);
     }
-
     nav.append(group);
   });
-
   aside.append(nav);
-
   const toggle = document.createElement("button");
   toggle.className = "sidebar-toggle";
   toggle.type = "button";
@@ -145,7 +123,6 @@ export function createSidebar({
   );
   toggle.title = collapsed ? "Expand sidebar" : "Collapse sidebar";
   toggle.addEventListener("click", onToggle);
-
   aside.append(toggle);
   return aside;
 }

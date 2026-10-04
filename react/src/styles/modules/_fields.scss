@@ -1,0 +1,183 @@
+@use './mixins' as field;
+
+.field {
+  margin-bottom: var(--space-4);
+
+  input,
+  select,
+  textarea {
+    @include field.field-control;
+  }
+
+  textarea {
+    min-height: 7rem;
+    resize: vertical;
+  }
+
+  select {
+    appearance: none;
+    padding-right: 2.75rem;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+  }
+
+  label {
+    position: absolute;
+    top: 0.8rem;
+    left: 0.8rem;
+    color: var(--color-muted-text);
+    pointer-events: none;
+    transition: 0.15s ease;
+  }
+
+  input:focus + label,
+  input:not(:placeholder-shown) + label,
+  &.field--has-placeholder input + label,
+  textarea:focus + label,
+  textarea:not(:placeholder-shown) + label,
+  .field__control--select.field__control--has-value label {
+    top: 0.22rem;
+    color: var(--color-accent);
+    font-size: 0.7rem;
+  }
+
+  input::placeholder { color: transparent; }
+  &.field--has-placeholder input::placeholder { color: var(--color-muted-text); }
+
+  &__control {
+    position: relative;
+  }
+
+  &__control--select::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-right: 2px solid var(--color-accent);
+    border-bottom: 2px solid var(--color-accent);
+    transform: translateY(-65%) rotate(45deg);
+    pointer-events: none;
+  }
+
+  &__control--custom-select-icon::after {
+    display: none;
+  }
+
+  &__select-icon {
+    position: absolute;
+    top: 50%;
+    right: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(-50%);
+    color: var(--color-accent);
+    pointer-events: none;
+
+    svg {
+      display: block;
+    }
+  }
+
+  &__message {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--color-muted-text);
+  }
+
+  &__clear {
+    position: absolute;
+    top: 50%;
+    right: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    transform: translateY(-50%);
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--color-muted-text);
+
+    &:hover {
+      background: var(--color-background);
+      color: var(--color-text);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+
+    svg {
+      display: block;
+    }
+  }
+
+  &--disabled {
+    input,
+    select,
+    textarea {
+      border-color: var(--color-disabled-border);
+      background: var(--color-disabled-background);
+      color: var(--color-disabled-text);
+      cursor: not-allowed;
+    }
+
+    label,
+    .field__message,
+    .field__select-icon {
+      color: var(--color-disabled-text);
+    }
+  }
+
+  &--required {
+    input,
+    select,
+    textarea {
+      border-bottom: 3px solid var(--color-required);
+    }
+  }
+
+  &--required-bottom {
+    input,
+    select,
+    textarea {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+
+  &--required-left {
+    input,
+    select,
+    textarea {
+      border-bottom: 1px solid var(--color-border);
+      border-bottom-left-radius: 0;
+      border-left: 3px solid var(--color-required);
+      border-top-left-radius: 0;
+    }
+  }
+
+  &--error {
+    input,
+    select,
+    textarea {
+      border-color: var(--color-error);
+    }
+
+    label,
+    .field__message {
+      color: var(--color-error);
+    }
+  }
+}

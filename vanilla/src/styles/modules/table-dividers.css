@@ -1,0 +1,10 @@
+.data-table--row-dividers th,
+.data-table--row-dividers td {
+  border-right: 0;
+  border-left: 0;
+}
+
+.data-table--row-dividers .data-table__scroll {
+  border-right: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+}

@@ -1,0 +1,80 @@
+@media (max-width: 700px) {
+  .data-table table {
+    min-width: 560px;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 0.8rem;
+  }
+
+  .data-table__expanded-content {
+    padding-left: 1rem;
+  }
+}
+
+/* DataTable configuration variants */
+
+/* A table with column headers only gets its own full top header treatment. */
+
+.data-table--standalone-columns thead th {
+  border-top: 0;
+  background: #173b36;
+  color: white;
+}
+
+.data-table--standalone-columns .data-table__scroll {
+  border-radius: var(--radius-md);
+}
+
+.data-table--standalone-columns thead tr:first-child th:first-child {
+  border-top-left-radius: var(--radius-md);
+}
+
+.data-table--standalone-columns thead tr:first-child th:last-child {
+  border-top-right-radius: var(--radius-md);
+}
+
+/*
+ * Row-divider mode removes all internal vertical cell borders.
+ * Horizontal separators remain between table rows.
+ */
+
+.data-table--row-dividers tbody td,
+.data-table--row-dividers tfoot td {
+  border-right: 0;
+  border-left: 0;
+}
+
+.data-table--row-dividers tbody tr > :first-child,
+.data-table--row-dividers tfoot tr > :first-child {
+  border-left: 0;
+}
+
+/* Preserve a clean outer edge without creating internal column dividers. */
+
+.data-table--row-dividers .data-table__scroll {
+  border-right: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+}
+
+.data-table--row-dividers.data-table--with-section-header .data-table__scroll {
+  border-top: 0;
+}
+
+.data-table--row-dividers.data-table--standalone-columns .data-table__scroll {
+  border-top: 0;
+}
+
+/* The dark section header remains one uninterrupted band. */
+
+.data-table--row-dividers .data-table__header {
+  border: 0;
+}
+
+/* Footer stays visually continuous as one band too. */
+
+.data-table--row-dividers .data-table__footer {
+  border-right: 0;
+  border-left: 0;
+}

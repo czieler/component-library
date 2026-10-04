@@ -1,0 +1,5 @@
+.mobile-nav,
+.mobile-nav__scrim,
+.mobile-nav__trigger {
+  display: none;
+}
