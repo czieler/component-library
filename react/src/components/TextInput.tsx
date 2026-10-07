@@ -35,7 +35,7 @@ export function TextInput({
       className={`field ${inputProps.required
           ? `field--required field--required-${requiredIndicatorPosition}`
           : ""
-        } ${inputProps.placeholder ? "field--has-placeholder" : ""} ${inputProps.disabled ? "field--disabled" : ""} ${error ? "field--error" : ""
+        } ${inputProps.placeholder ? "field--has-placeholder" : ""} ${inputProps.disabled ? "field--disabled" : ""} ${clearable ? "field--clearable" : ""} ${error ? "field--error" : ""
         }`}
     >
       <div className="field__control">

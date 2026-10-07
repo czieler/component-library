@@ -1,5 +1,5 @@
 import { icons } from "./icons.js";
-export function createMobileNavigation({ items, active, onSelect }) {
+export function createMobileNavigation({ items, active, onSelect, header: headerContent, footer }) {
   const scrim = document.createElement("div");
   scrim.className = "mobile-nav__scrim";
   scrim.hidden = true;
@@ -15,7 +15,11 @@ export function createMobileNavigation({ items, active, onSelect }) {
   close.type = "button";
   close.innerHTML = icons.close;
   close.setAttribute("aria-label", "Close navigation");
-  header.append(title, close);
+  if (headerContent !== undefined && headerContent !== null && headerContent !== false) {
+    header.append(headerContent instanceof Node ? headerContent : document.createTextNode(String(headerContent)), close);
+  } else {
+    header.append(title, close);
+  }
   drawer.append(header);
   let returnFocusTo = null;
   const setOpen = (open, trigger = null) => {
@@ -87,6 +91,12 @@ export function createMobileNavigation({ items, active, onSelect }) {
     }
     drawer.append(group);
   });
+  if (footer !== undefined && footer !== null && footer !== false) {
+    const footerElement = document.createElement("div");
+    footerElement.className = "mobile-nav__footer";
+    footerElement.append(footer instanceof Node ? footer : document.createTextNode(String(footer)));
+    drawer.append(footerElement);
+  }
   return {
     drawer,
     scrim,

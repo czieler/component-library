@@ -21,3 +21,7 @@ Publishing and monorepo orchestration remain intentionally deferred until they s
 - Button primitive with consistent variants and loading state.
 - Alert primitive for inline feedback.
 - Card primitive for reusable surface treatment.
+- DataTable: controlled and observable expansion, row DOM ids, whole-row expand, and print-all-expanded (all optional).
+- BusySpinner / createBusySpinner on its own.
+- Optional footer slot on AppSidebar and optional header/footer slots on MobileNavigation.
+- TextInput `clearable` now adds a `field--clearable` class and reserves space for the clear button.

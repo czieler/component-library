@@ -3,3 +3,10 @@
 .mobile-nav__trigger {
   display: none;
 }
+
+/* Optional footer slot (createMobileNavigation footer option). */
+.mobile-nav__footer {
+  margin-top: auto;
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}

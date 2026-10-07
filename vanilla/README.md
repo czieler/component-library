@@ -36,6 +36,28 @@ createDataTable({
 });
 ```
 
+### Controlling expansion, row activation, and printing
+
+All of the following options are optional. Omit them and `createDataTable` renders and behaves as it always has. It still returns the table element.
+
+```js
+const table = createDataTable({
+  columns,
+  rows,
+  getRowId: (row) => row.id,
+  renderExpandedRow: (row) => createDetails(row),
+  expandedIds: [],                                          // you own the state…
+  onExpandedIdsChange: (ids) => table.setExpandedIds(ids),  // …and apply changes here
+  getRowDomId: (row) => `row-${row.id}`,                    // <tr id="row-1">, mobile card id="row-1-mobile"
+  expandOnRowClick: true,                                   // click, Enter, or Space on a row expands it
+  expandAllOnPrint: true,                                   // print every expandable row open
+});
+```
+
+- `expandedIds` makes expansion controlled: clicking only calls `onExpandedIdsChange`, and the table changes when you call `table.setExpandedIds(ids)`. Without `expandedIds` the table keeps its own state, `defaultExpandedIds` sets the starting rows, and `onExpandedIdsChange` just reports changes. `table.setExpandedIds(ids)` also works in that uncontrolled mode.
+- Controls in a column with the id `actions` do not trigger the row.
+- `expandAllOnPrint` adds a print-only copy of each expanded row and of sortable header labels. They stay hidden on screen.
+
 ## WorkflowProgress
 
 The gallery includes a **Workflow Progress** entry so the component can be viewed and resized alongside the other reusable components.
@@ -70,6 +92,8 @@ const busy = createBusyIndicator({ message: "Saving changes…" });
 document.querySelector("#app").append(busy.element);
 busy.setMessage("Processing upload…");
 ```
+
+`createBusySpinner({ className, attributes })` returns only the ring, with `aria-hidden="true"`, and is what `createBusyIndicator` uses internally.
 
 The demo gallery includes visible loading, saving, and processing examples.
 

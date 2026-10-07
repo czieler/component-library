@@ -181,3 +181,8 @@
     }
   }
 }
+
+/* clearable: leave room for the clear button so typed text never runs underneath it. */
+.field.field--clearable input {
+  padding-right: 2.75rem;
+}

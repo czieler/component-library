@@ -6,3 +6,10 @@
   padding-left: 0.65rem;
   border-left: 1px solid rgba(255, 255, 255, 0.25);
 }
+
+/* Optional footer slot (MobileNavigation footer prop). */
+.mobile-nav__footer {
+  margin-top: auto;
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}

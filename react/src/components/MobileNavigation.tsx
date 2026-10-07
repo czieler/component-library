@@ -8,6 +8,8 @@ type MobileNavigationProps = {
   onSelect: (id: string) => void;
   closeIcon?: ReactNode;
   submenuIcon?: ReactNode;
+  header?: ReactNode;
+  footer?: ReactNode;
 };
 export function MobileNavigation({
   items,
@@ -17,6 +19,8 @@ export function MobileNavigation({
   onSelect,
   closeIcon = "×",
   submenuIcon = "⌄",
+  header,
+  footer,
 }: MobileNavigationProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const activeGroupId = items.find((item) =>
@@ -59,7 +63,7 @@ export function MobileNavigation({
         aria-label="Mobile navigation"
       >
         <div className="mobile-nav__header">
-          <h2>Navigation</h2>
+          {header ?? <h2>Navigation</h2>}
           <button
             ref={closeButtonRef}
             type="button"
@@ -163,6 +167,7 @@ export function MobileNavigation({
             );
           })}
         </nav>
+        {footer && <div className="mobile-nav__footer">{footer}</div>}
       </aside>
     </>
   );

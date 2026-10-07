@@ -227,3 +227,26 @@
 .data-table--without-footer tbody tr:last-child > td:last-child {
   border-bottom-right-radius: var(--radius-md);
 }
+
+/* expandAllOnPrint: the extra print copy and the print label stay hidden on screen. */
+.data-table__expanded-row--print-only {
+  display: none;
+}
+
+.data-table__print-header-label {
+  display: none;
+}
+
+@media print {
+  .data-table--expand-all-on-print .data-table__expanded-row--interactive {
+    display: none !important;
+  }
+
+  .data-table--expand-all-on-print .data-table__expanded-row--print-only {
+    display: table-row !important;
+  }
+
+  .data-table--expand-all-on-print .data-table__expand-button {
+    display: none !important;
+  }
+}

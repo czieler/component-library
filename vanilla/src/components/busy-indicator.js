@@ -1,3 +1,14 @@
+export function createBusySpinner({ className = "", attributes = {} } = {}) {
+  const spinner = document.createElement("span");
+  spinner.className = ["busy-indicator__spinner", className].filter(Boolean).join(" ");
+  spinner.setAttribute("aria-hidden", "true");
+  Object.entries(attributes).forEach(([name, value]) => {
+    if (value !== undefined && value !== null && value !== false) {
+      spinner.setAttribute(name, value === true ? "" : String(value));
+    }
+  });
+  return spinner;
+}
 export function createBusyIndicator({ message = "Working…", className = "", attributes = {}, inline = false } = {}) {
   const root = document.createElement(inline ? "span" : "div");
   root.className = ["busy-indicator", inline ? "busy-indicator--inline" : "", className].filter(Boolean).join(" ");
@@ -8,9 +19,7 @@ export function createBusyIndicator({ message = "Working…", className = "", at
       root.setAttribute(name, value === true ? "" : String(value));
     }
   });
-  const spinner = document.createElement("span");
-  spinner.className = "busy-indicator__spinner";
-  spinner.setAttribute("aria-hidden", "true");
+  const spinner = createBusySpinner();
   const messageElement = document.createElement("span");
   messageElement.className = "busy-indicator__message";
   messageElement.textContent = String(message);

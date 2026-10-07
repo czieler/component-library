@@ -27,9 +27,19 @@ type DataTableProps<T> = {
   expandIcon?: ReactNode;
   collapseIcon?: ReactNode;
   defaultExpandedIds?: string[];
+  /** Controlled expansion. When provided, the consumer owns which rows are expanded and must update it in onExpandedIdsChange. */
+  expandedIds?: string[];
+  /** Called with the new expanded row ids. Also usable as a notification when expansion is uncontrolled. */
+  onExpandedIdsChange?: (ids: string[]) => void;
+  /** Optional DOM id for a row, for in-page links. Mobile cards use the same id with "-mobile" appended. */
+  getRowDomId?: (row: T) => string | undefined;
   emptyMessage?: ReactNode;
   caption?: string;
   onRowClick?: (row: T) => void;
+  /** Clicking or pressing Enter/Space on an expandable row toggles it. Off by default. */
+  expandOnRowClick?: boolean;
+  /** Print every expandable row open, whatever its on-screen state. Off by default. */
+  expandAllOnPrint?: boolean;
   sortState?: { columnId: string; direction: "asc" | "desc" } | null;
   onSortChange?: (sortState: { columnId: string; direction: "asc" | "desc" }) => void;
   sortMode?: "client" | "external";
@@ -52,16 +62,22 @@ export function DataTable<T>({
   expandIcon = <ChevronRight size={16} strokeWidth={2} />,
   collapseIcon = <ChevronDown size={16} strokeWidth={2} />,
   defaultExpandedIds = [],
+  expandedIds: controlledExpandedIds,
+  onExpandedIdsChange,
+  getRowDomId,
   emptyMessage = "No rows to display.",
   caption,
   onRowClick,
+  expandOnRowClick = false,
+  expandAllOnPrint = false,
   sortState: controlledSortState,
   onSortChange,
   sortMode = "client",
 }: DataTableProps<T>) {
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(
+  const [internalExpandedIds, setInternalExpandedIds] = useState<Set<string>>(
     () => new Set(defaultExpandedIds),
   );
+  const expandedIds = controlledExpandedIds !== undefined ? new Set(controlledExpandedIds) : internalExpandedIds;
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
   const [internalSortState, setInternalSortState] = useState<{ columnId: string; direction: "asc" | "desc" } | null>(null);
   const sortState = controlledSortState !== undefined ? controlledSortState : internalSortState;
@@ -97,12 +113,23 @@ export function DataTable<T>({
   const hasSectionHeader = Boolean(sectionHeader);
   const showColumnHeaders = headerMode === "columns";
   const toggleRow = (rowId: string) => {
-    setExpandedIds((current) => {
+    const toggled = (current: Set<string>) => {
       const next = new Set(current);
       if (next.has(rowId)) next.delete(rowId);
       else next.add(rowId);
       return next;
-    });
+    };
+    if (controlledExpandedIds !== undefined) {
+      onExpandedIdsChange?.([...toggled(expandedIds)]);
+      return;
+    }
+    if (!onExpandedIdsChange) {
+      setInternalExpandedIds(toggled);
+      return;
+    }
+    const next = toggled(expandedIds);
+    setInternalExpandedIds(next);
+    onExpandedIdsChange([...next]);
   };
   const rootClassName = [
     "data-table",
@@ -112,6 +139,7 @@ export function DataTable<T>({
     hasSectionHeader ? "data-table--with-section-header" : "data-table--no-section-header",
     showColumnHeaders && !hasSectionHeader ? "data-table--standalone-columns" : "",
     cellDividers === "rows" ? "data-table--row-dividers" : "data-table--cell-dividers",
+    expandAllOnPrint ? "data-table--expand-all-on-print" : "",
   ].filter(Boolean).join(" ");
   return (
     <div className={rootClassName}>
@@ -150,6 +178,7 @@ export function DataTable<T>({
                           className={`data-table__cell--${column.align ?? "left"}`}
                           aria-sort={column.sortable ? (activeSort === "asc" ? "ascending" : activeSort === "desc" ? "descending" : "none") : undefined}>
                           {column.sortable ? (
+                            <>
                             <button type="button" className="data-table__sort-button" onClick={() => toggleSort(column.id)}>
                               <span>{column.label}</span>
                               <span className="data-table__sort-icon" aria-hidden="true">
@@ -159,6 +188,8 @@ export function DataTable<T>({
                                 </>}
                               </span>
                             </button>
+                            {expandAllOnPrint && <span className="data-table__print-header-label" aria-hidden="true">{column.label}</span>}
+                            </>
                           ) : column.label}
                         </th>
                       );
@@ -173,25 +204,31 @@ export function DataTable<T>({
                   const rowId = getRowId(row);
                   const rowExpandable = rowsExpandable && (isRowExpandable ? isRowExpandable(row) : true);
                   const isExpanded = rowExpandable && expandedIds.has(rowId);
+                  const rowClickable = Boolean(onRowClick || (expandOnRowClick && rowExpandable));
+                  const activateRow = () => {
+                    if (expandOnRowClick && rowExpandable) toggleRow(rowId);
+                    onRowClick?.(row);
+                  };
                   return (
                     <Fragment key={rowId}>
                       <tr
-                        className={`data-table__row ${isExpanded ? "data-table__row--expanded" : ""} ${onRowClick ? "data-table__row--clickable" : ""}`}
-                        onClick={onRowClick ? () => onRowClick(row) : undefined}
-                        onKeyDown={onRowClick ? (event) => {
+                        id={getRowDomId?.(row)}
+                        className={`data-table__row ${rowExpandable ? "data-table__row--expandable" : ""} ${isExpanded ? "data-table__row--expanded" : ""} ${rowClickable ? "data-table__row--clickable" : ""}`}
+                        onClick={rowClickable ? activateRow : undefined}
+                        onKeyDown={rowClickable ? (event) => {
                           if (event.key === "Enter" || event.key === " ") {
                             event.preventDefault();
-                            onRowClick(row);
+                            activateRow();
                           }
                         } : undefined}
-                        tabIndex={onRowClick ? 0 : undefined}
+                        tabIndex={rowClickable ? 0 : undefined}
                       >
                         {columns.map((column, columnIndex) => <td
                           key={column.id}
                           data-column={column.id}
                           className={`data-table__cell--${column.align ?? "left"}`}
-                          onClick={column.id === "actions" && onRowClick ? (event) => event.stopPropagation() : undefined}
-                          onKeyDown={column.id === "actions" && onRowClick ? (event) => event.stopPropagation() : undefined}>{rowExpandable && columnIndex === 0 ? <div className="data-table__first-cell-with-expand"><button
+                          onClick={column.id === "actions" && rowClickable ? (event) => event.stopPropagation() : undefined}
+                          onKeyDown={column.id === "actions" && rowClickable ? (event) => event.stopPropagation() : undefined}>{rowExpandable && columnIndex === 0 ? <div className="data-table__first-cell-with-expand"><button
                             type="button"
                             className="data-table__expand-button"
                             onClick={(event) => {
@@ -202,7 +239,10 @@ export function DataTable<T>({
                             aria-label={isExpanded ? `Collapse row ${rowId}` : `Expand row ${rowId}`}><span aria-hidden="true">{isExpanded ? collapseIcon : expandIcon}</span></button><div className="data-table__first-cell-content">{column.render(row)}</div></div> : column.render(row)}</td>)}
                       </tr>
                       {rowExpandable && isExpanded && (
-                        <tr className="data-table__expanded-row"><td colSpan={totalColumns}><div className="data-table__expanded-content">{renderExpandedRow?.(row)}</div></td></tr>
+                        <tr className="data-table__expanded-row data-table__expanded-row--interactive"><td colSpan={totalColumns}><div className="data-table__expanded-content">{renderExpandedRow?.(row)}</div></td></tr>
+                      )}
+                      {rowExpandable && expandAllOnPrint && (
+                        <tr className="data-table__expanded-row data-table__expanded-row--print-only"><td colSpan={totalColumns}><div className="data-table__expanded-content">{renderExpandedRow?.(row)}</div></td></tr>
                       )}
                     </Fragment>
                   );
@@ -218,14 +258,21 @@ export function DataTable<T>({
               const rowId = getRowId(row);
               const rowExpandable = rowsExpandable && (isRowExpandable ? isRowExpandable(row) : true);
               const isExpanded = rowExpandable && expandedIds.has(rowId);
+              const rowClickable = Boolean(onRowClick || (expandOnRowClick && rowExpandable));
+              const activateRow = () => {
+                if (expandOnRowClick && rowExpandable) toggleRow(rowId);
+                onRowClick?.(row);
+              };
+              const domId = getRowDomId?.(row);
               return (
                 <article
-                  className={`data-table__mobile-card ${onRowClick ? "data-table__mobile-card--clickable" : ""}`}
+                  id={domId ? `${domId}-mobile` : undefined}
+                  className={`data-table__mobile-card ${rowClickable ? "data-table__mobile-card--clickable" : ""}`}
                   role="listitem"
                   key={`mobile-${rowId}`}
-                  onClick={onRowClick ? () => onRowClick(row) : undefined}>
+                  onClick={rowClickable ? activateRow : undefined}>
                   {columns.map((column) => (
-                    <div className="data-table__mobile-field" key={column.id} onClick={column.id === "actions" && onRowClick ? (event) => event.stopPropagation() : undefined}>
+                    <div className="data-table__mobile-field" key={column.id} onClick={column.id === "actions" && rowClickable ? (event) => event.stopPropagation() : undefined}>
                       <span className="data-table__mobile-label">{column.label}</span>
                       <div className={`data-table__mobile-value data-table__cell--${column.align ?? "left"}`}>{column.render(row)}</div>
                     </div>

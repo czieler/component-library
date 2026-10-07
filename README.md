@@ -34,11 +34,11 @@ The goal is not to replace full-scale component libraries or data-grid framework
 
 ### Form controls
 
-Text input, select, and textarea components support floating labels, required states, configurable required-field accent placement, error and helper messaging, disabled states, native HTML attributes, accessible label/message relationships, and consumer-controlled values and events.
+Text input, select, and textarea components support floating labels, required states, configurable required-field accent placement, error and helper messaging, disabled states, native HTML attributes, accessible label/message relationships, and consumer-controlled values and events. `TextInput` can show a clear button with `clearable`; the field then also carries a `field--clearable` class and reserves room for the button so typed text never runs underneath it.
 
 ### Responsive navigation
 
-A shared hierarchical navigation model supports expanded and collapsed desktop sidebars, nested navigation, collapsed-sidebar submenu flyouts, a mobile navigation drawer, consumer-provided icons, active-state management, keyboard behavior, and focus handling.
+A shared hierarchical navigation model supports expanded and collapsed desktop sidebars, nested navigation, collapsed-sidebar submenu flyouts, a mobile navigation drawer, consumer-provided icons, active-state management, keyboard behavior, and focus handling. `AppSidebar` / `createSidebar` accept an optional `footer`, and `MobileNavigation` / `createMobileNavigation` accept an optional `header` (which replaces the default "Navigation" heading) and an optional `footer`. Leave them out and the navigation renders exactly as before.
 
 ### DataTable
 
@@ -48,6 +48,15 @@ Below 700px, the same column definitions are rendered as stacked labeled cards. 
 
 
 Complete API-pagination examples are included for both implementations: [`react/examples/DataTableApiPaginationExample.tsx`](react/examples/DataTableApiPaginationExample.tsx) and [`vanilla/examples/data-table-api-pagination-example.js`](vanilla/examples/data-table-api-pagination-example.js). They demonstrate 50-row server pages, resetting to offset 0 on sort changes, and loading subsequent pages without making DataTable responsible for API behavior.
+
+#### Expansion, row activation, and printing
+
+These options are all opt-in; a table that does not use them renders and behaves as before.
+
+- `expandedIds` + `onExpandedIdsChange` (React) / `expandedIds` + `onExpandedIdsChange` + `table.setExpandedIds(ids)` (Vanilla) let the application own which rows are expanded, for example to expand a row from a link. Without `expandedIds`, the table keeps its own state and `defaultExpandedIds` still sets the starting rows; `onExpandedIdsChange` then simply reports each change.
+- `getRowDomId(row)` sets an `id` on each desktop row and `<id>-mobile` on its mobile card, so the application can scroll to or focus a row.
+- `expandOnRowClick` makes a whole expandable row clickable (and operable with Enter or Space) to expand or collapse it. It combines with `onRowClick` in React, and an `actions` column never triggers it.
+- `expandAllOnPrint` prints every expandable row open, whatever its on-screen state, and hides the expand buttons in print. It adds a print-only copy of each expanded row and a print-only copy of sortable header labels; neither is visible on screen.
 
 ### BusyIndicator
 
@@ -66,6 +75,8 @@ const busy = createBusyIndicator({ message: "Saving changes…" });
 document.querySelector("#app").append(busy.element);
 busy.setMessage("Saved");
 ```
+
+The spinner is also available on its own, without a message, as `BusySpinner` (React) and `createBusySpinner` (Vanilla). It is hidden from assistive technology, so pair it with visible or live-region text.
 
 
 ### Button

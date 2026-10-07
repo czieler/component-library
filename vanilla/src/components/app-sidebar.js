@@ -12,6 +12,7 @@ export function createSidebar({
   collapsed = false,
   onToggle,
   onSelect,
+  footer,
 }) {
   const aside = document.createElement("aside");
   aside.className = `sidebar ${collapsed ? "sidebar--collapsed" : ""}`;
@@ -113,6 +114,12 @@ export function createSidebar({
     nav.append(group);
   });
   aside.append(nav);
+  if (footer !== undefined && footer !== null && footer !== false) {
+    const footerElement = document.createElement("div");
+    footerElement.className = "sidebar__footer";
+    footerElement.append(footer instanceof Node ? footer : document.createTextNode(String(footer)));
+    aside.append(footerElement);
+  }
   const toggle = document.createElement("button");
   toggle.className = "sidebar-toggle";
   toggle.type = "button";

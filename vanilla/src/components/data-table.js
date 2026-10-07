@@ -20,14 +20,23 @@ export function createDataTable({
   expandIcon = "⌄",
   collapseIcon = "⌃",
   defaultExpandedIds = [],
+  expandedIds: controlledExpandedIds,
+  onExpandedIdsChange,
+  getRowDomId,
   emptyMessage = "No rows to display.",
   caption,
+  expandOnRowClick = false,
+  expandAllOnPrint = false,
   sortState: controlledSortState,
   onSortChange,
   sortMode = "client",
 }) {
   const root = document.createElement("div");
-  const expandedIds = new Set(defaultExpandedIds);
+  // Uncontrolled by default. When expandedIds is passed the caller owns the state: toggling only calls
+  // onExpandedIdsChange, and the caller applies it with table.setExpandedIds(ids).
+  let expandedIds = new Set(defaultExpandedIds);
+  let controlledIds = controlledExpandedIds !== undefined ? new Set(controlledExpandedIds) : null;
+  const currentExpandedIds = () => controlledIds ?? expandedIds;
   let isCollapsed = defaultCollapsed;
   let internalSortState = null;
   const rowsExpandable = typeof renderExpandedRow === "function";
@@ -43,11 +52,19 @@ export function createDataTable({
       hasSectionHeader ? "data-table--with-section-header" : "data-table--no-section-header",
       showColumnHeaders && !hasSectionHeader ? "data-table--standalone-columns" : "",
       cellDividers === "rows" ? "data-table--row-dividers" : "data-table--cell-dividers",
+      expandAllOnPrint ? "data-table--expand-all-on-print" : "",
     ].filter(Boolean).join(" ");
   };
   const toggleRow = (rowId) => {
-    if (expandedIds.has(rowId)) expandedIds.delete(rowId);
-    else expandedIds.add(rowId);
+    const next = new Set(currentExpandedIds());
+    if (next.has(rowId)) next.delete(rowId);
+    else next.add(rowId);
+    if (controlledIds) {
+      if (typeof onExpandedIdsChange === "function") onExpandedIdsChange([...next]);
+      return;
+    }
+    expandedIds = next;
+    if (typeof onExpandedIdsChange === "function") onExpandedIdsChange([...next]);
     renderTable();
   };
   const getSortState = () => controlledSortState !== undefined ? controlledSortState : internalSortState;
@@ -153,6 +170,13 @@ export function createDataTable({
           button.append(label, icon);
           button.addEventListener("click", () => toggleSort(column.id));
           th.append(button);
+          if (expandAllOnPrint) {
+            const printLabel = document.createElement("span");
+            printLabel.className = "data-table__print-header-label";
+            printLabel.setAttribute("aria-hidden", "true");
+            appendContent(printLabel, column.label);
+            th.append(printLabel);
+          }
         } else {
           appendContent(th, column.label);
         }
@@ -173,12 +197,30 @@ export function createDataTable({
     } else {
       getDisplayRows().forEach((row) => {
         const rowId = getRowId(row);
-        const isExpanded = expandedIds.has(rowId);
+        const isExpanded = currentExpandedIds().has(rowId);
+        const rowClickable = expandOnRowClick && rowsExpandable;
         const tr = document.createElement("tr");
-        tr.className = `data-table__row ${isExpanded ? "data-table__row--expanded" : ""}`;
+        const domId = typeof getRowDomId === "function" ? getRowDomId(row) : undefined;
+        if (domId) tr.id = domId;
+        tr.className = `data-table__row ${rowsExpandable ? "data-table__row--expandable" : ""} ${isExpanded ? "data-table__row--expanded" : ""} ${rowClickable ? "data-table__row--clickable" : ""}`;
+        if (rowClickable) {
+          tr.tabIndex = 0;
+          tr.addEventListener("click", () => toggleRow(rowId));
+          tr.addEventListener("keydown", (event) => {
+            if (event.target !== tr) return;
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              toggleRow(rowId);
+            }
+          });
+        }
         columns.forEach((column, columnIndex) => {
           const td = document.createElement("td");
           td.className = `data-table__cell--${column.align ?? "left"}`;
+          if (column.id === "actions" && rowClickable) {
+            td.addEventListener("click", (event) => event.stopPropagation());
+            td.addEventListener("keydown", (event) => event.stopPropagation());
+          }
           if (rowsExpandable && columnIndex === 0) {
             const wrapper = document.createElement("div");
             wrapper.className = "data-table__first-cell-with-expand";
@@ -205,7 +247,7 @@ export function createDataTable({
         tbody.append(tr);
         if (rowsExpandable && isExpanded) {
           const expandedTr = document.createElement("tr");
-          expandedTr.className = "data-table__expanded-row";
+          expandedTr.className = "data-table__expanded-row data-table__expanded-row--interactive";
           const expandedTd = document.createElement("td");
           expandedTd.colSpan = totalColumns;
           const content = document.createElement("div");
@@ -214,6 +256,18 @@ export function createDataTable({
           expandedTd.append(content);
           expandedTr.append(expandedTd);
           tbody.append(expandedTr);
+        }
+        if (rowsExpandable && expandAllOnPrint) {
+          const printTr = document.createElement("tr");
+          printTr.className = "data-table__expanded-row data-table__expanded-row--print-only";
+          const printTd = document.createElement("td");
+          printTd.colSpan = totalColumns;
+          const printContent = document.createElement("div");
+          printContent.className = "data-table__expanded-content";
+          appendContent(printContent, renderExpandedRow(row));
+          printTd.append(printContent);
+          printTr.append(printTd);
+          tbody.append(printTr);
         }
       });
     }
@@ -243,13 +297,18 @@ export function createDataTable({
     } else {
       getDisplayRows().forEach((row) => {
         const rowId = getRowId(row);
-        const isExpanded = expandedIds.has(rowId);
+        const isExpanded = currentExpandedIds().has(rowId);
+        const cardClickable = expandOnRowClick && rowsExpandable;
         const card = document.createElement("article");
-        card.className = "data-table__mobile-card";
+        const cardDomId = typeof getRowDomId === "function" ? getRowDomId(row) : undefined;
+        if (cardDomId) card.id = `${cardDomId}-mobile`;
+        card.className = `data-table__mobile-card ${cardClickable ? "data-table__mobile-card--clickable" : ""}`.trim();
         card.setAttribute("role", "listitem");
+        if (cardClickable) card.addEventListener("click", () => toggleRow(rowId));
         columns.forEach((column) => {
           const field = document.createElement("div");
           field.className = "data-table__mobile-field";
+          if (column.id === "actions" && cardClickable) field.addEventListener("click", (event) => event.stopPropagation());
           const label = document.createElement("span");
           label.className = "data-table__mobile-label";
           appendContent(label, column.label);
@@ -292,5 +351,11 @@ export function createDataTable({
     root.append(mobile);
   };
   renderTable();
+  root.setExpandedIds = (ids) => {
+    const next = new Set(ids);
+    if (controlledIds) controlledIds = next;
+    else expandedIds = next;
+    renderTable();
+  };
   return root;
 }

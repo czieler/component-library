@@ -22,6 +22,9 @@ Test at representative desktop, tablet, and mobile widths.
 - Mobile switches to labeled cards without horizontal page overflow.
 - Empty state remains readable on desktop and mobile.
 - Expandable content remains reachable in both layouts.
+- With `expandOnRowClick`, a whole row toggles by click and by Enter/Space, and controls in the `actions` column do not toggle it.
+- With `expandedIds`, the table changes only when the application passes new ids.
+- With `expandAllOnPrint`, print shows every expandable row open once, hides the expand buttons, and screen view shows no print-only content.
 
 ### WorkflowProgress
 

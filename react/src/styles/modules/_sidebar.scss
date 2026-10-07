@@ -140,3 +140,10 @@
     display: block;
   }
 }
+
+/* Optional footer slot (AppSidebar footer prop). */
+.sidebar__footer {
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}

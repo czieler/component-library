@@ -36,6 +36,30 @@ See [`examples/DataTableApiPaginationExample.tsx`](examples/DataTableApiPaginati
 />
 ```
 
+### Controlling expansion, row activation, and printing
+
+All of the following props are optional. Omit them and `DataTable` renders and behaves as it always has.
+
+```tsx
+const [expanded, setExpanded] = useState<string[]>([]);
+
+<DataTable
+  columns={columns}
+  rows={rows}
+  getRowId={(row) => row.id}
+  renderExpandedRow={(row) => <Details row={row} />}
+  expandedIds={expanded}              // you own the state…
+  onExpandedIdsChange={setExpanded}   // …and update it here
+  getRowDomId={(row) => `row-${row.id}`} // <tr id="row-1">, mobile card id="row-1-mobile"
+  expandOnRowClick                    // click, Enter, or Space on a row expands it
+  expandAllOnPrint                    // print every expandable row open
+/>
+```
+
+- `expandedIds` makes expansion controlled: the table only changes when you pass new ids. Without it the table keeps its own state, `defaultExpandedIds` sets the starting rows, and `onExpandedIdsChange` just reports changes.
+- `expandOnRowClick` works with `onRowClick`: both run. Controls in a column with the id `actions` do not trigger the row.
+- `expandAllOnPrint` adds a print-only copy of each expanded row (class `data-table__expanded-row--print-only`) and a print-only copy of sortable header labels. They stay hidden on screen. The on-screen expanded row has the class `data-table__expanded-row--interactive`, and expandable rows have `data-table__row--expandable`.
+
 ## WorkflowProgress
 
 The gallery includes a **Workflow Progress** entry so the component can be viewed and resized alongside the other reusable components.
@@ -68,6 +92,8 @@ import { BusyIndicator } from "./src/components/BusyIndicator";
 
 <BusyIndicator message="Saving changes…" />;
 ```
+
+`BusySpinner` is exported separately when you need only the ring. It renders `<span class="busy-indicator__spinner" aria-hidden="true">`, accepts `className` and span attributes, and is what `BusyIndicator` uses internally.
 
 The demo gallery includes visible loading, saving, and processing examples.
 

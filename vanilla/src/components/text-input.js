@@ -23,6 +23,7 @@ export function createTextInput({
     disabled,
     error
   }, false);
+  if (clearable) wrapper.classList.add("field--clearable");
   const input = document.createElement("input");
   input.value = value;
   input.placeholder = " ";

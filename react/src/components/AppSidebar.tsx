@@ -17,6 +17,7 @@ type AppSidebarProps = {
   collapseIcon?: ReactNode;
   expandIcon?: ReactNode;
   submenuIcon?: ReactNode;
+  footer?: ReactNode;
 };
 export function AppSidebar({
   items,
@@ -34,6 +35,7 @@ export function AppSidebar({
   collapseIcon = "‹",
   expandIcon = "›",
   submenuIcon = "⌄",
+  footer,
 }: AppSidebarProps) {
   const activeGroupId = items.find((item) =>
     item.children?.some((child) => child.id === activeId),
@@ -194,6 +196,7 @@ export function AppSidebar({
           );
         })}
       </nav>
+      {footer && <div className="sidebar__footer">{footer}</div>}
       <button
         type="button"
         className="sidebar-toggle"

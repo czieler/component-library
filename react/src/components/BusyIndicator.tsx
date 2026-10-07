@@ -3,10 +3,14 @@ export interface BusyIndicatorProps extends HTMLAttributes<HTMLElement> {
   message: ReactNode;
   inline?: boolean;
 }
+export function BusySpinner({ className = "", ...props }: HTMLAttributes<HTMLSpanElement>) {
+  const classes = ["busy-indicator__spinner", className].filter(Boolean).join(" ");
+  return <span className={classes} aria-hidden="true" {...props} />;
+}
 export function BusyIndicator({ message, inline = false, className = "", ...props }: BusyIndicatorProps) {
   const classes = ["busy-indicator", inline ? "busy-indicator--inline" : "", className].filter(Boolean).join(" ");
   const content = (<>
-    <span className="busy-indicator__spinner" aria-hidden="true" />
+    <BusySpinner />
     <span className="busy-indicator__message">{message}</span>
   </>);
   return inline
