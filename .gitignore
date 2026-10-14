@@ -4,3 +4,6 @@ dist
 .DS_Store
 
 *.tsbuildinfo
+
+# npm package build artifacts
+dist-package/

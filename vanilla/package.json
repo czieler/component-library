@@ -1,15 +1,40 @@
 {
-  "name": "ui-patterns-vanilla",
-  "private": true,
+  "name": "@czieler/ui-vanilla",
   "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "check": "node scripts/check-js.mjs",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:package": "vite build --config vite.package.config.js && node scripts/build-package-css.mjs css",
+    "prepack": "npm run check && npm run build:package"
   },
-  "dependencies": {
+  "description": "Reusable framework-free JavaScript UI components and design system",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/czieler/component-library.git",
+    "directory": "vanilla"
+  },
+  "homepage": "https://github.com/czieler/component-library",
+  "files": [
+    "dist-package"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "main": "./dist-package/index.js",
+  "module": "./dist-package/index.js",
+  "exports": {
+    ".": "./dist-package/index.js",
+    "./styles.css": "./dist-package/styles.css"
+  },
+  "style": "./dist-package/styles.css",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
     "vite": "8.2.2"
   }
 }

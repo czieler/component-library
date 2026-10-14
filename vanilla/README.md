@@ -159,3 +159,7 @@ The gallery now includes dedicated menu entries for `Button`, `Alert`, and `Card
 
 ### DataTable responsive expansion
 On mobile, expandable rows use a full-width **Show details / Hide details** control within the row card so the expansion affordance remains readable and attached to the correct record.
+
+## npm package build
+
+The existing demo commands are unchanged. To build an installable npm package, run `npm run build:package`; see [NPM-PUBLISHING.md](../NPM-PUBLISHING.md) for release and consumer instructions.
