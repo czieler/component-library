@@ -156,6 +156,26 @@ const phone = createPhoneInput({
 
 The gallery now includes dedicated menu entries for `Button`, `Alert`, and `Card`. Button owns common action variants and in-button loading; Alert owns reusable feedback states; Card is a minimal generic surface wrapper. Product-specific composition remains in the consuming application.
 
+## ConfirmationDialog
+
+`createConfirmationDialog` creates a native modal dialog with configurable title, message, and action labels. The action labels default to **Yes** and **No**. Append its `element` before calling `open()`. Confirm and deny actions invoke their callbacks and close the dialog; Escape closes it and reports the native return value through `onClose`.
+
+```js
+import { createConfirmationDialog } from "./src/components/confirmation-dialog.js";
+
+const confirmation = createConfirmationDialog({
+  title: "Delete this item?",
+  message: "This action cannot be undone.",
+  confirmText: "Delete",
+  denyText: "Keep item",
+  onConfirm: () => deleteItem(),
+  onDeny: () => console.log("Deletion canceled"),
+  onClose: (result) => console.log("Dialog closed:", result),
+});
+
+document.body.append(confirmation.element);
+confirmation.open();
+```
 
 ### DataTable responsive expansion
 On mobile, expandable rows use a full-width **Show details / Hide details** control within the row card so the expansion affordance remains readable and attached to the correct record.

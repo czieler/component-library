@@ -157,6 +157,24 @@ Use `UrlInput` for website/logo/support URLs that must be valid HTTP(S) URLs. Us
 
 The gallery now includes dedicated menu entries for `Button`, `Alert`, and `Card`. Button owns common action variants and in-button loading; Alert owns reusable feedback states; Card is a minimal generic surface wrapper. Product-specific composition remains in the consuming application.
 
+## ConfirmationDialog
+
+`ConfirmationDialog` is a native modal controlled by its required `open` prop. The action labels default to **Yes** and **No**. Confirm and deny actions invoke their callbacks and close the dialog; use `onClose` to update the state controlling `open`. Escape also closes the dialog and invokes `onClose`.
+
+```tsx
+const [isOpen, setIsOpen] = useState(false);
+
+<ConfirmationDialog
+  open={isOpen}
+  title="Delete this item?"
+  message="This action cannot be undone."
+  confirmText="Delete"
+  denyText="Keep item"
+  onConfirm={deleteItem}
+  onDeny={() => console.log("Deletion canceled")}
+  onClose={() => setIsOpen(false)}
+/>;
+```
 
 ### DataTable responsive expansion
 On mobile, expandable rows use a full-width **Show details / Hide details** control within the row card so the expansion affordance remains readable and attached to the correct record.

@@ -4,6 +4,7 @@ export * from "./components/AppSidebar";
 export * from "./components/BusyIndicator";
 export * from "./components/Button";
 export * from "./components/Card";
+export * from "./components/ConfirmationDialog";
 export * from "./components/CountryCombobox";
 export * from "./components/DataTable";
 export * from "./components/MobileNavigation";

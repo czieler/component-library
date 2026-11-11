@@ -22,6 +22,11 @@ export const navItems: NavItem[] = [
         icon: <FormInput size={16} />
       },
       {
+        id: "confirmation-dialog",
+        label: "Confirmation Dialog",
+        icon: <FormInput size={16} />,
+      },
+      {
         id: "alerts",
         label: "Alerts",
         icon: <FormInput size={16} />

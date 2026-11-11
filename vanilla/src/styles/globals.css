@@ -32,6 +32,7 @@
 @import './modules/button-reduced-motion.css';
 @import './modules/alert.css';
 @import './modules/card.css';
+@import './modules/confirmation-dialog.css';
 @import './modules/gallery-cards.css';
 @import './modules/country-combobox.css';
 @import './modules/top-navigation.css';

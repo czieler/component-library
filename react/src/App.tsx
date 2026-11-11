@@ -4,6 +4,7 @@ import { navItems } from "./gallery/navigationItems";
 import { ChevronLeft, ChevronRight, ChevronDown, X, Menu } from "lucide-react";
 import { MobileNavigation } from "./components/MobileNavigation";
 import { ButtonsDemo } from "./gallery/ButtonsDemo";
+import { ConfirmationDialogDemo } from "./gallery/ConfirmationDialogDemo";
 import { AlertsDemo } from "./gallery/AlertsDemo";
 import { CardsDemo } from "./gallery/CardsDemo";
 import { InputsDemo } from "./gallery/InputsDemo";
@@ -58,6 +59,8 @@ export function App() {
 
         {activeId === "buttons" ? (
           <ButtonsDemo />
+        ) : activeId === "confirmation-dialog" ? (
+          <ConfirmationDialogDemo />
         ) : activeId === "alerts" ? (
           <AlertsDemo />
         ) : activeId === "cards" ? (

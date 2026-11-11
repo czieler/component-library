@@ -4,6 +4,7 @@ export * from "./components/app-sidebar.js";
 export * from "./components/busy-indicator.js";
 export * from "./components/button.js";
 export * from "./components/card.js";
+export * from "./components/confirmation-dialog.js";
 export * from "./components/country-combobox.js";
 export * from "./components/data-table.js";
 export * from "./components/field-helpers.js";

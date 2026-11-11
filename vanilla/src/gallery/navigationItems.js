@@ -21,6 +21,11 @@ export const items = [
         icon: icons.inputs
       },
       {
+        id: "confirmation-dialog",
+        label: "Confirmation Dialog",
+        icon: icons.inputs
+      },
+      {
         id: "alerts",
         label: "Alerts",
         icon: icons.inputs

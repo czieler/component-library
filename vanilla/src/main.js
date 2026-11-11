@@ -4,6 +4,7 @@ import { createMobileNavigation } from "./components/mobile-navigation.js";
 import { icons } from "./components/icons.js";
 import { text } from "./gallery/content.js";
 import { buttonsDemo } from "./gallery/buttons.js";
+import { confirmationDialogDemo } from "./gallery/confirmation-dialog.js";
 import { alertsDemo } from "./gallery/alerts.js";
 import { cardsDemo } from "./gallery/cards.js";
 import { inputsDemo } from "./gallery/inputs.js";
@@ -62,6 +63,8 @@ const render = () => {
     topbar,
     active === "buttons"
       ? buttonsDemo()
+      : active === "confirmation-dialog"
+        ? confirmationDialogDemo()
       : active === "alerts"
         ? alertsDemo()
         : active === "cards"
